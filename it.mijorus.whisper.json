@@ -5,11 +5,13 @@
     "sdk" : "org.gnome.Sdk",
     "command" : "whisper",
     "finish-args" : [
-        "--share=network",
         "--share=ipc",
+        "--share=network",
+        "--socket=wayland",
         "--socket=fallback-x11",
         "--device=dri",
-        "--socket=wayland"
+        "--system-talk-name=org.freedesktop.PolicyKit",
+        "--talk-name=org.freedesktop.Flatpak"
     ],
     "cleanup" : [
         "/include",
@@ -29,8 +31,8 @@
             "buildsystem" : "meson",
             "sources" : [
                 {
-                    "type" : "git",
-                    "url" : "file:///home/altravia/Progetti"
+                    "type" : "dir",
+                    "path" : "./"
                 }
             ]
         }

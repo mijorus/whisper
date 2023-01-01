@@ -19,6 +19,7 @@
 
 from gi.repository import Adw
 from gi.repository import Gtk
+from pprint import pprint
 from .pipewire.pipewire import Pipewire
 
 class WhisperWindow(Gtk.ApplicationWindow):
@@ -29,5 +30,5 @@ class WhisperWindow(Gtk.ApplicationWindow):
         self.titlebar = Adw.HeaderBar()
         self.set_titlebar(self.titlebar)
         
-        print(Pipewire.list_inputs())
+        pprint(Pipewire.list_inputs())
 

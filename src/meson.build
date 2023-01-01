@@ -25,10 +25,4 @@ configure_file(
   install_dir: get_option('bindir')
 )
 
-whisper_sources = [
-  '__init__.py',
-  'main.py',
-  'window.py',
-]
-
-install_data(whisper_sources, install_dir: moduledir)
+install_subdir('.', install_dir: moduledir)
