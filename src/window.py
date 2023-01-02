@@ -29,6 +29,34 @@ class WhisperWindow(Gtk.ApplicationWindow):
         super().__init__(**kwargs, title='Whisper')
         self.titlebar = Adw.HeaderBar()
         self.set_titlebar(self.titlebar)
+        self.viewport = Gtk.Viewport(halign=Gtk.Align.CENTER)
         
-        pprint(Pipewire.list_inputs())
+        pprint(Pipewire.list_outputs())
+        
+        pw_connection_box = Gtk.ListBox(css_classes=['boxed-list'])
+        pw_connection_box_row = Gtk.Box(spacing=10)
+        
+        output_select = Gtk.ComboBoxText()
+        output_names = []
+        for k, v in  Pipewire.list_outputs().items():  
+            if ('name' in v) and ('capture' in v['alsa']): 
+                output_select.append(k, v['name'])
+                output_names.append(v['name'])
+                
+        input_select = Gtk.ComboBoxText()
+        for k, v in  Pipewire.list_inputs().items():
+            name = v['name'] if (v['name']) not in output_names else (v['name'] + ' - Output')
+            input_select.append(k, name)
+        
+        pw_connection_box_row.append(output_select)
+        pw_connection_box_row.append(input_select)
+        pw_connection_box.append(pw_connection_box_row)
+        
+        self.viewport.set_child(pw_connection_box)
+        clamp = Adw.Clamp()
+        clamp.set_child(self.viewport)
+        
+        self.set_child(clamp)
+
+
 
