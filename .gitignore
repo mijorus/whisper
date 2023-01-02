@@ -2,3 +2,5 @@
 builddir
 build
 .flatpak-builder
+run.sh
+install.sh
