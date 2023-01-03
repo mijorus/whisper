@@ -21,6 +21,7 @@ from gi.repository import Adw
 from gi.repository import Gtk
 from pprint import pprint
 from .components.PwConnectionBox import PwConnectionBox
+from .components.PwActiveConnectionBox import PwActiveConnectionBox
 from .pipewire.pipewire import Pipewire
 
 
@@ -31,15 +32,17 @@ class WhisperWindow(Gtk.ApplicationWindow):
         super().__init__(**kwargs, title='Whisper')
         self.titlebar = Adw.HeaderBar()
         self.set_titlebar(self.titlebar)
-        self.viewport = Gtk.Viewport(halign=Gtk.Align.CENTER)
+        self.viewport = Gtk.Box(halign=Gtk.Align.CENTER, orientation=Gtk.Orientation.VERTICAL, spacing=30)
 
-        pprint(Pipewire.list_outputs())
+        pprint(Pipewire.list_alsa_links())
 
         pw_connection_box = PwConnectionBox()
-        pw_connection_box_row = Gtk.Box(spacing=10)
 
-        self.viewport.set_child(pw_connection_box)
+        self.viewport.append(pw_connection_box)
+        self.viewport.append(PwActiveConnectionBox('test', 'test', 'test', 'test'))
+
         clamp = Adw.Clamp()
         clamp.set_child(self.viewport)
 
         self.set_child(clamp)
+        self.set_default_size(300, 500)

@@ -23,11 +23,9 @@ from pprint import pprint
 from ..pipewire.pipewire import Pipewire
 
 
-class PwConnectionBox(Gtk.ListBox):
+class PwConnectionBox(Gtk.Box):
     def __init__(self, **kwargs):
-        super().__init__(css_classes=['boxed-list'])
-
-        pprint(Pipewire.list_outputs())
+        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=10)
 
         pw_connection_box_row = Gtk.Box(spacing=10)
 

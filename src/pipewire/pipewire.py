@@ -28,6 +28,9 @@ class Pipewire():
 
         regex = re.compile(r'^(\s+\d+\s+)')
         for line in output.split('\n'):
+            if not line.strip():
+                break
+
             m = regex.match(line)
             if m:
                 line_id = m.group().strip()
@@ -54,6 +57,37 @@ class Pipewire():
 
         return elements
 
+    def _parse_pwlink_list_return(output: str) -> dict:
+        elements = {}
+        output_id = None
+
+        regex = re.compile(r'^(\s+\d+\s+)')
+        conn_regex = re.compile(r'.*(\|\-\>\s*\d*\s)')
+        for line in output.split('\n'):
+            print('qwe')
+            if not line.strip():
+                break
+
+            m = regex.match(line)
+            if ('|->' not in line) and ('|<-' not in line):
+                output_id = m.group().strip()
+                resource_tag = (re.sub(f'^{m.group()}', '', line)).split(':', maxsplit=1)[0]
+
+                if not resource_tag in elements:
+                    elements[resource_tag] = {}
+
+                continue
+
+            elif ('|->' in line):
+                connection_id = m.group().strip()
+                connected_item = conn_regex.sub('', line)
+                elements[resource_tag][connection_id] = {
+                    'connected_tag': connected_item.split(':')[0],
+                    'channel': connected_item.split(':')[1]
+                }
+
+        return elements
+
     def check_installed() -> bool:
         return Pipewire._run(['which', 'pw-cli']).strip() and Pipewire._run(['which', 'pw-link']).strip()
 
@@ -68,9 +102,12 @@ class Pipewire():
         items = Pipewire._parse_pwlink_return(output)
 
         return items
-        
+
     def link(inp: str, out: str):
         Pipewire._run(['pw-link', '--linger', inp, out])
+
+    def list_alsa_links():
+        return Pipewire._parse_pwlink_list_return(Pipewire._run(['pw-link', '--links', '--id']))
 
 # def threaded_sh(command: Union[str, List[str]], callback: Callable[[str], None]=None, return_stderr=False):
 #     to_check = command if isinstance(command, str) else command[0]
