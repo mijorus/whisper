@@ -6,7 +6,7 @@ from typing import Callable, List, Union
 
 
 class Pipewire():
-    def _run(self, command: List[str]) -> str:
+    def _run(command: List[str]) -> str:
         to_check = command if isinstance(command, str) else ' '.join(command)
 
         try:
@@ -19,51 +19,58 @@ class Pipewire():
             raise e
 
         return re.sub(r'\n$', '', output.stdout)
-        
+
     def _parse_pwlink_return(output: str) -> dict:
         elements = {}
-        resource_id = None
-        group_lineat = 0
-        
+        resource_tag = None
+        line_id = None
+        group_line_at = 0
+
         regex = re.compile(r'^(\s+\d+\s+)')
         for line in output.split('\n'):
             m = regex.match(line)
             if m:
                 line_id = m.group().strip()
-                resource_id = (re.sub(f'^{m.group()}', '', line)).split(':', maxsplit=1)[0]
+                resource_tag = (re.sub(f'^{m.group()}', '', line)).split(':', maxsplit=1)[0]
 
-                if not resource_id in elements:
-                    elements[resource_id] = {"id": line_id}
+                if not resource_tag in elements:
+                    elements[resource_tag] = {}
 
-                group_lineat = 0
+                group_line_at = 0
                 continue
 
-            group_lineat += 1
+            group_line_at += 1
             line = line.strip()
 
-            if group_lineat == 1: 
-                elements[resource_id]['alsa'] = line
+            if group_line_at == 1:
+                elements[resource_tag]['alsa'] = line
             else:
                 name, ch = line.split(':')
-                if not 'channels' in elements[resource_id]:
-                    elements[resource_id]['channels'] = []
+                if not 'channels' in elements[resource_tag]:
+                    elements[resource_tag]['channels'] = {}
 
-                elements[resource_id]['name'] = name
-                elements[resource_id]['channels'].append(ch)
-                
+                elements[resource_tag]['name'] = name
+                elements[resource_tag]['channels'][line_id] = ch
+
         return elements
 
+    def check_installed() -> bool:
+        return Pipewire._run(['which', 'pw-cli']).strip() and Pipewire._run(['which', 'pw-link']).strip()
+
     def list_inputs() -> dict:
-        output: list[str] = Pipewire()._run(['pw-link', '--input', '--verbose', '--id'])
+        output: list[str] = Pipewire._run(['pw-link', '--input', '--verbose', '--id'])
         inputs = Pipewire._parse_pwlink_return(output)
 
         return inputs
 
     def list_outputs() -> dict:
-        output: list[str] = Pipewire()._run(['pw-link', '--output', '--verbose', '--id'])
+        output: list[str] = Pipewire._run(['pw-link', '--output', '--verbose', '--id'])
         items = Pipewire._parse_pwlink_return(output)
 
         return items
+        
+    def link(inp: str, out: str):
+        Pipewire._run(['pw-link', '--linger', inp, out])
 
 # def threaded_sh(command: Union[str, List[str]], callback: Callable[[str], None]=None, return_stderr=False):
 #     to_check = command if isinstance(command, str) else command[0]

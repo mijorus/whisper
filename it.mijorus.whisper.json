@@ -25,7 +25,7 @@
         "*.a"
     ],
     "modules" : [
-        {
+        { 
             "name" : "whisper",
             "builddir" : true,
             "buildsystem" : "meson",
