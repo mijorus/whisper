@@ -73,7 +73,6 @@ class WhisperWindow(Gtk.ApplicationWindow):
         j = 1
         for l, link in Pipewire.list_alsa_links().items():
             for i, link_info in link.items():
-                print(outputs[l])
                 box = PwActiveConnectionBox(
                     link_id=i,
                     disconnect_cb=self.on_disconnect_btn_clicked,
