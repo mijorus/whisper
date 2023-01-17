@@ -12,6 +12,9 @@ class PwConnectionBox(Gtk.Box):
         pw_connection_box_row = Gtk.Box(spacing=10)
 
         self.output_select = Gtk.ComboBoxText()
+        self.output_select.append('', ' -- Select a microphone --')
+        self.output_select.set_active_id('')
+
         output_names = []
         for k, v in Pipewire.list_outputs().items():
             if v.alsa.startswith('alsa:') and ('capture' in v.alsa):
@@ -19,6 +22,9 @@ class PwConnectionBox(Gtk.Box):
                 output_names.append(v.name)
 
         self.input_select = Gtk.ComboBoxText()
+        self.input_select.append('', ' -- Select a speaker --')
+        self.input_select.set_active_id('')
+
         for k, v in Pipewire.list_inputs().items():
             if (v.alsa.startswith('alsa:')):
                 name = v.name if (v.name) not in output_names else (v.name + ' - Output')
@@ -57,5 +63,5 @@ class PwConnectionBox(Gtk.Box):
                     Pipewire.link(c, fl_fr[0])
                 elif (channel.endswith('_FR')) and fl_fr[1]:
                     Pipewire.link(c, fl_fr[1])
-        
+
         self.new_connection_cb()
