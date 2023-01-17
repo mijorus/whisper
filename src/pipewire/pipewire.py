@@ -4,16 +4,20 @@ import asyncio
 import threading
 from typing import Callable, List, Union
 
+
 class PwLink():
-    def __init__(self):
+    def __init__(self, resource_name: str):
+        self.resource_name = resource_name
         self.alsa: str = ''
         self.name: str = ''
         self.channels: dict = {}
 
+
 class PwActiveConnectionLink():
-    def __init__(self, tag, channel):
+    def __init__(self, tag, channel, _id):
         self.connected_tag: str = tag
         self.channel: str = channel
+        self._id: str = _id
 
 
 class Pipewire():
@@ -48,7 +52,7 @@ class Pipewire():
                 resource_tag = (re.sub(f'^{m.group()}', '', line)).split(':', maxsplit=1)[0]
 
                 if not resource_tag in elements:
-                    elements[resource_tag] = PwLink()
+                    elements[resource_tag] = PwLink(resource_tag)
 
                 group_line_at = 0
                 continue
@@ -71,7 +75,7 @@ class Pipewire():
         output_id = None
 
         regex = re.compile(r'^(\s+\d+\s+)')
-        conn_regex = re.compile(r'.*(\|\-\>\s*\d*\s)')
+        conn_regex = re.compile(r'.*(\|\-\>\s*)')
         for line in output.split('\n'):
             if not line.strip():
                 break
@@ -81,17 +85,17 @@ class Pipewire():
                 output_id = m.group().strip()
                 resource_tag = (re.sub(f'^{m.group()}', '', line)).split(':', maxsplit=1)[0]
 
-                if not resource_tag in elements:
-                    elements[resource_tag] = {}
+                if not output_id in elements:
+                    elements[output_id] = {}
 
                 continue
 
             elif ('|->' in line):
                 connection_id = m.group().strip()
-                connected_item = conn_regex.sub('', line)
-                elements[resource_tag][connection_id] = PwActiveConnectionLink(connected_item.split(':')[0], connected_item.split(':')[1])
-                # elements[resource_tag][connection_id].connected_tag = connected_item.split(':')[0],
-                # elements[resource_tag][connection_id].channel = connected_item.split(':')[1]
+                connected_resource = conn_regex.sub('', line)
+
+                _id, connected_item = connected_resource.split(' ', maxsplit=1)
+                elements[output_id][connection_id] = PwActiveConnectionLink(connected_item.split(':')[0], connected_item.split(':')[1], _id)
 
         return elements
 
@@ -112,11 +116,11 @@ class Pipewire():
 
     def link(inp: str, out: str):
         Pipewire._run(['pw-link', '--linger', inp, out])
-    
+
     def unlink(link_id):
         Pipewire._run(['pw-link', '--disconnect', link_id])
 
-    def list_alsa_links() -> [str, dict[str, PwActiveConnectionLink]]:
+    def list_links() -> [str, dict[str, PwActiveConnectionLink]]:
         return Pipewire._parse_pwlink_list_return(Pipewire._run(['pw-link', '--links', '--id']))
 
 # def threaded_sh(command: Union[str, List[str]], callback: Callable[[str], None]=None, return_stderr=False):

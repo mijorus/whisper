@@ -8,8 +8,10 @@
         "--share=ipc",
         "--share=network",
         "--socket=wayland",
+        "--socket=pulseaudio",
         "--socket=fallback-x11",
         "--device=dri",
+        "--device=all",
         "--system-talk-name=org.freedesktop.PolicyKit",
         "--talk-name=org.freedesktop.Flatpak"
     ],
@@ -24,7 +26,8 @@
         "*.la",
         "*.a"
     ],
-    "modules" : [
+    "modules" : [ 
+        "python3-requirements.json",
         { 
             "name" : "whisper",
             "builddir" : true,

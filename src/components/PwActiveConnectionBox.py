@@ -17,6 +17,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+import pulsectl
 from gi.repository import Adw
 from gi.repository import Gtk
 from pprint import pprint
@@ -27,10 +28,10 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
     def __init__(self, input_link: PwLink, output_link: PwLink, connection_name: str, link_id: str, disconnect_cb: callable, **kwargs):
         super().__init__(css_classes=['boxed-list'])
 
+        self.input_link = input_link
+        self.output_link = output_link
         self.input_name = input_link.name
-        self.input_id = input_link.alsa
         self.output_name = output_link.name
-        self.output_id = output_link.alsa
         self.link_id = link_id
         
         self.disconnect_cb = disconnect_cb
@@ -64,6 +65,17 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
         self.header_suffix = disconnect_btn
         self.set_header_suffix(self.header_suffix)
         
+        self.refresh_volume_levels()
         
+    def refresh_volume_levels(self):
+        # print(self.input_link.resource_name)
+        pa_input = pulsectl.Pulse('asdad').get_sink_by_name(self.input_link.resource_name)
+        # pa_output = pulsectl.Pulse().get_source_by_name(self.output_link.resource_name)
+        
+        
+        # print(pa_output.volume.value_flat)
+        # print(pa_input)
+        # pulsectl.Pulse().volume_change_all_chans(pa_input, 0.5)
+    
     def on_disconnect_btn_clicked(self, _):
         self.disconnect_cb(self.link_id)

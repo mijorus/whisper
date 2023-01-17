@@ -17,11 +17,12 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from typing import Optional
 from gi.repository import Adw, Gtk, Gio
 from pprint import pprint
 from .components.PwConnectionBox import PwConnectionBox
 from .components.PwActiveConnectionBox import PwActiveConnectionBox
-from .pipewire.pipewire import Pipewire
+from .pipewire.pipewire import Pipewire, PwLink
 
 
 class WhisperWindow(Gtk.ApplicationWindow):
@@ -30,7 +31,6 @@ class WhisperWindow(Gtk.ApplicationWindow):
     def __init__(self, **kwargs):
         super().__init__(**kwargs, title='Whisper')
         self.settings: Gio.Settings = Gio.Settings.new('it.mijorus.whisper')
-        print(self.settings.get_boolean('stand-by'))
 
         self.titlebar = Adw.HeaderBar()
         self.set_titlebar(self.titlebar)
@@ -49,7 +49,6 @@ class WhisperWindow(Gtk.ApplicationWindow):
             box.append(title)
             box.append(subt)
             self.viewport.append(box)
-            pass
         else:
             pw_connection_box = PwConnectionBox(new_connection_cb=self.on_new_connection)
             self.viewport.append(pw_connection_box)
@@ -66,23 +65,41 @@ class WhisperWindow(Gtk.ApplicationWindow):
         self.set_child(clamp)
         self.set_default_size(700, 500)
 
+    def _is_alsa_device(self, pw_list: dict[str, PwLink], link_id) -> Optional[PwLink]:
+        for d, dev in pw_list.items():
+            if (link_id in dev.channels) and dev.alsa.startswith('alsa:'):
+                return dev
+
+        return None
+
     def refresh_active_connections(self):
         inputs = Pipewire.list_inputs()
         outputs = Pipewire.list_outputs()
 
         j = 1
-        for l, link in Pipewire.list_alsa_links().items():
-            for i, link_info in link.items():
-                box = PwActiveConnectionBox(
-                    link_id=i,
-                    disconnect_cb=self.on_disconnect_btn_clicked,
-                    connection_name=f'Connection #{j}',
-                    output_link=outputs[l],
-                    input_link=inputs[link_info.connected_tag]
-                )
 
-                self.active_connection_boxes.append(box)
-                self.active_connections_list.append(box)
+        # cycle on every active link
+        for l, link in Pipewire.list_links().items():
+            # cycle on every pw output, check if it is an alsa devide
+
+            output_device = self._is_alsa_device(outputs, l)
+            if output_device:
+                for i, link_info in link.items():
+                    # cycle on every active link for that output
+                    input_device = self._is_alsa_device(inputs, link_info._id)
+                    if input_device:
+                            box = PwActiveConnectionBox(
+                                link_id=i,
+                                disconnect_cb=self.on_disconnect_btn_clicked,
+                                connection_name=f'Connection #{j}',
+                                output_link=output_device,
+                                input_link=input_device
+                            )
+
+                            self.active_connection_boxes.append(box)
+                            self.active_connections_list.append(box)
+
+                            break
 
                 j += 1
 

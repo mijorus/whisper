@@ -1,3 +1,4 @@
+import pulsectl
 from gi.repository import Adw, Gtk, Gio
 from pprint import pprint
 from ..pipewire.pipewire import Pipewire
