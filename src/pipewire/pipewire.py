@@ -10,6 +10,11 @@ class PwLink():
         self.name: str = ''
         self.channels: dict = {}
 
+class PwActiveConnectionLink():
+    def __init__(self, tag, channel):
+        self.connected_tag: str = tag
+        self.channel: str = channel
+
 
 class Pipewire():
     def _run(command: List[str]) -> str:
@@ -61,7 +66,7 @@ class Pipewire():
 
         return elements
 
-    def _parse_pwlink_list_return(output: str) -> dict:
+    def _parse_pwlink_list_return(output: str) -> [str, dict[str, PwActiveConnectionLink]]:
         elements = {}
         output_id = None
 
@@ -84,10 +89,9 @@ class Pipewire():
             elif ('|->' in line):
                 connection_id = m.group().strip()
                 connected_item = conn_regex.sub('', line)
-                elements[resource_tag][connection_id] = {
-                    'connected_tag': connected_item.split(':')[0],
-                    'channel': connected_item.split(':')[1]
-                }
+                elements[resource_tag][connection_id] = PwActiveConnectionLink(connected_item.split(':')[0], connected_item.split(':')[1])
+                # elements[resource_tag][connection_id].connected_tag = connected_item.split(':')[0],
+                # elements[resource_tag][connection_id].channel = connected_item.split(':')[1]
 
         return elements
 
@@ -112,7 +116,7 @@ class Pipewire():
     def unlink(link_id):
         Pipewire._run(['pw-link', '--disconnect', link_id])
 
-    def list_alsa_links():
+    def list_alsa_links() -> [str, dict[str, PwActiveConnectionLink]]:
         return Pipewire._parse_pwlink_list_return(Pipewire._run(['pw-link', '--links', '--id']))
 
 # def threaded_sh(command: Union[str, List[str]], callback: Callable[[str], None]=None, return_stderr=False):

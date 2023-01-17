@@ -1,6 +1,6 @@
 # window.py
 #
-# Copyright 2023 Altravia
+# Copyright 2023 Lorenzo Paderi
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,24 +20,24 @@
 from gi.repository import Adw
 from gi.repository import Gtk
 from pprint import pprint
-from ..pipewire.pipewire import Pipewire
+from ..pipewire.pipewire import Pipewire, PwLink
 
 
 class PwActiveConnectionBox(Adw.PreferencesGroup):
-    def __init__(self, input_name: str, input_id: str, output_name: str, output_id: str, connection_name: str, link_id: str, disconnect_cb: callable, **kwargs):
+    def __init__(self, input_link: PwLink, output_link: PwLink, connection_name: str, link_id: str, disconnect_cb: callable, **kwargs):
         super().__init__(css_classes=['boxed-list'])
 
-        self.input_name = input_name
-        self.input_id = input_id
-        self.output_name = output_name
-        self.output_id = output_id
+        self.input_name = input_link.name
+        self.input_id = input_link.alsa
+        self.output_name = output_link.name
+        self.output_id = output_link.alsa
         self.link_id = link_id
         
         self.disconnect_cb = disconnect_cb
         self.set_title(connection_name)
 
-        self.output_exp = Adw.ExpanderRow(title=output_name)
-        self.input_exp = Adw.ExpanderRow(title=input_name)
+        self.output_exp = Adw.ExpanderRow(title=self.output_name)
+        self.input_exp = Adw.ExpanderRow(title=self.input_name)
 
         self.output_exp.add_prefix(Gtk.Image.new_from_icon_name('microphone2-symbolic'))
         self.input_exp.add_prefix(Gtk.Image.new_from_icon_name('audio-speaker-symbolic'))

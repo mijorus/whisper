@@ -1,6 +1,6 @@
 # window.py
 #
-# Copyright 2023 Altravia
+# Copyright 2023 Lorenzo Paderi
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -68,18 +68,18 @@ class WhisperWindow(Gtk.ApplicationWindow):
     def refresh_active_connections(self):
         inputs = Pipewire.list_inputs()
         outputs = Pipewire.list_outputs()
+        
 
         j = 1
         for l, link in Pipewire.list_alsa_links().items():
             for i, link_info in link.items():
+                print(outputs[l])
                 box = PwActiveConnectionBox(
+                    link_id=i,
                     disconnect_cb=self.on_disconnect_btn_clicked,
                     connection_name=f'Connection #{j}',
-                    link_id=i,
-                    output_id=l,
-                    output_name=outputs[l]['name'],
-                    input_id=link_info['connected_tag'],
-                    input_name=inputs[link_info['connected_tag']]['name']
+                    output_link=outputs[l],
+                    input_link=inputs[link_info.connected_tag]
                 )
 
                 self.active_connection_boxes.append(box)
