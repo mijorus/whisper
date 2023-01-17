@@ -33,14 +33,14 @@ class PwConnectionBox(Gtk.Box):
         self.output_select = Gtk.ComboBoxText()
         output_names = []
         for k, v in Pipewire.list_outputs().items():
-            if ('name' in v) and ('capture' in v['alsa']) and (v['alsa'].startswith('alsa:')):
-                self.output_select.append(k, v['name'])
-                output_names.append(v['name'])
+            if v.alsa.startswith('alsa:'):
+                self.output_select.append(k, v.name)
+                output_names.append(v.name)
 
         self.input_select = Gtk.ComboBoxText()
         for k, v in Pipewire.list_inputs().items():
-            if (v['alsa'].startswith('alsa:')):
-                name = v['name'] if (v['name']) not in output_names else (v['name'] + ' - Output')
+            if (v.alsa.startswith('alsa:')):
+                name = v.name if (v.name) not in output_names else (v.name + ' - Output')
                 self.input_select.append(k, name)
 
         pw_connection_box_row.append(self.output_select)

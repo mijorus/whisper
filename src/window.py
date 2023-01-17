@@ -37,13 +37,13 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
         if not Pipewire.check_installed():
             box = Gtk.Box(valign=Gtk.Align.CENTER, orientation=Gtk.Orientation.VERTICAL, spacing=5, vexpand=True)
-            
+
             title = Gtk.Label(css_classes=['title-1'], label="Pipewire not detected")
             subt = Gtk.Label(css_classes=['dim-label'], label="Whisper requires Pipewire and the pipewire-cli in order to run")
             icon = Gtk.Image.new_from_icon_name('warning-symbolic')
             icon.set_css_classes(['dim-label'])
             icon.set_pixel_size(100)
-            
+
             box.append(icon)
             box.append(title)
             box.append(subt)
@@ -86,7 +86,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
                 self.active_connections_list.append(box)
 
                 j += 1
-                
+
     def on_new_connection(self):
         self.refresh_active_connections()
 

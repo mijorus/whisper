@@ -4,6 +4,12 @@ import asyncio
 import threading
 from typing import Callable, List, Union
 
+class PwLink():
+    def __init__(self):
+        self.alsa: str = ''
+        self.name: str = ''
+        self.channels: dict = {}
+
 
 class Pipewire():
     def _run(command: List[str]) -> str:
@@ -20,7 +26,7 @@ class Pipewire():
 
         return re.sub(r'\n$', '', output.stdout)
 
-    def _parse_pwlink_return(output: str) -> dict:
+    def _parse_pwlink_return(output: str) -> dict[str, PwLink]:
         elements = {}
         resource_tag = None
         line_id = None
@@ -37,7 +43,7 @@ class Pipewire():
                 resource_tag = (re.sub(f'^{m.group()}', '', line)).split(':', maxsplit=1)[0]
 
                 if not resource_tag in elements:
-                    elements[resource_tag] = {}
+                    elements[resource_tag] = PwLink()
 
                 group_line_at = 0
                 continue
@@ -46,14 +52,12 @@ class Pipewire():
             line = line.strip()
 
             if group_line_at == 1:
-                elements[resource_tag]['alsa'] = line
+                elements[resource_tag].alsa = line
             else:
                 name, ch = line.split(':')
-                if not 'channels' in elements[resource_tag]:
-                    elements[resource_tag]['channels'] = {}
 
-                elements[resource_tag]['name'] = name
-                elements[resource_tag]['channels'][line_id] = ch
+                elements[resource_tag].name = name
+                elements[resource_tag].channels[line_id] = ch
 
         return elements
 
@@ -90,13 +94,13 @@ class Pipewire():
     def check_installed() -> bool:
         return Pipewire._run(['which', 'pw-cli']).strip() and Pipewire._run(['which', 'pw-link']).strip() and Pipewire._run(['pw-cli', 'info', '0']).strip()
 
-    def list_inputs() -> dict:
+    def list_inputs() -> dict[str, PwLink]:
         output: list[str] = Pipewire._run(['pw-link', '--input', '--verbose', '--id'])
         inputs = Pipewire._parse_pwlink_return(output)
 
         return inputs
 
-    def list_outputs() -> dict:
+    def list_outputs() -> dict[str, PwLink]:
         output: list[str] = Pipewire._run(['pw-link', '--output', '--verbose', '--id'])
         items = Pipewire._parse_pwlink_return(output)
 
