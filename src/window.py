@@ -17,8 +17,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from gi.repository import Adw
-from gi.repository import Gtk
+from gi.repository import Adw, Gtk, Gio
 from pprint import pprint
 from .components.PwConnectionBox import PwConnectionBox
 from .components.PwActiveConnectionBox import PwActiveConnectionBox
@@ -30,6 +29,8 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs, title='Whisper')
+        self.settings: Gio.Settings = Gio.Settings.new('it.mijorus.whisper')
+        print(self.settings.get_boolean('stand-by'))
 
         self.titlebar = Adw.HeaderBar()
         self.set_titlebar(self.titlebar)
@@ -68,7 +69,6 @@ class WhisperWindow(Gtk.ApplicationWindow):
     def refresh_active_connections(self):
         inputs = Pipewire.list_inputs()
         outputs = Pipewire.list_outputs()
-        
 
         j = 1
         for l, link in Pipewire.list_alsa_links().items():

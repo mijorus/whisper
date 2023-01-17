@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="whisper">
 	<schema id="it.mijorus.whisper" path="/it/mijorus/whisper/">
+        <key name="stand-by" type="b">
+            <default>false</default>
+        </key>
 	</schema>
 </schemalist>
