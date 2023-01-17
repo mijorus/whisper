@@ -23,30 +23,47 @@ from pprint import pprint
 from ..pipewire.pipewire import Pipewire
 
 
-class PwActiveConnectionBox(Gtk.ListBox):
-    def __init__(self, input_name: str, input_id: str, output_name: str, output_id: str, **kwargs):
+class PwActiveConnectionBox(Adw.PreferencesGroup):
+    def __init__(self, input_name: str, input_id: str, output_name: str, output_id: str, connection_name: str, link_id: str, disconnect_cb: callable, **kwargs):
         super().__init__(css_classes=['boxed-list'])
 
         self.input_name = input_name
         self.input_id = input_id
         self.output_name = output_name
         self.output_id = output_id
+        self.link_id = link_id
         
-        self.input_exp = Adw.ExpanderRow(title=input_name)
+        self.disconnect_cb = disconnect_cb
+        self.set_title(connection_name)
+
         self.output_exp = Adw.ExpanderRow(title=output_name)
-        
+        self.input_exp = Adw.ExpanderRow(title=input_name)
+
+        self.output_exp.add_prefix(Gtk.Image.new_from_icon_name('microphone2-symbolic'))
+        self.input_exp.add_prefix(Gtk.Image.new_from_icon_name('audio-speaker-symbolic'))
+
         self.input_range = Gtk.Scale()
         self.input_range.set_range(0, 100)
         self.output_range = Gtk.Scale()
         self.output_range.set_range(0, 100)
-        
+
         inp_r = Gtk.ListBoxRow()
         inp_r.set_child(self.input_range)
         outp_r = Gtk.ListBoxRow()
         outp_r.set_child(self.output_range)
-        
+
         self.input_exp.add_row(inp_r)
         self.output_exp.add_row(outp_r)
+
+        self.add(self.output_exp)
+        self.add(self.input_exp)
+
+        disconnect_btn = Gtk.Button(label='Disconnect', css_classes=['destructive-action'])
+        disconnect_btn.connect('clicked', self.on_disconnect_btn_clicked)
+
+        self.header_suffix = disconnect_btn
+        self.set_header_suffix(self.header_suffix)
         
-        self.append(self.input_exp)
-        self.append(self.output_exp)
+        
+    def on_disconnect_btn_clicked(self, _):
+        self.disconnect_cb(self.link_id)

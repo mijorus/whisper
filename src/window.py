@@ -30,19 +30,54 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs, title='Whisper')
+
         self.titlebar = Adw.HeaderBar()
         self.set_titlebar(self.titlebar)
         self.viewport = Gtk.Box(halign=Gtk.Align.CENTER, orientation=Gtk.Orientation.VERTICAL, spacing=30)
 
-        pprint(Pipewire.list_alsa_links())
-
-        pw_connection_box = PwConnectionBox()
-
+        pw_connection_box = PwConnectionBox(new_connection_cb=self.on_new_connection)
         self.viewport.append(pw_connection_box)
-        self.viewport.append(PwActiveConnectionBox('test', 'test', 'test', 'test'))
+
+        self.active_connections_list = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=30)
+        self.active_connection_boxes: list[PwActiveConnectionBox] = []
+        self.viewport.append(self.active_connections_list)
+
+        self.refresh_active_connections()
 
         clamp = Adw.Clamp()
         clamp.set_child(self.viewport)
 
         self.set_child(clamp)
-        self.set_default_size(300, 500)
+        self.set_default_size(700, 500)
+
+    def refresh_active_connections(self):
+        inputs = Pipewire.list_inputs()
+        outputs = Pipewire.list_outputs()
+
+        j = 1
+        for l, link in Pipewire.list_alsa_links().items():
+            for i, link_info in link.items():
+                box = PwActiveConnectionBox(
+                    disconnect_cb=self.on_disconnect_btn_clicked,
+                    connection_name=f'Connection #{j}',
+                    link_id=i,
+                    output_id=l,
+                    output_name=outputs[l]['name'],
+                    input_id=link_info['connected_tag'],
+                    input_name=inputs[link_info['connected_tag']]['name']
+                )
+
+                self.active_connection_boxes.append(box)
+                self.active_connections_list.append(box)
+
+                j += 1
+                
+    def on_new_connection(self):
+        self.refresh_active_connections()
+
+    def on_disconnect_btn_clicked(self, link_id):
+        Pipewire.unlink(link_id)
+
+        for b in self.active_connection_boxes:
+            self.active_connections_list.remove(b)
+            self.active_connection_boxes.remove(b)

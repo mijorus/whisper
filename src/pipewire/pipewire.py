@@ -64,7 +64,6 @@ class Pipewire():
         regex = re.compile(r'^(\s+\d+\s+)')
         conn_regex = re.compile(r'.*(\|\-\>\s*\d*\s)')
         for line in output.split('\n'):
-            print('qwe')
             if not line.strip():
                 break
 
@@ -105,6 +104,9 @@ class Pipewire():
 
     def link(inp: str, out: str):
         Pipewire._run(['pw-link', '--linger', inp, out])
+    
+    def unlink(link_id):
+        Pipewire._run(['pw-link', '--disconnect', link_id])
 
     def list_alsa_links():
         return Pipewire._parse_pwlink_list_return(Pipewire._run(['pw-link', '--links', '--id']))
