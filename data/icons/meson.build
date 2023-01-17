@@ -16,6 +16,7 @@ action_dir = join_paths('hicolor', 'scalable', 'actions')
 action_icons = [
     join_paths(action_dir, 'audio-speaker-symbolic.svg'),
     join_paths(action_dir, 'microphone2-symbolic.svg'),
+    join_paths(action_dir, 'warning-symbolic.svg'),
 ]
 
 install_data(

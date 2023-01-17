@@ -88,7 +88,7 @@ class Pipewire():
         return elements
 
     def check_installed() -> bool:
-        return Pipewire._run(['which', 'pw-cli']).strip() and Pipewire._run(['which', 'pw-link']).strip()
+        return Pipewire._run(['which', 'pw-cli']).strip() and Pipewire._run(['which', 'pw-link']).strip() and Pipewire._run(['pw-cli', 'info', '0']).strip()
 
     def list_inputs() -> dict:
         output: list[str] = Pipewire._run(['pw-link', '--input', '--verbose', '--id'])

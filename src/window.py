@@ -33,16 +33,31 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
         self.titlebar = Adw.HeaderBar()
         self.set_titlebar(self.titlebar)
-        self.viewport = Gtk.Box(halign=Gtk.Align.CENTER, orientation=Gtk.Orientation.VERTICAL, spacing=30)
+        self.viewport = Gtk.Box(halign=Gtk.Align.CENTER, orientation=Gtk.Orientation.VERTICAL, spacing=30, margin_top=20)
 
-        pw_connection_box = PwConnectionBox(new_connection_cb=self.on_new_connection)
-        self.viewport.append(pw_connection_box)
+        if not Pipewire.check_installed():
+            box = Gtk.Box(valign=Gtk.Align.CENTER, orientation=Gtk.Orientation.VERTICAL, spacing=5, vexpand=True)
+            
+            title = Gtk.Label(css_classes=['title-1'], label="Pipewire not detected")
+            subt = Gtk.Label(css_classes=['dim-label'], label="Whisper requires Pipewire and the pipewire-cli in order to run")
+            icon = Gtk.Image.new_from_icon_name('warning-symbolic')
+            icon.set_css_classes(['dim-label'])
+            icon.set_pixel_size(100)
+            
+            box.append(icon)
+            box.append(title)
+            box.append(subt)
+            self.viewport.append(box)
+            pass
+        else:
+            pw_connection_box = PwConnectionBox(new_connection_cb=self.on_new_connection)
+            self.viewport.append(pw_connection_box)
 
-        self.active_connections_list = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=30)
-        self.active_connection_boxes: list[PwActiveConnectionBox] = []
-        self.viewport.append(self.active_connections_list)
+            self.active_connections_list = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=30)
+            self.active_connection_boxes: list[PwActiveConnectionBox] = []
+            self.viewport.append(self.active_connections_list)
 
-        self.refresh_active_connections()
+            self.refresh_active_connections()
 
         clamp = Adw.Clamp()
         clamp.set_child(self.viewport)
