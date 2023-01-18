@@ -18,9 +18,11 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import pulsectl
+import time
 from gi.repository import Adw
 from gi.repository import Gtk
 from pprint import pprint
+from ..utils import async_utils
 from ..pipewire.pipewire import Pipewire, PwLink
 
 
@@ -44,8 +46,10 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
         self.input_exp.add_prefix(Gtk.Image.new_from_icon_name('audio-speaker-symbolic'))
 
         self.input_range = Gtk.Scale()
+        self.input_range.connect('change-value', self.on_change_input_range)
         self.input_range.set_range(0, 100)
         self.output_range = Gtk.Scale()
+        self.output_range.connect('change-value', self.on_change_output_range)
         self.output_range.set_range(0, 100)
 
         inp_r = Gtk.ListBoxRow()
@@ -65,17 +69,26 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
         self.header_suffix = disconnect_btn
         self.set_header_suffix(self.header_suffix)
         
+        self.pa_sink = None
+        self.pa_source = None
         self.refresh_volume_levels()
         
     def refresh_volume_levels(self):
-        # print(self.input_link.resource_name)
-        pa_input = pulsectl.Pulse('asdad').get_sink_by_name(self.input_link.resource_name)
-        # pa_output = pulsectl.Pulse().get_source_by_name(self.output_link.resource_name)
+        self.pa_sink = pulsectl.Pulse().get_sink_by_name(self.input_link.resource_name)
+        self.pa_source = pulsectl.Pulse().get_source_by_name(self.output_link.resource_name)
         
-        
-        # print(pa_output.volume.value_flat)
-        # print(pa_input)
-        # pulsectl.Pulse().volume_change_all_chans(pa_input, 0.5)
+        self.input_range.set_value(self.pa_sink.volume.value_flat * 100)
+        self.output_range.set_value(self.pa_source.volume.value_flat * 100)
     
     def on_disconnect_btn_clicked(self, _):
         self.disconnect_cb(self.link_id)
+    
+    @async_utils.debounce(0.5)
+    def on_change_input_range(self, widget, _, value: float):
+        if self.pa_sink:
+            pulsectl.Pulse().volume_set_all_chans(self.pa_sink, (value / 100))
+    
+    @async_utils.debounce(0.5)
+    def on_change_output_range(self, widget, _, value: float):
+        if self.pa_source:
+            pulsectl.Pulse().volume_set_all_chans(self.pa_source, (value / 100))

@@ -99,9 +99,9 @@ class WhisperWindow(Gtk.ApplicationWindow):
                             self.active_connection_boxes.append(box)
                             self.active_connections_list.append(box)
 
+                            j += 1
                             break
 
-                j += 1
 
     def on_new_connection(self):
         self.refresh_active_connections()
