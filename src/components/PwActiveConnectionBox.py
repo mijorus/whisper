@@ -27,17 +27,18 @@ from ..pipewire.pipewire import Pipewire, PwLink
 
 
 class PwActiveConnectionBox(Adw.PreferencesGroup):
-    def __init__(self, input_link: PwLink, output_link: PwLink, connection_name: str, link_id: str, disconnect_cb: callable, **kwargs):
+    def __init__(self, input_link: PwLink, output_link: PwLink, connection_name: str, link_ids: list[str], disconnect_cb: callable, **kwargs):
         super().__init__(css_classes=['boxed-list'])
 
         self.input_link = input_link
         self.output_link = output_link
         self.input_name = input_link.name
         self.output_name = output_link.name
-        self.link_id = link_id
+        self.link_ids = link_ids
         
         self.disconnect_cb = disconnect_cb
         self.set_title(connection_name)
+        self.set_description('Link IDs: '+ ', '.join(link_ids))
 
         self.output_exp = Adw.ExpanderRow(title=self.output_name)
         self.input_exp = Adw.ExpanderRow(title=self.input_name)
@@ -81,7 +82,7 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
         self.output_range.set_value(self.pa_source.volume.value_flat * 100)
     
     def on_disconnect_btn_clicked(self, _):
-        self.disconnect_cb(self.link_id)
+        self.disconnect_cb(self.link_ids)
     
     @async_utils.debounce(0.5)
     def on_change_input_range(self, widget, _, value: float):

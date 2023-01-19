@@ -25,6 +25,13 @@ from .components.PwActiveConnectionBox import PwActiveConnectionBox
 from .pipewire.pipewire import Pipewire, PwLink
 
 
+class DeviceLink:
+    def __init__(self, input_device, output_device, link_id):
+        self.link_id: str = link_id
+        self.input_device: PwLink = input_device
+        self.output_device: PwLink = output_device
+
+
 class WhisperWindow(Gtk.ApplicationWindow):
     __gtype_name__ = 'WhisperWindow'
 
@@ -34,7 +41,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
         self.titlebar = Adw.HeaderBar()
         self.set_titlebar(self.titlebar)
-        self.viewport = Gtk.Box(halign=Gtk.Align.CENTER, orientation=Gtk.Orientation.VERTICAL, spacing=30, margin_top=20)
+        self.viewport = Gtk.Box(halign=Gtk.Align.CENTER, orientation=Gtk.Orientation.VERTICAL, spacing=30, margin_top=20, width_request=500)
 
         if not Pipewire.check_installed():
             box = Gtk.Box(valign=Gtk.Align.CENTER, orientation=Gtk.Orientation.VERTICAL, spacing=5, vexpand=True)
@@ -59,28 +66,34 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
             self.refresh_active_connections()
 
-        clamp = Adw.Clamp()
+        clamp = Adw.Clamp(tightening_threshold=700)
         clamp.set_child(self.viewport)
 
         self.set_child(clamp)
         self.set_default_size(700, 500)
+
+        return None
 
     def _is_alsa_device(self, pw_list: dict[str, PwLink], link_id) -> Optional[PwLink]:
         for d, dev in pw_list.items():
             if (link_id in dev.channels) and dev.alsa.startswith('alsa:'):
                 return dev
 
-        return None
-
     def refresh_active_connections(self):
+        for b in self.active_connection_boxes:
+            self.active_connections_list.remove(b)
+
+        self.active_connection_boxes = []
+
         inputs = Pipewire.list_inputs()
         outputs = Pipewire.list_outputs()
 
         j = 1
+        device_links: dict[str, dict] = {}
 
         # cycle on every active link
         for l, link in Pipewire.list_links().items():
-            # cycle on every pw output, check if it is an alsa devide
+            # cycle on every pw output, check if it is an alsa device
 
             output_device = self._is_alsa_device(outputs, l)
             if output_device:
@@ -88,27 +101,37 @@ class WhisperWindow(Gtk.ApplicationWindow):
                     # cycle on every active link for that output
                     input_device = self._is_alsa_device(inputs, link_info._id)
                     if input_device:
-                            box = PwActiveConnectionBox(
-                                link_id=i,
-                                disconnect_cb=self.on_disconnect_btn_clicked,
-                                connection_name=f'Connection #{j}',
-                                output_link=output_device,
-                                input_link=input_device
-                            )
+                        if not output_device.resource_name in device_links:
+                            device_links[output_device.resource_name] = {}
+                        
+                        if not input_device.resource_name in device_links[output_device.resource_name]:
+                            device_links[output_device.resource_name][input_device.resource_name] = {
+                                'device_link': DeviceLink(input_device, output_device, 0),
+                                'link_ids': []
+                            }
 
-                            self.active_connection_boxes.append(box)
-                            self.active_connections_list.append(box)
+                        device_links[output_device.resource_name][input_device.resource_name]['link_ids'].append(i)
 
-                            j += 1
-                            break
+        for output_device_resource_name, connected_devices in device_links.items():
+            for d, dev in connected_devices.items():
+                box = PwActiveConnectionBox(
+                    link_ids=dev['link_ids'],
+                    disconnect_cb=self.on_disconnect_btn_clicked,
+                    connection_name=f'Connection #{j}',
+                    output_link=dev['device_link'].output_device,
+                    input_link=dev['device_link'].input_device
+                )
 
+                self.active_connection_boxes.append(box)
+                self.active_connections_list.append(box)
+
+                j += 1
 
     def on_new_connection(self):
         self.refresh_active_connections()
 
-    def on_disconnect_btn_clicked(self, link_id):
-        Pipewire.unlink(link_id)
+    def on_disconnect_btn_clicked(self, link_ids: list[str]):
+        for l in link_ids:
+            Pipewire.unlink(l)
 
-        for b in self.active_connection_boxes:
-            self.active_connections_list.remove(b)
-            self.active_connection_boxes.remove(b)
+        self.refresh_active_connections()

@@ -1,43 +1,55 @@
 import pulsectl
 from gi.repository import Adw, Gtk, Gio
 from pprint import pprint
+from .ExpanderRowRadio import ExpanderRowRadio
 from ..pipewire.pipewire import Pipewire
 
 
-class PwConnectionBox(Gtk.Box):
+class PwConnectionBox(Adw.PreferencesGroup):
     def __init__(self, new_connection_cb: callable, **kwargs):
-        super().__init__(orientation=Gtk.Orientation.VERTICAL, spacing=10)
+        super().__init__(title='Create a connection')
         self.new_connection_cb = new_connection_cb
         self.settings: Gio.Settings = Gio.Settings.new('it.mijorus.whisper')
 
-        pw_connection_box_row = Gtk.Box(spacing=10)
-
-        self.output_select = Gtk.ComboBoxText()
-        self.output_select.append('', ' -- Select a microphone --')
-        self.output_select.set_active_id('')
+        self.output_select = Adw.ExpanderRow(title=' -- Select a microphone --')
 
         output_names = []
+        radio_buttons = []
         for k, v in Pipewire.list_outputs().items():
             if v.alsa.startswith('alsa:') and ('capture' in v.alsa):
-                self.output_select.append(k, v.name)
+                radio_buttons.append(Gtk.CheckButton())
+                row = Adw.ActionRow(activatable_widget=radio_buttons[-1], title=v.name)
+                row.add_prefix(radio_buttons[-1])
+
                 output_names.append(v.name)
+                self.output_select.add_row(row)
 
-        self.input_select = Gtk.ComboBoxText()
-        self.input_select.append('', ' -- Select a speaker --')
-        self.input_select.set_active_id('')
+        self.input_select = Adw.ExpanderRow(title=' -- Select a speaker --')
 
+        if len(radio_buttons) > 1:
+            for r in radio_buttons[1:]:
+                r.set_group(radio_buttons[0])
+
+        radio_buttons = []
         for k, v in Pipewire.list_inputs().items():
             if (v.alsa.startswith('alsa:')):
-                name = v.name if (v.name) not in output_names else (v.name + ' - Output')
-                self.input_select.append(k, name)
+                name = v.name if (v.name not in output_names) else (v.name + ' - Output')
 
-        pw_connection_box_row.append(self.output_select)
-        pw_connection_box_row.append(self.input_select)
-        connect_button = Gtk.Button(label='Connect')
-        connect_button.connect('clicked', self.connect_source)
+                radio_buttons.append(Gtk.CheckButton()) 
+                row = Adw.ActionRow(activatable_widget=radio_buttons[-1], title=name)
+                row.add_prefix(radio_buttons[-1])
+                self.input_select.add_row(row)
 
-        self.append(pw_connection_box_row)
-        self.append(connect_button)
+        if len(radio_buttons) > 1:
+            for r in radio_buttons[1:]:
+                r.set_group(radio_buttons[0])
+
+        self.add(self.output_select)
+        self.add(self.input_select)
+
+        connect_btn = Gtk.Button(label='Connect', css_classes=['suggested-action'])
+        connect_btn.connect('clicked', self.connect_source)
+        self.set_header_suffix(connect_btn)
 
     def connect_source(self, widget):
         if self.settings.get_boolean('stand-by'):
@@ -76,3 +88,5 @@ class PwConnectionBox(Gtk.Box):
             print(e)
         finally:
             self.settings.set_boolean('stand-by', False)
+            self.input_select.set_active_id('')
+            self.output_select.set_active_id('')
