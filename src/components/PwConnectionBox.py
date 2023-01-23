@@ -81,6 +81,12 @@ class PwConnectionBox(Adw.PreferencesGroup):
 
             self.input_select.set_expanded(False)
             self.output_select.set_expanded(False)
+            
+            for radio in self.input_select.radio_buttons:
+                radio.set_sensitive(True)
+                
+            for radio in self.output_select.radio_buttons:
+                radio.set_sensitive(True)
 
     def on_output_select_change(self, _, _id: str):
         links = Pipewire.list_links()
@@ -97,7 +103,24 @@ class PwConnectionBox(Adw.PreferencesGroup):
                 for radio in self.input_select.radio_buttons:
                     if radio._id == active_c_link.connected_tag:
                         radio.set_sensitive(False)
+                        self.input_select.set_active_id('')
                         break
 
     def on_input_select_change(self, _, _id: str):
+        # links = Pipewire.list_links()
+        # pw_output = Pipewire.list_inputs()[_id]
+
+        # for radio in self.output_select.radio_buttons:
+        #     radio.set_sensitive(True)
+
+        # for o in pw_output.channels:
+        #     if not o in links:
+        #         continue
+
+        #     for i, active_c_link in links[o].items():
+        #         for radio in self.input_select.radio_buttons:
+        #             if radio._id == active_c_link.connected_tag:
+        #                 radio.set_sensitive(False)
+        #                 radio.set_active(False)
+        #                 break
         pass
