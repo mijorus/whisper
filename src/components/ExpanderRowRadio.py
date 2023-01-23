@@ -20,27 +20,59 @@
 import pulsectl
 import time
 from gi.repository import Adw
-from gi.repository import Gtk
+from gi.repository import Gtk, GObject
 from pprint import pprint
 from ..utils import async_utils
 from ..pipewire.pipewire import Pipewire, PwLink
 
 
 class ExpanderRowRadio(Adw.ExpanderRow):
-    def __init__(self, row_id: str, **kwargs):
-        super().__init__(**kwargs)
-        self.row_id = row_id
+    __gsignals__ = {
+        'change': (GObject.SIGNAL_RUN_FIRST, None, (str,))
+    }
+
+    def __init__(self, title, **kwargs):
+        super().__init__(title=title, **kwargs)
+        self.original_title = title
         self.radio_buttons = []
 
     def get_active_id(self):
-        pass
+        for r in self.radio_buttons:
+            if r.get_active():
+                return r._id
 
-    def add(self, w, _id):
+        return None
+
+    def set_active_id(self, _id: str):
+        for r in self.radio_buttons:
+            if r._id == _id:
+                return r.set_active(True)
+
+        for r in self.radio_buttons:
+            r.set_active(False)
+
+        self.set_title(self.original_title)
+        return None
+
+    def add(self, name: str, _id: str, id_as_subtitle=False):
         radio = Gtk.CheckButton()
-        radio.__id = _id
+        radio._id = _id
+        radio._name = name
 
         row = Adw.ActionRow(activatable_widget=radio, title=name)
+        if id_as_subtitle:
+            row.set_subtitle(_id)
+
         row.add_prefix(radio)
 
         self.add_row(row)
         self.radio_buttons.append(radio)
+
+        radio.connect('toggled', self.on_toggled)
+
+        if len(self.radio_buttons) > 1:
+            radio.set_group(self.radio_buttons[0])
+            
+    def on_toggled(self, w):
+        self.set_title(w._name)
+        self.emit('change', w._id)

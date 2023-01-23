@@ -1,48 +1,35 @@
 import pulsectl
-from gi.repository import Adw, Gtk, Gio
+from gi.repository import Adw, Gtk, Gio, GObject
 from pprint import pprint
 from .ExpanderRowRadio import ExpanderRowRadio
 from ..pipewire.pipewire import Pipewire
 
 
 class PwConnectionBox(Adw.PreferencesGroup):
-    def __init__(self, new_connection_cb: callable, **kwargs):
+    __gsignals__ = {
+        'new_connection': (GObject.SIGNAL_RUN_FIRST, None, (int,))
+    }
+
+    def __init__(self, **kwargs):
         super().__init__(title='Create a connection')
-        self.new_connection_cb = new_connection_cb
         self.settings: Gio.Settings = Gio.Settings.new('it.mijorus.whisper')
 
-        self.output_select = Adw.ExpanderRow(title=' -- Select a microphone --')
+        self.output_select = ExpanderRowRadio(title=' -- Select a microphone --')
+        self.output_select.connect('change', self.on_output_select_change)
 
         output_names = []
-        radio_buttons = []
         for k, v in Pipewire.list_outputs().items():
             if v.alsa.startswith('alsa:') and ('capture' in v.alsa):
-                radio_buttons.append(Gtk.CheckButton())
-                row = Adw.ActionRow(activatable_widget=radio_buttons[-1], title=v.name)
-                row.add_prefix(radio_buttons[-1])
-
                 output_names.append(v.name)
-                self.output_select.add_row(row)
+                self.output_select.add(v.name, k)
 
-        self.input_select = Adw.ExpanderRow(title=' -- Select a speaker --')
+        self.input_select = ExpanderRowRadio(title=' -- Select a speaker --')
+        self.input_select.connect('change', self.on_input_select_change)
 
-        if len(radio_buttons) > 1:
-            for r in radio_buttons[1:]:
-                r.set_group(radio_buttons[0])
-
-        radio_buttons = []
         for k, v in Pipewire.list_inputs().items():
             if (v.alsa.startswith('alsa:')):
                 name = v.name if (v.name not in output_names) else (v.name + ' - Output')
-
-                radio_buttons.append(Gtk.CheckButton()) 
-                row = Adw.ActionRow(activatable_widget=radio_buttons[-1], title=name)
-                row.add_prefix(radio_buttons[-1])
-                self.input_select.add_row(row)
-
-        if len(radio_buttons) > 1:
-            for r in radio_buttons[1:]:
-                r.set_group(radio_buttons[0])
+                self.input_select.add(name, k)
 
         self.add(self.output_select)
         self.add(self.input_select)
@@ -83,10 +70,34 @@ class PwConnectionBox(Adw.PreferencesGroup):
                     elif (channel.endswith('_FR')) and fl_fr[1]:
                         Pipewire.link(c, fl_fr[1])
 
-            self.new_connection_cb()
+            # self.new_connection_cb()
+            self.emit('new_connection', 1)
         except Exception as e:
             print(e)
         finally:
             self.settings.set_boolean('stand-by', False)
             self.input_select.set_active_id('')
             self.output_select.set_active_id('')
+
+            self.input_select.set_expanded(False)
+            self.output_select.set_expanded(False)
+
+    def on_output_select_change(self, _, _id: str):
+        links = Pipewire.list_links()
+        pw_output = Pipewire.list_outputs()[_id]
+
+        for radio in self.input_select.radio_buttons:
+            radio.set_sensitive(True)
+
+        for o in pw_output.channels:
+            if not o in links:
+                continue
+
+            for i, active_c_link in links[o].items():
+                for radio in self.input_select.radio_buttons:
+                    if radio._id == active_c_link.connected_tag:
+                        radio.set_sensitive(False)
+                        break
+
+    def on_input_select_change(self, _, _id: str):
+        pass

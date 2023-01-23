@@ -57,7 +57,9 @@ class WhisperWindow(Gtk.ApplicationWindow):
             box.append(subt)
             self.viewport.append(box)
         else:
-            pw_connection_box = PwConnectionBox(new_connection_cb=self.on_new_connection)
+            pw_connection_box = PwConnectionBox()
+            pw_connection_box.connect('new_connection', self.on_new_connection)
+
             self.viewport.append(pw_connection_box)
 
             self.active_connections_list = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=30)
@@ -68,8 +70,11 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
         clamp = Adw.Clamp(tightening_threshold=700)
         clamp.set_child(self.viewport)
+        
+        scrolled = Gtk.ScrolledWindow()
+        scrolled.set_child(clamp)
 
-        self.set_child(clamp)
+        self.set_child(scrolled)
         self.set_default_size(700, 500)
 
         return None
@@ -127,7 +132,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
                 j += 1
 
-    def on_new_connection(self):
+    def on_new_connection(self, _, status):
         self.refresh_active_connections()
 
     def on_disconnect_btn_clicked(self, link_ids: list[str]):
