@@ -40,6 +40,12 @@ class WhisperWindow(Gtk.ApplicationWindow):
         self.settings: Gio.Settings = Gio.Settings.new('it.mijorus.whisper')
 
         self.titlebar = Adw.HeaderBar()
+        
+        menu_obj = Gtk.Builder.new_from_resource('/it/mijorus/whisper/gtk/main-menu.xml')
+        self.menu_button = Gtk.MenuButton(icon_name='open-menu', menu_model=menu_obj.get_object('primary_menu'))
+
+        self.titlebar.pack_end(self.menu_button)
+        
         self.set_titlebar(self.titlebar)
         self.viewport = Gtk.Box(halign=Gtk.Align.CENTER, orientation=Gtk.Orientation.VERTICAL, spacing=30, margin_top=20, width_request=500)
 
@@ -76,6 +82,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
         self.set_child(scrolled)
         self.set_default_size(700, 500)
+        self.set_size_request(650, 300)
 
         return None
 

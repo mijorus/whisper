@@ -4,5 +4,8 @@
         <key name="stand-by" type="b">
             <default>false</default>
         </key>
+        <key name="show-connection-ids" type="b">
+            <default>false</default>
+        </key>
 	</schema>
 </schemalist>
