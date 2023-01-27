@@ -17,14 +17,20 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from typing import Optional
-import time
-from gi.repository import Adw, Gtk, Gio
-from pprint import pprint
-from .utils import async_utils
-from .components.PwConnectionBox import PwConnectionBox
-from .components.PwActiveConnectionBox import PwActiveConnectionBox
 from .pipewire.pipewire import Pipewire, PwLink
+from .components.PwActiveConnectionBox import PwActiveConnectionBox
+from .components.PwConnectionBox import PwConnectionBox
+from .utils import async_utils
+from pprint import pprint
+from typing import Optional
+import pulsectl
+import time
+import gi
+
+gi.require_version('Gtk', '4.0')
+gi.require_version('Adw', '1')
+
+from gi.repository import Adw, Gtk, Gio  # noqa: E402
 
 
 class DeviceLink:
@@ -51,7 +57,16 @@ class WhisperWindow(Gtk.ApplicationWindow):
         self.set_titlebar(self.titlebar)
         self.viewport = Gtk.Box(halign=Gtk.Align.CENTER, orientation=Gtk.Orientation.VERTICAL, spacing=30, margin_top=20, width_request=500)
 
-        if not Pipewire.check_installed():
+        self.rendered_links = []
+
+        try:
+            pulse = pulsectl.Pulse()
+            pulse.connect()
+            print('PulseAudio connection OK')
+        except:
+            pass
+
+        if (not Pipewire.check_installed()) or (not pulse.connected):
             box = Gtk.Box(valign=Gtk.Align.CENTER, orientation=Gtk.Orientation.VERTICAL, spacing=5, vexpand=True)
 
             title = Gtk.Label(css_classes=['title-1'], label="Pipewire not detected")
@@ -65,6 +80,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
             box.append(subt)
             self.viewport.append(box)
         else:
+            pulse.disconnect()
             pw_connection_box = PwConnectionBox()
             pw_connection_box.connect('new_connection', self.on_new_connection)
 
@@ -130,13 +146,23 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
                         device_links[output_device.resource_name][input_device.resource_name]['link_ids'].append(i)
 
+        links_to_render = []
+        for output_device_resource_name, connected_devices in device_links.items():
+            for d, dev in connected_devices.items():
+                links_to_render.extend(dev['link_ids'])
+
+        if (not list(set(self.rendered_links) - set(links_to_render))) and (not list(set(links_to_render) - set(self.rendered_links))):
+            return
+
         for b in self.active_connection_boxes:
             self.active_connections_list.remove(b)
 
         self.active_connection_boxes = []
+        self.rendered_links = []
 
         for output_device_resource_name, connected_devices in device_links.items():
             for d, dev in connected_devices.items():
+
                 box = PwActiveConnectionBox(
                     link_ids=dev['link_ids'],
                     disconnect_cb=self.on_disconnect_btn_clicked,
@@ -145,6 +171,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
                     input_link=dev['device_link'].input_device
                 )
 
+                self.rendered_links.extend(dev['link_ids'])
                 self.active_connection_boxes.append(box)
                 self.active_connections_list.append(box)
 
