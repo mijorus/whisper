@@ -75,8 +75,8 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
         self.refresh_volume_levels()
         
     def refresh_volume_levels(self):
-        self.pa_sink = pulsectl.Pulse().get_sink_by_name(self.input_link.resource_name)
-        self.pa_source = pulsectl.Pulse().get_source_by_name(self.output_link.resource_name)
+        self.pa_sink = pulsectl.Pulse(client_name='it.mijorus.whisper').get_sink_by_name(self.input_link.resource_name)
+        self.pa_source = pulsectl.Pulse(client_name='it.mijorus.whisper').get_source_by_name(self.output_link.resource_name)
         
         self.input_range.set_value(self.pa_sink.volume.value_flat * 100)
         self.output_range.set_value(self.pa_source.volume.value_flat * 100)
