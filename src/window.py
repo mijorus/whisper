@@ -18,8 +18,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Optional
+import time
 from gi.repository import Adw, Gtk, Gio
 from pprint import pprint
+from .utils import async_utils
 from .components.PwConnectionBox import PwConnectionBox
 from .components.PwActiveConnectionBox import PwActiveConnectionBox
 from .pipewire.pipewire import Pipewire, PwLink
@@ -40,12 +42,12 @@ class WhisperWindow(Gtk.ApplicationWindow):
         self.settings: Gio.Settings = Gio.Settings.new('it.mijorus.whisper')
 
         self.titlebar = Adw.HeaderBar()
-        
+
         menu_obj = Gtk.Builder.new_from_resource('/it/mijorus/whisper/gtk/main-menu.xml')
         self.menu_button = Gtk.MenuButton(icon_name='open-menu', menu_model=menu_obj.get_object('primary_menu'))
 
         self.titlebar.pack_end(self.menu_button)
-        
+
         self.set_titlebar(self.titlebar)
         self.viewport = Gtk.Box(halign=Gtk.Align.CENTER, orientation=Gtk.Orientation.VERTICAL, spacing=30, margin_top=20, width_request=500)
 
@@ -76,13 +78,16 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
         clamp = Adw.Clamp(tightening_threshold=700)
         clamp.set_child(self.viewport)
-        
+
         scrolled = Gtk.ScrolledWindow()
         scrolled.set_child(clamp)
 
         self.set_child(scrolled)
         self.set_default_size(700, 500)
         self.set_size_request(650, 300)
+
+        self.auto_refresh = True
+        self.start_auto_refresh()
 
         return None
 
@@ -91,12 +96,13 @@ class WhisperWindow(Gtk.ApplicationWindow):
             if (link_id in dev.channels) and dev.alsa.startswith('alsa:'):
                 return dev
 
+    @async_utils._async
+    def start_auto_refresh(self):
+        while self.auto_refresh:
+            time.sleep(3)
+            self.refresh_active_connections()
+
     def refresh_active_connections(self):
-        for b in self.active_connection_boxes:
-            self.active_connections_list.remove(b)
-
-        self.active_connection_boxes = []
-
         inputs = Pipewire.list_inputs()
         outputs = Pipewire.list_outputs()
 
@@ -115,7 +121,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
                     if input_device:
                         if not output_device.resource_name in device_links:
                             device_links[output_device.resource_name] = {}
-                        
+
                         if not input_device.resource_name in device_links[output_device.resource_name]:
                             device_links[output_device.resource_name][input_device.resource_name] = {
                                 'device_link': DeviceLink(input_device, output_device, 0),
@@ -123,6 +129,11 @@ class WhisperWindow(Gtk.ApplicationWindow):
                             }
 
                         device_links[output_device.resource_name][input_device.resource_name]['link_ids'].append(i)
+
+        for b in self.active_connection_boxes:
+            self.active_connections_list.remove(b)
+
+        self.active_connection_boxes = []
 
         for output_device_resource_name, connected_devices in device_links.items():
             for d, dev in connected_devices.items():

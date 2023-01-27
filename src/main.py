@@ -26,6 +26,7 @@ gi.require_version('Adw', '1')
 from gi.repository import Gtk, Gio, Adw
 from .window import WhisperWindow
 from .Preferences import WhisperPreferencesWindow
+from .pipewire.pipewire import Pipewire
 
 
 class WhisperApplication(Adw.Application):
@@ -35,6 +36,10 @@ class WhisperApplication(Adw.Application):
         super().__init__(application_id='it.mijorus.whisper', flags=Gio.ApplicationFlags.FLAGS_NONE)
         self.create_action('about', self.on_about_action)
         self.create_action('preferences', self.on_preferences_action)
+        self.connect('shutdown', self.on_query_end)
+    
+    def on_query_end(self, app):
+        pass
 
     def do_activate(self):
         """Called when the application is activated.
