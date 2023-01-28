@@ -13,13 +13,4 @@ install_data(
 )
 
 action_dir = join_paths('hicolor', 'scalable', 'actions')
-action_icons = [
-    join_paths(action_dir, 'audio-speaker-symbolic.svg'),
-    join_paths(action_dir, 'microphone2-symbolic.svg'),
-    join_paths(action_dir, 'warning-symbolic.svg'),
-]
-
-install_data(
-  action_icons,
-  install_dir: join_paths(get_option('datadir'), 'icons', action_dir)
-)
+install_subdir('./hicolor/scalable/actions', install_dir: join_paths(get_option('datadir'), 'icons', action_dir))
