@@ -19,12 +19,14 @@
 
 from .pipewire.pipewire import Pipewire, PwLink
 from .components.PwActiveConnectionBox import PwActiveConnectionBox
+from .components.NoLinksPlaceholder import NoLinksPlaceholder
 from .components.PwConnectionBox import PwConnectionBox
 from .utils import async_utils
 from pprint import pprint
 from typing import Optional
 import pulsectl
 import time
+import os
 import gi
 
 gi.require_version('Gtk', '4.0')
@@ -46,6 +48,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
     def __init__(self, **kwargs):
         super().__init__(**kwargs, title='Whisper')
         self.settings: Gio.Settings = Gio.Settings.new('it.mijorus.whisper')
+        self.settings.connect('changed', self.on_settings_changed)
 
         self.titlebar = Adw.HeaderBar()
 
@@ -71,7 +74,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
             title = Gtk.Label(css_classes=['title-1'], label="Pipewire not detected")
             subt = Gtk.Label(css_classes=['dim-label'], label="Whisper requires Pipewire and the pipewire-cli in order to run")
-            icon = Gtk.Image.new_from_icon_name('warning-symbolic')
+            icon = Gtk.Image.new_from_icon_name('whisper-warning-symbolic')
             icon.set_css_classes(['dim-label'])
             icon.set_pixel_size(100)
 
@@ -90,6 +93,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
             self.active_connection_boxes: list[PwActiveConnectionBox] = []
             self.viewport.append(self.active_connections_list)
 
+            self.nolinks_placeholder = NoLinksPlaceholder()
             self.refresh_active_connections()
 
         clamp = Adw.Clamp(tightening_threshold=700)
@@ -99,7 +103,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
         scrolled.set_child(clamp)
 
         self.set_child(scrolled)
-        self.set_default_size(700, 500)
+        self.set_default_size(700, 800)
         self.set_size_request(650, 300)
 
         self.auto_refresh = True
@@ -112,13 +116,17 @@ class WhisperWindow(Gtk.ApplicationWindow):
             if (link_id in dev.channels) and dev.alsa.startswith('alsa:'):
                 return dev
 
+    def on_settings_changed(self, _, key: str):
+        if key == 'show-connection-ids':
+            self.refresh_active_connections(force_refresh=True)
+
     @async_utils._async
     def start_auto_refresh(self):
         while self.auto_refresh:
-            time.sleep(3)
+            time.sleep(5)
             self.refresh_active_connections()
 
-    def refresh_active_connections(self):
+    def refresh_active_connections(self, force_refresh=False):
         inputs = Pipewire.list_inputs()
         outputs = Pipewire.list_outputs()
 
@@ -151,37 +159,52 @@ class WhisperWindow(Gtk.ApplicationWindow):
             for d, dev in connected_devices.items():
                 links_to_render.extend(dev['link_ids'])
 
+        self.active_connections_list.remove(self.nolinks_placeholder)
+
+        skip_recheck = False
         if (not list(set(self.rendered_links) - set(links_to_render))) and (not list(set(links_to_render) - set(self.rendered_links))):
-            return
+            if not force_refresh:
+                skip_recheck = True
 
-        for b in self.active_connection_boxes:
-            self.active_connections_list.remove(b)
+        if not skip_recheck:
+            for b in self.active_connection_boxes:
+                self.active_connections_list.remove(b)
 
-        self.active_connection_boxes = []
-        self.rendered_links = []
+            self.active_connection_boxes = []
+            self.rendered_links = []
 
-        for output_device_resource_name, connected_devices in device_links.items():
-            for d, dev in connected_devices.items():
+            for output_device_resource_name, connected_devices in device_links.items():
+                for d, dev in connected_devices.items():
 
-                box = PwActiveConnectionBox(
-                    link_ids=dev['link_ids'],
-                    disconnect_cb=self.on_disconnect_btn_clicked,
-                    connection_name=f'Connection #{j}',
-                    output_link=dev['device_link'].output_device,
-                    input_link=dev['device_link'].input_device
-                )
+                    box = PwActiveConnectionBox(
+                        link_ids=dev['link_ids'],
+                        connection_name=f'Connection #{j}',
+                        output_link=dev['device_link'].output_device,
+                        input_link=dev['device_link'].input_device,
+                        show_link_ids=self.settings.get_boolean('show-connection-ids')
+                    )
 
-                self.rendered_links.extend(dev['link_ids'])
-                self.active_connection_boxes.append(box)
-                self.active_connections_list.append(box)
+                    box.connect('disconnect', self.on_disconnect_btn_clicked)
+                    box.connect('change-volume', lambda a, b: self.refresh_active_connections_volumes())
 
-                j += 1
+                    self.rendered_links.extend(dev['link_ids'])
+                    self.active_connection_boxes.append(box)
+                    self.active_connections_list.append(box)
+
+                    j += 1
+
+        if not self.active_connection_boxes:
+            self.active_connections_list.append(self.nolinks_placeholder)
 
     def on_new_connection(self, _, status):
         self.refresh_active_connections()
 
-    def on_disconnect_btn_clicked(self, link_ids: list[str]):
+    def on_disconnect_btn_clicked(self, _, link_ids: list[str]):
         for l in link_ids:
             Pipewire.unlink(l)
 
         self.refresh_active_connections()
+
+    def refresh_active_connections_volumes(self):
+        for b in self.active_connection_boxes:
+            b.refresh_volume_levels()

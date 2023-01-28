@@ -26,9 +26,9 @@
         "*.la",
         "*.a"
     ],
-    "modules" : [ 
+    "modules" : [
         "python3-requirements.json",
-        { 
+        {
             "name" : "whisper",
             "builddir" : true,
             "buildsystem" : "meson",
@@ -39,5 +39,10 @@
                 }
             ]
         }
-    ]
+    ],
+    "build-options" : {
+        "env" : {
+            "DEBUG_MODE" : "dev"
+        }
+    }
 }

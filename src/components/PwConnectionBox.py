@@ -19,7 +19,7 @@ class PwConnectionBox(Adw.PreferencesGroup):
 
         output_names = []
         for k, v in Pipewire.list_outputs().items():
-            if v.alsa.startswith('alsa:') and ('capture' in v.alsa):
+            if v.alsa.startswith('alsa:') and ('capture' in v.alsa) and (v.name != 'Midi Through'):
                 output_names.append(v.name)
                 self.output_select.add(v.name, k)
 
@@ -27,16 +27,16 @@ class PwConnectionBox(Adw.PreferencesGroup):
         self.input_select.connect('change', self.on_input_select_change)
 
         for k, v in Pipewire.list_inputs().items():
-            if (v.alsa.startswith('alsa:')):
+            if (v.alsa.startswith('alsa:')) and (v.name != 'Midi Through'):
                 name = v.name if (v.name not in output_names) else (v.name + ' - Output')
                 self.input_select.add(name, k)
 
         self.add(self.output_select)
         self.add(self.input_select)
 
-        connect_btn = Gtk.Button(label='Connect', css_classes=['suggested-action'])
-        connect_btn.connect('clicked', self.connect_source)
-        self.set_header_suffix(connect_btn)
+        self.connect_btn = Gtk.Button(label='Connect', css_classes=['suggested-action'], sensitive=False)
+        self.connect_btn.connect('clicked', self.connect_source)
+        self.set_header_suffix(self.connect_btn)
 
     def connect_source(self, widget):
         if self.settings.get_boolean('stand-by'):
@@ -81,12 +81,10 @@ class PwConnectionBox(Adw.PreferencesGroup):
 
             self.input_select.set_expanded(False)
             self.output_select.set_expanded(False)
-            
+
             for radio in self.input_select.radio_buttons:
                 radio.set_sensitive(True)
-                
-            for radio in self.output_select.radio_buttons:
-                radio.set_sensitive(True)
+                radio.get_parent().get_parent().set_opacity(1)
 
     def on_output_select_change(self, _, _id: str):
         links = Pipewire.list_links()
@@ -94,6 +92,7 @@ class PwConnectionBox(Adw.PreferencesGroup):
 
         for radio in self.input_select.radio_buttons:
             radio.set_sensitive(True)
+            radio.get_parent().get_parent().set_opacity(1)
 
         for o in pw_output.channels:
             if not o in links:
@@ -103,24 +102,17 @@ class PwConnectionBox(Adw.PreferencesGroup):
                 for radio in self.input_select.radio_buttons:
                     if radio._id == active_c_link.connected_tag:
                         radio.set_sensitive(False)
+                        radio.get_parent().get_parent().set_opacity(0.5)
                         self.input_select.set_active_id('')
                         break
+                    
+        self.on_any_select_change()
 
     def on_input_select_change(self, _, _id: str):
-        # links = Pipewire.list_links()
-        # pw_output = Pipewire.list_inputs()[_id]
-
-        # for radio in self.output_select.radio_buttons:
-        #     radio.set_sensitive(True)
-
-        # for o in pw_output.channels:
-        #     if not o in links:
-        #         continue
-
-        #     for i, active_c_link in links[o].items():
-        #         for radio in self.input_select.radio_buttons:
-        #             if radio._id == active_c_link.connected_tag:
-        #                 radio.set_sensitive(False)
-        #                 radio.set_active(False)
-        #                 break
-        pass
+        self.on_any_select_change()
+    
+    def on_any_select_change(self):
+        if self.input_select.get_active_id() and self.output_select.get_active_id():
+            self.connect_btn.set_sensitive(True)
+        else:
+            self.connect_btn.set_sensitive(False)
