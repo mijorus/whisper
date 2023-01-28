@@ -62,14 +62,18 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
         self.rendered_links = []
 
+        self.auto_refresh = False
+        pulse_connection_ok = False
+
         try:
-            pulse = pulsectl.Pulse()
-            pulse.connect()
+            with pulsectl.Pulse() as pulse:
+                pulse.connect()
+                pulse_connection_ok = True
             print('PulseAudio connection OK')
         except:
             pass
 
-        if (not Pipewire.check_installed()) or (not pulse.connected):
+        if (not Pipewire.check_installed()) or (not pulse_connection_ok):
             box = Gtk.Box(valign=Gtk.Align.CENTER, orientation=Gtk.Orientation.VERTICAL, spacing=5, vexpand=True)
 
             title = Gtk.Label(css_classes=['title-1'], label="Pipewire not detected")
@@ -95,6 +99,9 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
             self.nolinks_placeholder = NoLinksPlaceholder()
             self.refresh_active_connections()
+            
+            self.auto_refresh = True
+            self.start_auto_refresh()
 
         clamp = Adw.Clamp(tightening_threshold=700)
         clamp.set_child(self.viewport)
@@ -105,9 +112,6 @@ class WhisperWindow(Gtk.ApplicationWindow):
         self.set_child(scrolled)
         self.set_default_size(700, 800)
         self.set_size_request(650, 300)
-
-        self.auto_refresh = True
-        self.start_auto_refresh()
 
         return None
 
