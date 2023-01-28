@@ -97,9 +97,10 @@ class WhisperWindow(Gtk.ApplicationWindow):
             self.active_connection_boxes: list[PwActiveConnectionBox] = []
             self.viewport.append(self.active_connections_list)
 
-            self.nolinks_placeholder = None
-            self.refresh_active_connections()
-            
+            self.nolinks_placeholder = NoLinksPlaceholder(visible=False)
+            self.viewport.append(self.nolinks_placeholder)
+            self.refresh_active_connections(force_refresh=True)
+
             self.auto_refresh = True
             self.start_auto_refresh()
 
@@ -131,48 +132,43 @@ class WhisperWindow(Gtk.ApplicationWindow):
             self.refresh_active_connections()
 
     def refresh_active_connections(self, force_refresh=False):
-        inputs = Pipewire.list_inputs()
-        outputs = Pipewire.list_outputs()
+        self.nolinks_placeholder.set_visible(False)
+        list_links = Pipewire.list_links()
 
-        j = 1
-        device_links: dict[str, dict] = {}
+        new_links_to_render = []
+        for l, link in list_links.items():
+            for i, link_info in link.items():
+                new_links_to_render.append(i)
 
-        # cycle on every active link
-        for l, link in Pipewire.list_links().items():
-            # cycle on every pw output, check if it is an alsa device
+        if force_refresh or list(set(self.rendered_links) - set(new_links_to_render)) or (list(set(new_links_to_render) - set(self.rendered_links))):
+            # recheck if there are new links
+            inputs = Pipewire.list_inputs()
+            outputs = Pipewire.list_outputs()
 
-            output_device = self._is_alsa_device(outputs, l)
-            if output_device:
-                for i, link_info in link.items():
-                    # cycle on every active link for that output
-                    input_device = self._is_alsa_device(inputs, link_info._id)
-                    if input_device:
-                        if not output_device.resource_name in device_links:
-                            device_links[output_device.resource_name] = {}
+            j = 1
+            device_links: dict[str, dict] = {}
 
-                        if not input_device.resource_name in device_links[output_device.resource_name]:
-                            device_links[output_device.resource_name][input_device.resource_name] = {
-                                'device_link': DeviceLink(input_device, output_device, 0),
-                                'link_ids': []
-                            }
+            # cycle on every active link
+            for l, link in Pipewire.list_links().items():
+                # cycle on every pw output, check if it is an alsa device
 
-                        device_links[output_device.resource_name][input_device.resource_name]['link_ids'].append(i)
+                output_device = self._is_alsa_device(outputs, l)
+                if output_device:
+                    for i, link_info in link.items():
+                        # cycle on every active link for that output
+                        input_device = self._is_alsa_device(inputs, link_info._id)
+                        if input_device:
+                            if not output_device.resource_name in device_links:
+                                device_links[output_device.resource_name] = {}
 
-        links_to_render = []
-        for output_device_resource_name, connected_devices in device_links.items():
-            for d, dev in connected_devices.items():
-                links_to_render.extend(dev['link_ids'])
+                            if not input_device.resource_name in device_links[output_device.resource_name]:
+                                device_links[output_device.resource_name][input_device.resource_name] = {
+                                    'device_link': DeviceLink(input_device, output_device, 0),
+                                    'link_ids': []
+                                }
 
-        if self.nolinks_placeholder:
-            self.active_connections_list.remove(self.nolinks_placeholder)
-            self.nolinks_placeholder = None
+                            device_links[output_device.resource_name][input_device.resource_name]['link_ids'].append(i)
 
-        skip_recheck = False
-        if (not list(set(self.rendered_links) - set(links_to_render))) and (not list(set(links_to_render) - set(self.rendered_links))):
-            if not force_refresh:
-                skip_recheck = True
-
-        if not skip_recheck:
             for b in self.active_connection_boxes:
                 self.active_connections_list.remove(b)
 
@@ -181,7 +177,6 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
             for output_device_resource_name, connected_devices in device_links.items():
                 for d, dev in connected_devices.items():
-
                     box = PwActiveConnectionBox(
                         link_ids=dev['link_ids'],
                         connection_name=f'Connection #{j}',
@@ -200,8 +195,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
                     j += 1
 
         if not self.active_connection_boxes:
-            self.nolinks_placeholder = NoLinksPlaceholder()
-            self.active_connections_list.append(self.nolinks_placeholder)
+            self.nolinks_placeholder.set_visible(True)
 
     def on_new_connection(self, _, status):
         self.refresh_active_connections()
