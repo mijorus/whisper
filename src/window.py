@@ -97,7 +97,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
             self.active_connection_boxes: list[PwActiveConnectionBox] = []
             self.viewport.append(self.active_connections_list)
 
-            self.nolinks_placeholder = NoLinksPlaceholder()
+            self.nolinks_placeholder = None
             self.refresh_active_connections()
             
             self.auto_refresh = True
@@ -163,7 +163,9 @@ class WhisperWindow(Gtk.ApplicationWindow):
             for d, dev in connected_devices.items():
                 links_to_render.extend(dev['link_ids'])
 
-        self.active_connections_list.remove(self.nolinks_placeholder)
+        if self.nolinks_placeholder:
+            self.active_connections_list.remove(self.nolinks_placeholder)
+            self.nolinks_placeholder = None
 
         skip_recheck = False
         if (not list(set(self.rendered_links) - set(links_to_render))) and (not list(set(links_to_render) - set(self.rendered_links))):
@@ -198,6 +200,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
                     j += 1
 
         if not self.active_connection_boxes:
+            self.nolinks_placeholder = NoLinksPlaceholder()
             self.active_connections_list.append(self.nolinks_placeholder)
 
     def on_new_connection(self, _, status):
