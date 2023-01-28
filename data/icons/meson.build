@@ -13,4 +13,4 @@ install_data(
 )
 
 action_dir = join_paths('hicolor', 'scalable', 'actions')
-install_subdir('./hicolor/scalable/actions', install_dir: join_paths(get_option('datadir'), 'icons', action_dir))
+subdir(action_dir)
