@@ -19,6 +19,7 @@
 
 import pulsectl
 import time
+from typing import Optional
 from gi.repository import Adw
 from gi.repository import Gtk, GObject
 from pprint import pprint
@@ -54,14 +55,14 @@ class ExpanderRowRadio(Adw.ExpanderRow):
         self.set_title(self.original_title)
         return None
 
-    def add(self, name: str, _id: str, id_as_subtitle=False):
+    def add(self, name: str, _id: str, subtitle: Optional[str]=False):
         radio = Gtk.CheckButton()
         radio._id = _id
         radio._name = name
 
         row = Adw.ActionRow(activatable_widget=radio, title=name)
-        if id_as_subtitle:
-            row.set_subtitle(_id)
+        if subtitle:
+            row.set_subtitle(subtitle)
 
         row.add_prefix(radio)
 

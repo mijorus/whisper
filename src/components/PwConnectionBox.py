@@ -21,7 +21,11 @@ class PwConnectionBox(Adw.PreferencesGroup):
         for k, v in Pipewire.list_outputs().items():
             if v.alsa.startswith('alsa:') and ('capture' in v.alsa) and (v.name != 'Midi Through'):
                 output_names.append(v.name)
-                self.output_select.add(v.name, k)
+                
+                if self.settings.get_boolean('show-connection-ids'):
+                    self.output_select.add(v.name, k, v.alsa)
+                else:
+                    self.output_select.add(v.name, k)
 
         self.input_select = ExpanderRowRadio(title=' -- Select a speaker --')
         self.input_select.connect('change', self.on_input_select_change)
@@ -29,7 +33,11 @@ class PwConnectionBox(Adw.PreferencesGroup):
         for k, v in Pipewire.list_inputs().items():
             if (v.alsa.startswith('alsa:')) and (v.name != 'Midi Through'):
                 name = v.name if (v.name not in output_names) else (v.name + ' - Output')
-                self.input_select.add(name, k)
+                
+                if self.settings.get_boolean('show-connection-ids'):
+                    self.input_select.add(name, k, v.alsa)
+                else:
+                    self.input_select.add(name, k)
 
         self.add(self.output_select)
         self.add(self.input_select)

@@ -88,10 +88,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
             self.viewport.append(box)
         else:
             pulse.disconnect()
-            pw_connection_box = PwConnectionBox()
-            pw_connection_box.connect('new_connection', self.on_new_connection)
-
-            self.viewport.append(pw_connection_box)
+            self.viewport.append(self.create_connection_box())
 
             self.active_connections_list = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=30)
             self.active_connection_boxes: list[PwActiveConnectionBox] = []
@@ -120,10 +117,19 @@ class WhisperWindow(Gtk.ApplicationWindow):
         for d, dev in pw_list.items():
             if (link_id in dev.channels) and dev.alsa.startswith('alsa:'):
                 return dev
+                
+    def create_connection_box(self):
+        self.pw_connection_box = PwConnectionBox()
+        self.pw_connection_box.connect('new_connection', self.on_new_connection)
+
+        return self.pw_connection_box
 
     def on_settings_changed(self, _, key: str):
         if key == 'show-connection-ids':
             self.refresh_active_connections(force_refresh=True)
+            
+            self.viewport.remove(self.pw_connection_box)
+            self.viewport.prepend(self.create_connection_box())
 
     @async_utils._async
     def start_auto_refresh(self):
@@ -132,7 +138,6 @@ class WhisperWindow(Gtk.ApplicationWindow):
             self.refresh_active_connections()
 
     def refresh_active_connections(self, force_refresh=False):
-        self.nolinks_placeholder.set_visible(False)
         list_links = Pipewire.list_links()
 
         new_links_to_render = []
@@ -194,8 +199,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
                     j += 1
 
-        if not self.active_connection_boxes:
-            self.nolinks_placeholder.set_visible(True)
+        self.nolinks_placeholder.set_visible(not self.active_connection_boxes)
 
     def on_new_connection(self, _, status):
         self.refresh_active_connections()

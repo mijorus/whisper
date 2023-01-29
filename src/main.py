@@ -32,8 +32,9 @@ from .pipewire.pipewire import Pipewire
 class WhisperApplication(Adw.Application):
     """The main application singleton class."""
 
-    def __init__(self):
+    def __init__(self, version):
         super().__init__(application_id='it.mijorus.whisper', flags=Gio.ApplicationFlags.FLAGS_NONE)
+        self.version = version
         self.create_action('about', self.on_about_action)
         self.create_action('preferences', self.on_preferences_action)
         self.connect('shutdown', self.on_query_end)
@@ -50,15 +51,20 @@ class WhisperApplication(Adw.Application):
         win = self.props.active_window
         if not win:
             win = WhisperWindow(application=self)
+
         win.present()
 
     def on_about_action(self, widget, _):
         """Callback for the app.about action."""
-        about = Adw.AboutWindow(transient_for=self.props.active_window,
+        about = Adw.AboutWindow(
+            transient_for=self.props.active_window,
             application_name='Whisper',
+            website='https://github.com/mijorus/whisper',
+            issue_url='https://github.com/mijorus/whisper/issues',
+            comments='Listen to your mic',
             application_icon='it.mijorus.whisper',
             developer_name='Lorenzo Paderi',
-            version='0.1.0',
+            version=self.version,
             developers=['Lorenzo Paderi'],
             copyright='© 2023 Lorenzo Paderi'
         )
@@ -67,7 +73,6 @@ class WhisperApplication(Adw.Application):
 
     def on_preferences_action(self, widget, _):
         """Callback for the app.preferences action."""
-        print('app.preferences action activated')
         window = WhisperPreferencesWindow(transient_for=self.props.active_window)
         window.present()
 
@@ -88,5 +93,5 @@ class WhisperApplication(Adw.Application):
 
 def main(version):
     """The application's entry point."""
-    app = WhisperApplication()
+    app = WhisperApplication(version=version)
     return app.run(sys.argv)
