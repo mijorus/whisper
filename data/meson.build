@@ -1,9 +1,8 @@
-desktop_file = i18n.merge_file(
+desktop_file = configure_file(
         input: 'it.mijorus.whisper.desktop.in',
        output: 'it.mijorus.whisper.desktop',
-         type: 'desktop',
-       po_dir: '../po',
       install: true,
+         copy: true,
   install_dir: join_paths(get_option('datadir'), 'applications')
 )
 
@@ -12,11 +11,11 @@ if desktop_utils.found()
   test('Validate desktop file', desktop_utils, args: [desktop_file])
 endif
 
-appstream_file = i18n.merge_file(
+appstream_file = configure_file(
         input: 'it.mijorus.whisper.appdata.xml.in',
        output: 'it.mijorus.whisper.appdata.xml',
-       po_dir: '../po',
       install: true,
+         copy: true,
   install_dir: join_paths(get_option('datadir'), 'appdata')
 )
 

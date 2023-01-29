@@ -3,4 +3,4 @@ data/it.mijorus.whisper.appdata.xml.in
 data/it.mijorus.whisper.gschema.xml
 src/main.py
 src/window.py
-src/window.ui
+src/components/NoLinksPlaceholder.py
