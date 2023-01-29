@@ -11,10 +11,10 @@ class PwConnectionBox(Adw.PreferencesGroup):
     }
 
     def __init__(self, **kwargs):
-        super().__init__(title='Create a connection')
+        super().__init__(title=_('Create a connection'))
         self.settings: Gio.Settings = Gio.Settings.new('it.mijorus.whisper')
 
-        self.output_select = ExpanderRowRadio(title=' -- Select a microphone --')
+        self.output_select = ExpanderRowRadio(title=_(' -- Select a microphone --'))
         self.output_select.connect('change', self.on_output_select_change)
 
         output_names = []
@@ -27,7 +27,7 @@ class PwConnectionBox(Adw.PreferencesGroup):
                 else:
                     self.output_select.add(v.name, k)
 
-        self.input_select = ExpanderRowRadio(title=' -- Select a speaker --')
+        self.input_select = ExpanderRowRadio(title=_(' -- Select a speaker --'))
         self.input_select.connect('change', self.on_input_select_change)
 
         for k, v in Pipewire.list_inputs().items():
@@ -42,7 +42,7 @@ class PwConnectionBox(Adw.PreferencesGroup):
         self.add(self.output_select)
         self.add(self.input_select)
 
-        self.connect_btn = Gtk.Button(label='Connect', css_classes=['suggested-action'], sensitive=False)
+        self.connect_btn = Gtk.Button(label=_('Connect'), css_classes=['suggested-action'], sensitive=False)
         self.connect_btn.connect('clicked', self.connect_source)
         self.set_header_suffix(self.connect_btn)
 

@@ -28,7 +28,7 @@ class Pipewire():
         to_check = command if isinstance(command, str) else ' '.join(command)
 
         try:
-            print(f'Running {command}')
+            # print(f'Running {command}')
 
             output = subprocess.run(['flatpak-spawn', '--host', *command], encoding='utf-8', shell=False, check=True, capture_output=True)
             output.check_returncode()

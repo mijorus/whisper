@@ -17,7 +17,7 @@ class WhisperPreferencesWindow(Adw.PreferencesWindow):
         self.general_page = Adw.PreferencesPage()
         self.general_page_general = Adw.PreferencesGroup(title='General')
 
-        self.show_ids = Adw.ActionRow(title='Show connection IDs', subtitle='For the geeks out there')
+        self.show_ids = Adw.ActionRow(title=_('Show connection IDs'), subtitle=_('For the geeks out there'))
         self.show_ids_switch = Gtk.Switch(valign=Gtk.Align.CENTER)
         self.show_ids.add_suffix(self.show_ids_switch)
 

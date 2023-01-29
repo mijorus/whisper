@@ -1,6 +1,9 @@
 data/it.mijorus.whisper.desktop.in
 data/it.mijorus.whisper.appdata.xml.in
 data/it.mijorus.whisper.gschema.xml
-src/main.py
 src/window.py
 src/components/NoLinksPlaceholder.py
+src/components/PwActiveConnectionBox.py
+src/components/PwConnectionBox.py
+src/Preferences.py
+src/gtk/main-menu.ui

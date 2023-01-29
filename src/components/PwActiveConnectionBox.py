@@ -70,7 +70,7 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
         self.add(self.output_exp)
         self.add(self.input_exp)
 
-        disconnect_btn = Gtk.Button(label='Disconnect', css_classes=['destructive-action'])
+        disconnect_btn = Gtk.Button(label=_('Disconnect'), css_classes=['destructive-action'])
         disconnect_btn.connect('clicked', self.on_disconnect_btn_clicked)
 
         self.header_suffix = disconnect_btn

@@ -52,7 +52,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
         self.titlebar = Adw.HeaderBar()
 
-        menu_obj = Gtk.Builder.new_from_resource('/it/mijorus/whisper/gtk/main-menu.xml')
+        menu_obj = Gtk.Builder.new_from_resource('/it/mijorus/whisper/gtk/main-menu.ui')
         self.menu_button = Gtk.MenuButton(icon_name='open-menu', menu_model=menu_obj.get_object('primary_menu'))
 
         self.titlebar.pack_end(self.menu_button)
