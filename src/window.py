@@ -146,6 +146,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
                 new_links_to_render.append(i)
 
         if force_refresh or list(set(self.rendered_links) - set(new_links_to_render)) or (list(set(new_links_to_render) - set(self.rendered_links))):
+            print('Refreshing active connections')
             # recheck if there are new links
             inputs = Pipewire.list_inputs()
             outputs = Pipewire.list_outputs()
