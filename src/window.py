@@ -58,8 +58,11 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
         menu_obj = Gtk.Builder.new_from_resource('/it/mijorus/whisper/gtk/main-menu.ui')
         self.menu_button = Gtk.MenuButton(icon_name='open-menu', menu_model=menu_obj.get_object('primary_menu'))
+        self.refresh_button = Gtk.Button(icon_name='view-refresh-symbolic')
+        self.refresh_button.connect('clicked', self.on_refresh_button_clicked)
 
         self.titlebar.pack_end(self.menu_button)
+        self.titlebar.pack_start(self.refresh_button)
 
         self.set_titlebar(self.titlebar)
         self.viewport = Gtk.Box(halign=Gtk.Align.CENTER, orientation=Gtk.Orientation.VERTICAL, spacing=30, margin_top=20, width_request=500)
@@ -99,7 +102,10 @@ class WhisperWindow(Gtk.ApplicationWindow):
             self.viewport.append(box)
         else:
             pulse.disconnect()
-            self.viewport.append(self.create_connection_box())
+            self.connection_box_slot = Gtk.Box()
+            self.connection_box = self.create_connection_box()
+            self.connection_box_slot.append(self.connection_box)
+            self.viewport.append(self.connection_box_slot)
 
             self.active_connections_list = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=30)
             self.active_connection_boxes: list[PwActiveConnectionBox] = []
@@ -160,7 +166,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
     @async_utils._async
     def start_auto_refresh(self):
         while self.auto_refresh:
-            time.sleep(5)
+            time.sleep(10)
             self.refresh_active_connections()
 
     def stop_auto_refresh(self):
@@ -175,7 +181,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
                 new_links_to_render.append(i)
 
         if force_refresh or list(set(self.rendered_links) - set(new_links_to_render)) or (list(set(new_links_to_render) - set(self.rendered_links))):
-            print('Refreshing active connections')
+            logging.info('Refreshing active connections')
             # recheck if there are new links
             inputs = Pipewire.list_inputs()
             outputs = Pipewire.list_outputs()
@@ -243,3 +249,10 @@ class WhisperWindow(Gtk.ApplicationWindow):
     def refresh_active_connections_volumes(self):
         for b in self.active_connection_boxes:
             b.refresh_volume_levels()
+
+    def on_refresh_button_clicked(self, _):
+        self.connection_box_slot.remove(self.connection_box)
+        self.connection_box = self.create_connection_box()
+        self.connection_box_slot.append(self.connection_box)
+
+        self.refresh_active_connections(force_refresh=True)
