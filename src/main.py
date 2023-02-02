@@ -17,16 +17,18 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from .pipewire.pipewire import Pipewire
+from .Preferences import WhisperPreferencesWindow
+from .window import WhisperWindow
+from gi.repository import Gtk, Gio, Adw, GLib
 import sys
+import logging
 import gi
 
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
 
-from gi.repository import Gtk, Gio, Adw
-from .window import WhisperWindow
-from .Preferences import WhisperPreferencesWindow
-from .pipewire.pipewire import Pipewire
+LOG_FILE = GLib.get_user_cache_dir() + '/logs/whisper.log'
 
 
 class WhisperApplication(Adw.Application):
@@ -37,8 +39,9 @@ class WhisperApplication(Adw.Application):
         self.version = version
         self.create_action('about', self.on_about_action)
         self.create_action('preferences', self.on_preferences_action)
+        self.create_action('opendebuglog', self.on_opendebuglog_action)
         self.connect('shutdown', self.on_query_end)
-    
+
     def on_query_end(self, app):
         pass
 
@@ -76,6 +79,12 @@ class WhisperApplication(Adw.Application):
         window = WhisperPreferencesWindow(transient_for=self.props.active_window)
         window.present()
 
+    def on_opendebuglog_action(self, widget, _):
+        Gio.AppInfo.launch_default_for_uri(
+            f'file://' + LOG_FILE.split("/whisper.log")[0],
+            None
+        )
+
     def create_action(self, name, callback, shortcuts=None):
         """Add an application action.
 
@@ -94,4 +103,19 @@ class WhisperApplication(Adw.Application):
 def main(version):
     """The application's entry point."""
     app = WhisperApplication(version=version)
+    
+    if not GLib.file_test(GLib.get_user_cache_dir() + '/logs', GLib.FileTest.EXISTS):
+        GLib.mkdir_with_parents(GLib.get_user_cache_dir() + '/logs', 0o755)
+
+    with open(LOG_FILE, 'w+') as f:
+        f.write('')
+
+    logging.basicConfig(
+        filename=LOG_FILE,
+        filemode='a',
+        encoding='utf-8',
+        level=logging.DEBUG,
+        force=True
+    )
+
     return app.run(sys.argv)

@@ -24,7 +24,11 @@ from .components.PwConnectionBox import PwConnectionBox
 from .utils import async_utils
 from pprint import pprint
 from typing import Optional
+import threading
 import pulsectl
+import logging
+import json
+import pprint
 import time
 import os
 import gi
@@ -69,11 +73,18 @@ class WhisperWindow(Gtk.ApplicationWindow):
             with pulsectl.Pulse() as pulse:
                 pulse.connect()
                 pulse_connection_ok = True
-            print('PulseAudio connection OK')
-        except:
-            pass
 
-        if (not Pipewire.check_installed()) or (not pulse_connection_ok):
+            logging.info('PulseAudio connection OK')
+        except Exception as e:
+            logging.error(e)
+
+        pw_installed = Pipewire.check_installed()
+        logging.info('Pipewire is installed: ' + str(pw_installed))
+        
+        # Start a thread to log 
+        threading.Thread(target=self._startup_logs).start()
+
+        if (not pw_installed) or (not pulse_connection_ok):
             box = Gtk.Box(valign=Gtk.Align.CENTER, orientation=Gtk.Orientation.VERTICAL, spacing=5, vexpand=True)
 
             title = Gtk.Label(css_classes=['title-1'], label="Pipewire not detected")
@@ -113,11 +124,26 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
         return None
 
+    def _startup_logs(self):
+        logging.info(Pipewire.get_info_raw())
+        
+        logging.info('=======Listing outputs=======')
+        for k, v in Pipewire.list_outputs().items():
+            logging.info(f'Pipewire output {k}: ' + pprint.pformat(v.__dict__))
+
+        logging.info('=======Listing inputs=======')
+        for k, v in Pipewire.list_inputs().items():
+            logging.info(f'Pipewire input {k}: ' + pprint.pformat(v.__dict__))
+
+        logging.info('=======Listing active links=======')
+        for k, v in Pipewire.list_links().items():
+            logging.info(f'Pipewire link {k}: ' + pprint.pformat(v.__dict__))
+
     def _is_alsa_device(self, pw_list: dict[str, PwLink], link_id) -> Optional[PwLink]:
         for d, dev in pw_list.items():
             if (link_id in dev.channels) and dev.alsa.startswith('alsa:'):
                 return dev
-                
+
     def create_connection_box(self):
         self.pw_connection_box = PwConnectionBox()
         self.pw_connection_box.connect('new_connection', self.on_new_connection)
@@ -127,7 +153,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
     def on_settings_changed(self, _, key: str):
         if key == 'show-connection-ids':
             self.refresh_active_connections(force_refresh=True)
-            
+
             self.viewport.remove(self.pw_connection_box)
             self.viewport.prepend(self.create_connection_box())
 
@@ -136,6 +162,9 @@ class WhisperWindow(Gtk.ApplicationWindow):
         while self.auto_refresh:
             time.sleep(5)
             self.refresh_active_connections()
+
+    def stop_auto_refresh(self):
+        self.auto_refresh = False
 
     def refresh_active_connections(self, force_refresh=False):
         list_links = Pipewire.list_links()

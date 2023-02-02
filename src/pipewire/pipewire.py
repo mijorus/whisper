@@ -103,7 +103,12 @@ class Pipewire():
         return elements
 
     def check_installed() -> bool:
-        return Pipewire._run(['which', 'pw-cli']).strip() and Pipewire._run(['which', 'pw-link']).strip() and Pipewire._run(['pw-cli', 'info', '0']).strip()
+        try:
+            Pipewire._run(['which', 'pw-cli']).strip() and Pipewire._run(['which', 'pw-link']).strip() and Pipewire._run(['pw-cli', 'info', '0']).strip()
+        except:
+            return False
+        
+        return True
 
     def list_inputs() -> dict[str, PwLink]:
         output: list[str] = Pipewire._run(['pw-link', '--input', '--verbose', '--id'])
@@ -125,6 +130,9 @@ class Pipewire():
 
     def list_links() -> [str, dict[str, PwActiveConnectionLink]]:
         return Pipewire._parse_pwlink_list_return(Pipewire._run(['pw-link', '--links', '--id']))
+
+    def get_info_raw() -> str:
+        return Pipewire._run(['pw-cli', 'info', '0'])
 
 # def threaded_sh(command: Union[str, List[str]], callback: Callable[[str], None]=None, return_stderr=False):
 #     to_check = command if isinstance(command, str) else command[0]
