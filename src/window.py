@@ -143,7 +143,8 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
         logging.info('=======Listing active links=======')
         for k, v in Pipewire.list_links().items():
-            logging.info(f'Pipewire link {k}: ' + pprint.pformat(v.__dict__))
+            for kk, vv in v.items():
+                logging.info(f'Pipewire link {k}: ' + pprint.pformat(vv.__dict__))
 
     def _is_alsa_device(self, pw_list: dict[str, PwLink], link_id) -> Optional[PwLink]:
         for d, dev in pw_list.items():

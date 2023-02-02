@@ -40,6 +40,7 @@ class WhisperApplication(Adw.Application):
         self.create_action('about', self.on_about_action)
         self.create_action('preferences', self.on_preferences_action)
         self.create_action('opendebuglog', self.on_opendebuglog_action)
+        self.create_action('translate', lambda w, _: Gio.AppInfo.launch_default_for_uri('https://github.com/mijorus/whisper/tree/master/po', None))
         self.connect('shutdown', self.on_query_end)
 
     def on_query_end(self, app):
