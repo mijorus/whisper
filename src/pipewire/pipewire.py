@@ -24,13 +24,16 @@ class PwActiveConnectionLink():
 
 
 class Pipewire():
+    def __init__(self):
+        self.monitor: Optional[subprocess.Popen] = None
+
     def _run(command: List[str]) -> str:
         to_check = command if isinstance(command, str) else ' '.join(command)
 
         try:
             # print(f'Running {command}')
 
-            output = subprocess.run(['flatpak-spawn', '--host', *command], encoding='utf-8', shell=False, check=True, capture_output=True)
+            output = subprocess.run([*command], encoding='utf-8', shell=False, check=True, capture_output=True)
             output.check_returncode()
         except subprocess.CalledProcessError as e:
             print(e.stderr)
@@ -107,7 +110,7 @@ class Pipewire():
             Pipewire._run(['which', 'pw-cli']).strip() and Pipewire._run(['which', 'pw-link']).strip() and Pipewire._run(['pw-cli', 'info', '0']).strip()
         except:
             return False
-        
+
         return True
 
     def list_inputs() -> dict[str, PwLink]:
@@ -133,6 +136,32 @@ class Pipewire():
 
     def get_info_raw() -> str:
         return Pipewire._run(['pw-cli', 'info', '0'])
+
+    def watch(self, callback: Callable[[str], None] = None):
+        output = None
+
+        def run_command(callback: Callable[[str], None] = None):
+            try:
+                self.monitor = subprocess.Popen(['pw-mon', '--no-colors'], encoding='utf-8', shell=False, stdout=subprocess.PIPE)
+
+                last_call = time_ns()
+                while self.monitor:
+                    # caputure the first line output of the running process
+                    output = self.monitor.stdout.readlines(1)
+                    if (time_ns() - last_call) > 10000000:
+                        print('callback' + str(time_ns() - last_call))
+                        last_call = time_ns()
+
+            except subprocess.CalledProcessError as e:
+                print(e.stderr)
+                raise e
+
+        thread = threading.Thread(target=run_command, daemon=True, args=())
+        thread.start()
+
+    def unwatch(self):
+        if self.monitor:
+            self.monitor.kill()
 
 # def threaded_sh(command: Union[str, List[str]], callback: Callable[[str], None]=None, return_stderr=False):
 #     to_check = command if isinstance(command, str) else command[0]

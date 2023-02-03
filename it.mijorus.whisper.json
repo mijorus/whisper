@@ -12,7 +12,7 @@
         "--socket=fallback-x11",
         "--device=dri",
         "--device=all",
-        "--talk-name=org.freedesktop.Flatpak"
+        "--filesystem=xdg-run/pipewire-0"
     ],
     "cleanup" : [
         "/include",
