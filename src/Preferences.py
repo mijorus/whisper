@@ -17,13 +17,18 @@ class WhisperPreferencesWindow(Adw.PreferencesWindow):
         self.general_page = Adw.PreferencesPage()
         self.general_page_general = Adw.PreferencesGroup(title='General')
 
-        self.show_ids = Adw.ActionRow(title=_('Show connection IDs'), subtitle=_('For the geeks out there'))
-        self.show_ids_switch = Gtk.Switch(valign=Gtk.Align.CENTER)
-        self.show_ids.add_suffix(self.show_ids_switch)
+        self.show_ids = self.create_toggle_row('Show connection IDs', 'Show connection IDs in the connection list', 'show-connection-ids')
+        self.start_onboot = self.create_toggle_row('Show connection IDs', 'Show connection IDs in the connection list', 'show-connection-ids')
 
-        self.settings.bind('show-connection-ids', self.show_ids_switch, 'state', Gio.SettingsBindFlags.DEFAULT)
-        
         self.general_page_general.add(self.show_ids)
         self.general_page.add(self.general_page_general)
 
         self.add(self.general_page)
+        
+    def create_toggle_row(self, title, subtitle, key) -> Adw.ActionRow:
+        row = Adw.ActionRow(title=title, subtitle=subtitle)
+        switch = Gtk.Switch(valign=Gtk.Align.CENTER)
+        row.add_suffix(switch)
+        self.settings.bind(key, switch, 'state', Gio.SettingsBindFlags.DEFAULT)
+
+        return row
