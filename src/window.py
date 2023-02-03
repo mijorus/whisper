@@ -85,7 +85,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
         logging.info('Pipewire is installed: ' + str(pw_installed))
         
         # Start a thread to log 
-        threading.Thread(target=self._startup_logs).start()
+        threading.Thread(target=self._startup_logs, daemon=False).start()
 
         if (not pw_installed) or (not pulse_connection_ok):
             box = Gtk.Box(valign=Gtk.Align.CENTER, orientation=Gtk.Orientation.VERTICAL, spacing=5, vexpand=True)
@@ -115,8 +115,11 @@ class WhisperWindow(Gtk.ApplicationWindow):
             self.viewport.append(self.nolinks_placeholder)
             self.refresh_active_connections(force_refresh=True)
 
-            self.auto_refresh = True
-            self.start_auto_refresh()
+            # self.auto_refresh = True
+            # self.start_auto_refresh()
+            # pw = Pipewire()
+            # pw.watch(callback=self.start_auto_refresh)
+            # self.connect('close-request', lambda *args: pw.unwatch())
 
         clamp = Adw.Clamp(tightening_threshold=700)
         clamp.set_child(self.viewport)
@@ -166,8 +169,10 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
     @async_utils._async
     def start_auto_refresh(self):
+        # print('start_auto_refresh')
+        # self.refresh_active_connections()
         while self.auto_refresh:
-            time.sleep(10)
+            time.sleep(5)
             self.refresh_active_connections()
 
     def stop_auto_refresh(self):
