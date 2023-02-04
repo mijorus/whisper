@@ -72,6 +72,8 @@ class WhisperApplication(Adw.Application):
             developers=['Lorenzo Paderi'],
             copyright='© 2023 Lorenzo Paderi'
         )
+        
+        about.add_credit_section('Icon', ['Jakub Steiner (jimmac)'])
 
         about.present()
 
