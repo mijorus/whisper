@@ -1,6 +1,6 @@
-# create a preferences window with libadwaita
-
 import gi
+import dbus
+import logging
 
 gi.require_version('Adw', '1')
 gi.require_version('Gtk', '4.0')
@@ -17,14 +17,18 @@ class WhisperPreferencesWindow(Adw.PreferencesWindow):
         self.general_page = Adw.PreferencesPage()
         self.general_page_general = Adw.PreferencesGroup(title='General')
 
-        self.show_ids = self.create_toggle_row('Show connection IDs', 'Show connection IDs in the connection list', 'show-connection-ids')
-        self.start_onboot = self.create_toggle_row('Show connection IDs', 'Show connection IDs in the connection list', 'show-connection-ids')
+        self.start_onboot = self.create_toggle_row('Start on boot', 'Open Whisper when the system starts', 'start-on-boot')
+        self.load_last_conf = self.create_toggle_row('Reopen the last configuration at startup', 'Unplugged devices will be skipped', 'load-last-config')
+        self.show_ids = self.create_toggle_row('Show connection IDs', 'For the geeks out there', 'show-connection-ids')
 
+        self.general_page_general.add(self.start_onboot)
+        self.general_page_general.add(self.load_last_conf)
         self.general_page_general.add(self.show_ids)
         self.general_page.add(self.general_page_general)
+        self.settings.connect('changed', self.on_settings_changes)
 
         self.add(self.general_page)
-        
+
     def create_toggle_row(self, title, subtitle, key) -> Adw.ActionRow:
         row = Adw.ActionRow(title=title, subtitle=subtitle)
         switch = Gtk.Switch(valign=Gtk.Align.CENTER)
@@ -32,3 +36,27 @@ class WhisperPreferencesWindow(Adw.PreferencesWindow):
         self.settings.bind(key, switch, 'state', Gio.SettingsBindFlags.DEFAULT)
 
         return row
+
+    def on_start_on_boot_changed(self, settings, key: str):
+        value: bool = settings.get_boolean(key)
+
+        try:
+            bus = dbus.SessionBus()
+            obj = bus.get_object("org.freedesktop.portal.Desktop", "/org/freedesktop/portal/desktop")
+            inter = dbus.Interface(obj, "org.freedesktop.portal.Background")
+            res = inter.RequestBackground('', {
+                'reason': 'Whisper autostart',
+                'autostart': value, 'background': value,
+                'commandline': dbus.Array(['whisper', '--autostart'])
+            })
+            
+            logging.info(f"Autostart set to {value}")
+        except Exception as e:
+            settings.set_boolean(key, False)
+            logging.error(e)
+
+    def on_settings_changes(self, settings, key: str):
+        callback = getattr(self, f"on_{key.replace('-', '_')}_changed", None)
+
+        if callback:
+            callback(settings, key)

@@ -1,9 +1,10 @@
 import signal
-from typing import Optional
 import subprocess
-from time import sleep, time_ns
 import re
 import threading
+import logging
+from typing import Optional
+from time import sleep, time_ns
 from ..utils.async_utils import debounce
 from typing import Callable, List, Union
 
@@ -26,12 +27,14 @@ class PwActiveConnectionLink():
 class Pipewire():
     def __init__(self):
         self.monitor: Optional[subprocess.Popen] = None
+        self.monitor_callback: Optional[Callable] = None
 
-    def _run(command: List[str]) -> str:
+    def _run(command: List[str], quiet=False) -> str:
         to_check = command if isinstance(command, str) else ' '.join(command)
 
         try:
-            # print(f'Running {command}')
+            if not quiet:
+                logging.info(f'Running {command}')
 
             output = subprocess.run([*command], encoding='utf-8', shell=False, check=True, capture_output=True)
             output.check_returncode()
@@ -105,7 +108,7 @@ class Pipewire():
 
         return elements
 
-    def check_installed() -> bool:
+    def check_installed(quiet=False) -> bool:
         try:
             Pipewire._run(['which', 'pw-cli']).strip() and Pipewire._run(['which', 'pw-link']).strip() and Pipewire._run(['pw-cli', 'info', '0']).strip()
         except:
@@ -113,14 +116,14 @@ class Pipewire():
 
         return True
 
-    def list_inputs() -> dict[str, PwLink]:
-        output: list[str] = Pipewire._run(['pw-link', '--input', '--verbose', '--id'])
+    def list_inputs(quiet=False) -> dict[str, PwLink]:
+        output: list[str] = Pipewire._run(['pw-link', '--input', '--verbose', '--id'], quiet=quiet)
         inputs = Pipewire._parse_pwlink_return(output)
 
         return inputs
 
-    def list_outputs() -> dict[str, PwLink]:
-        output: list[str] = Pipewire._run(['pw-link', '--output', '--verbose', '--id'])
+    def list_outputs(quiet=False) -> dict[str, PwLink]:
+        output: list[str] = Pipewire._run(['pw-link', '--output', '--verbose', '--id'], quiet=quiet)
         items = Pipewire._parse_pwlink_return(output)
 
         return items
@@ -131,8 +134,8 @@ class Pipewire():
     def unlink(link_id):
         Pipewire._run(['pw-link', '--disconnect', link_id])
 
-    def list_links() -> [str, dict[str, PwActiveConnectionLink]]:
-        return Pipewire._parse_pwlink_list_return(Pipewire._run(['pw-link', '--links', '--id']))
+    def list_links(quiet=False) -> [str, dict[str, PwActiveConnectionLink]]:
+        return Pipewire._parse_pwlink_list_return(Pipewire._run(['pw-link', '--links', '--id'], quiet=quiet))
 
     def get_info_raw() -> str:
         return Pipewire._run(['pw-cli', 'info', '0'])
@@ -142,6 +145,7 @@ class Pipewire():
 
         def run_command(callback: Callable[[str], None] = None):
             try:
+                logging.info('Pipewire WATCH: starting monitor')
                 self.monitor = subprocess.Popen(['pw-mon', '--no-colors'], encoding='utf-8', shell=False, stdout=subprocess.PIPE)
 
                 last_call = time_ns()
@@ -149,19 +153,25 @@ class Pipewire():
                     # caputure the first line output of the running process
                     output = self.monitor.stdout.readlines(1)
                     if (time_ns() - last_call) > 10000000:
-                        print('callback' + str(time_ns() - last_call))
+                        logging.info('Pipewire WATCH: executing callback ' + str(time_ns() - last_call))
+
                         last_call = time_ns()
+                        if callback:
+                            callback()
 
             except subprocess.CalledProcessError as e:
                 print(e.stderr)
+                logging.error(msg=e.stderr)
                 raise e
 
-        thread = threading.Thread(target=run_command, daemon=True, args=())
+        thread = threading.Thread(target=run_command, daemon=True, args=(callback,))
         thread.start()
 
     def unwatch(self):
         if self.monitor:
+            logging.info('Pipewire WATCH: stopping monitor')
             self.monitor.kill()
+            self.monitor = None
 
 # def threaded_sh(command: Union[str, List[str]], callback: Callable[[str], None]=None, return_stderr=False):
 #     to_check = command if isinstance(command, str) else command[0]

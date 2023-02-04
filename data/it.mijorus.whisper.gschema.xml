@@ -10,5 +10,8 @@
         <key name="start-on-boot" type="b">
             <default>false</default>
         </key>
+        <key name="load-last-config" type="b">
+            <default>false</default>
+        </key>
 	</schema>
 </schemalist>
