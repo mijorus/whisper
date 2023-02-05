@@ -22,8 +22,10 @@ from .components.PwActiveConnectionBox import PwActiveConnectionBox
 from .components.NoLinksPlaceholder import NoLinksPlaceholder
 from .components.PwConnectionBox import PwConnectionBox
 from .utils import async_utils
+from .utils.utils import link_output_input
 from pprint import pprint
 from typing import Optional
+import json
 import threading
 import pulsectl
 import logging
@@ -36,7 +38,7 @@ import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
 
-from gi.repository import Adw, Gtk, Gio, GLib # noqa: E402
+from gi.repository import Adw, Gtk, Gio, GLib  # noqa: E402
 
 
 class DeviceLink:
@@ -83,8 +85,8 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
         pw_installed = Pipewire.check_installed()
         logging.info('Pipewire is installed: ' + str(pw_installed))
-        
-        # Start a thread to log 
+
+        # Start a thread to log
         threading.Thread(target=self._startup_logs, daemon=False).start()
 
         if (not pw_installed) or (not pulse_connection_ok):
@@ -135,7 +137,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
     def _startup_logs(self):
         logging.info(Pipewire.get_info_raw())
-        
+
         logging.info('=======Listing outputs=======')
         for k, v in Pipewire.list_outputs().items():
             logging.info(f'Pipewire output {k}: ' + pprint.pformat(v.__dict__))
@@ -177,7 +179,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
         self.auto_refresh = False
 
     def refresh_active_connections(self, force_refresh=False):
-        list_links = Pipewire.list_links()
+        list_links = Pipewire.list_links(quiet=(not force_refresh))
 
         new_links_to_render = []
         for l, link in list_links.items():
@@ -239,9 +241,16 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
                     j += 1
 
+            active_links = []
+            for l in self.active_connections_list:
+                active_links.append({'input': l.input_link.resource_name, 'output': l.output_link.resource_name})
+
+            with open(GLib.get_user_data_dir() + '/last_connections.json', 'w+') as f:
+                f.write(json.dumps(active_links))
+
         self.nolinks_placeholder.set_visible(not self.active_connection_boxes)
 
-    def on_new_connection(self, _, status):
+    def on_new_connection(self, _, output_id, input_id):
         self.refresh_active_connections()
 
     def on_disconnect_btn_clicked(self, _, link_ids: list[str]):
@@ -261,3 +270,20 @@ class WhisperWindow(Gtk.ApplicationWindow):
         self.connection_box_slot.append(self.connection_box)
 
         self.refresh_active_connections(force_refresh=True)
+
+    def start_with_config(self, config: list):
+        if not self.settings.get_boolean('load-last-config'):
+            return
+
+        for link in config:
+            try:
+                logging.info('Resuming link ' + str(link))
+                link_output_input(link['output'], link['input'])
+            except Exception as e:
+                logging.warn(str(link) + ' is not linkable (devices might be disconnected)')
+
+        self.refresh_active_connections(force_refresh=True)
+        self.refresh_active_connections_volumes()
+
+        with open(GLib.get_user_data_dir() + '/last_connections.json', 'w+') as f:
+            f.write('[]')

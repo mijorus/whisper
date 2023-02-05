@@ -20,7 +20,9 @@
 from .pipewire.pipewire import Pipewire
 from .Preferences import WhisperPreferencesWindow
 from .window import WhisperWindow
+from .utils.utils import make_option, link_output_input
 from gi.repository import Gtk, Gio, Adw, GLib
+import json
 import sys
 import logging
 import gi
@@ -41,6 +43,12 @@ class WhisperApplication(Adw.Application):
         self.create_action('preferences', self.on_preferences_action)
         self.create_action('opendebuglog', self.on_opendebuglog_action)
         self.create_action('translate', lambda w, _: Gio.AppInfo.launch_default_for_uri('https://github.com/mijorus/whisper/tree/master/po', None))
+
+        self.add_main_option_entries([
+            make_option('autostart'),
+            make_option('version')
+        ])
+
         self.connect('shutdown', self.on_query_end)
 
     def on_query_end(self, app):
@@ -54,9 +62,32 @@ class WhisperApplication(Adw.Application):
         """
         win = self.props.active_window
         if not win:
+            last_config = []
+            with open(GLib.get_user_data_dir() + '/last_connections.json', 'r') as f:
+                try:
+                    last_config = json.loads(f.read())
+                    last_config = last_config if last_config else []
+                except Exception as e:
+                    pass
+
             win = WhisperWindow(application=self)
+            win.start_with_config(last_config)
+
+            # with open(GLib.get_user_data_dir() + '/last_connections.json', 'w+') as f:
+            #     f.write('[]')
 
         win.present()
+
+    def do_handle_local_options(self, options):
+        if options.contains('version'):
+            print(self.version)
+            return 0
+
+        self.autostarting = options.contains('autostart')
+        if self.autostarting:
+            logging.info('Starting whisper with --autostart (usually after reboot)')
+
+        return -1
 
     def on_about_action(self, widget, _):
         """Callback for the app.about action."""
@@ -72,7 +103,7 @@ class WhisperApplication(Adw.Application):
             developers=['Lorenzo Paderi'],
             copyright='© 2023 Lorenzo Paderi'
         )
-        
+
         about.add_credit_section('Icon', ['Jakub Steiner (jimmac)'])
 
         about.present()
@@ -106,7 +137,7 @@ class WhisperApplication(Adw.Application):
 def main(version):
     """The application's entry point."""
     app = WhisperApplication(version=version)
-    
+
     if not GLib.file_test(GLib.get_user_cache_dir() + '/logs', GLib.FileTest.EXISTS):
         GLib.mkdir_with_parents(GLib.get_user_cache_dir() + '/logs', 0o755)
 
@@ -121,4 +152,5 @@ def main(version):
         force=True
     )
 
+    print('Logging to file: ' + LOG_FILE)
     return app.run(sys.argv)
