@@ -28,6 +28,11 @@ Whisper can be built with Flatpak Builder
 
 - Icon: Jakub Steiner (jimmac)
 
+## Similar apps
+
+- [Helvum](https://gitlab.freedesktop.org/pipewire/helvum)
+- [qpwgraph](https://flathub.org/apps/details/org.rncbc.qpwgraph)
+
 ## Screenshots
 
 <p align="center">

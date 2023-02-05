@@ -1,9 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
 	<id>it.mijorus.whisper.desktop</id>
+    <summary>Listen to your mic</summary>
 	<metadata_license>CC0-1.0</metadata_license>
 	<project_license>GPL-3.0-or-later</project_license>
 	<description>
-	  <p>No description</p>
+	  <p>Whisper allows you to listen to your microphone through your speakers using Pipewire</p>
 	</description>
+    <releases>
+        <release type="stable" version="1.0.0" date="2023-05-01T00:00:00Z">
+            <description>
+                <p>- First release</p>
+            </description>
+        </release>
+    </releases>
+    <screenshots>
+        <screenshot type="default">
+            <caption>Application showcase</caption>
+            <image type="source">
+                https://raw.githubusercontent.com/mijorus/whisper/master/docs/img1.png</image>
+        </screenshot>
+        <screenshot>
+            <caption>Settings page</caption>
+            <image type="source">
+                https://raw.githubusercontent.com/mijorus/whisper/master/docs/img3.png</image>
+        </screenshot>
+    </screenshots>
+    <content_rating type="oars-1.0" />
 </component>
