@@ -1,4 +1,4 @@
-# Whisper - Listen to your microhpone
+# Whisper - Listen to your microphone
 
 <p align="center">
 <img src="data/icons/hicolor/scalable/apps/it.mijorus.whisper.svg">
