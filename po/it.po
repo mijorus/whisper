@@ -3,20 +3,19 @@
 # This file is distributed under the same license as the PACKAGE package.
 # FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
 #
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: PACKAGE VERSION\n"
+"Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-29 22:47+0100\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: \n"
+"POT-Creation-Date: 2023-02-05 19:27+0100\n"
+"PO-Revision-Date: 2023-02-05 19:33+0100\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: it\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-
+"X-Generator: Poedit 3.2.2\n"
 
 #: data/it.mijorus.whisper.desktop.in:3
 msgid "whisper"
@@ -24,7 +23,7 @@ msgstr ""
 
 #: data/it.mijorus.whisper.appdata.xml.in:7
 msgid "No description"
-msgstr ""
+msgstr "Nessuna descrizione"
 
 #: src/components/NoLinksPlaceholder.py:10
 msgid "No active connections"
@@ -38,27 +37,47 @@ msgstr "Per iniziare, connetti un microfono ad uno speaker"
 msgid "Disconnect"
 msgstr "Disconnetti"
 
-#: src/components/PwConnectionBox.py:14
+#: src/components/PwConnectionBox.py:15
 msgid "Create a connection"
 msgstr "Crea una connessione"
 
-#: src/components/PwConnectionBox.py:17
+#: src/components/PwConnectionBox.py:18
 msgid " -- Select a microphone --"
 msgstr " -- Seleziona un microfono --"
 
-#: src/components/PwConnectionBox.py:30
+#: src/components/PwConnectionBox.py:31
 msgid " -- Select a speaker --"
 msgstr " -- Seleziona uno speaker --"
 
-#: src/components/PwConnectionBox.py:45
+#: src/components/PwConnectionBox.py:46
 msgid "Connect"
 msgstr "Connetti"
 
+#: src/Preferences.py:18
+msgid "General"
+msgstr "Generale"
+
 #: src/Preferences.py:20
+msgid "Start on boot"
+msgstr "Lancia all'avvio"
+
+#: src/Preferences.py:20
+msgid "Open Whisper when the system starts"
+msgstr "Apri Whisper all'avvio del sistema"
+
+#: src/Preferences.py:21
+msgid "Reopen the last configuration at startup"
+msgstr "Riapri l'ultima configurazione all'avvio"
+
+#: src/Preferences.py:21
+msgid "Unplugged devices will be skipped"
+msgstr "I dispositivi disconnessi saranno ignorati"
+
+#: src/Preferences.py:22
 msgid "Show connection IDs"
 msgstr "Mostra gli ID delle connessioni"
 
-#: src/Preferences.py:20
+#: src/Preferences.py:22
 msgid "For the geeks out there"
 msgstr "Solo per veri geeks"
 
@@ -67,5 +86,13 @@ msgid "_Preferences"
 msgstr "Preferenze"
 
 #: src/gtk/main-menu.ui:10
+msgid "_Debug Log"
+msgstr "Debug Log"
+
+#: src/gtk/main-menu.ui:14
+msgid "_Translate this app"
+msgstr "Traduci quest'app"
+
+#: src/gtk/main-menu.ui:18
 msgid "_About"
 msgstr "Informazioni su Whisper"
