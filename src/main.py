@@ -149,6 +149,7 @@ def main(version):
         filemode='a',
         encoding='utf-8',
         level=logging.DEBUG,
+        format='%(levelname)s - %(message)s\n',
         force=True
     )
 
