@@ -62,19 +62,20 @@ class WhisperApplication(Adw.Application):
         """
         win = self.props.active_window
         if not win:
+            
             last_config = []
-            with open(GLib.get_user_data_dir() + '/last_connections.json', 'r') as f:
-                try:
-                    last_config = json.loads(f.read())
-                    last_config = last_config if last_config else []
-                except Exception as e:
-                    pass
+            if self.autostarting:
+                with open(GLib.get_user_data_dir() + '/last_connections.json', 'r') as f:
+                    try:
+                        last_config = json.loads(f.read())
+                        last_config = last_config if last_config else []
+                    except Exception as e:
+                        pass
 
             win = WhisperWindow(application=self)
-            win.start_with_config(last_config)
-
-            # with open(GLib.get_user_data_dir() + '/last_connections.json', 'w+') as f:
-            #     f.write('[]')
+            
+            if self.autostarting:
+                win.start_with_config(last_config)
 
         win.present()
 
@@ -141,8 +142,13 @@ def main(version):
     if not GLib.file_test(GLib.get_user_cache_dir() + '/logs', GLib.FileTest.EXISTS):
         GLib.mkdir_with_parents(GLib.get_user_cache_dir() + '/logs', 0o755)
 
-    with open(LOG_FILE, 'w+') as f:
-        f.write('')
+    log_lines = 0
+    with open(LOG_FILE, 'r') as f:
+        log_lines = len(f.readlines())
+
+    if log_lines > 1000:
+        with open(LOG_FILE, 'w+') as f:
+            f.write('')
 
     logging.basicConfig(
         filename=LOG_FILE,
@@ -154,4 +160,5 @@ def main(version):
     )
 
     print('Logging to file: ' + LOG_FILE)
+    logging.info('==== Starting whisper ====')
     return app.run(sys.argv)

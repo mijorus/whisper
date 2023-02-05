@@ -55,8 +55,11 @@ class WhisperWindow(Gtk.ApplicationWindow):
         super().__init__(**kwargs, title='Whisper')
         self.settings: Gio.Settings = Gio.Settings.new('it.mijorus.whisper')
         self.settings.connect('changed', self.on_settings_changed)
+        self.settings.set_boolean('stand-by', False)
 
         self.titlebar = Adw.HeaderBar()
+        self.titlebar_title = Adw.WindowTitle(title='Whisper')
+        self.titlebar.set_title_widget(self.titlebar_title)
 
         menu_obj = Gtk.Builder.new_from_resource('/it/mijorus/whisper/gtk/main-menu.ui')
         self.menu_button = Gtk.MenuButton(icon_name='open-menu', menu_model=menu_obj.get_object('primary_menu'))
@@ -291,15 +294,36 @@ class WhisperWindow(Gtk.ApplicationWindow):
         if not self.settings.get_boolean('load-last-config'):
             return
 
-        for link in config:
-            try:
-                logging.info('Resuming link ' + str(link))
-                link_output_input(link['output'], link['input'])
-            except Exception as e:
-                logging.warn(str(link) + ' is not linkable (devices might be disconnected)')
+        def countdown():
+            title = self.titlebar_title.get_title()
 
-        self.refresh_active_connections(force_refresh=True)
-        self.refresh_active_connections_volumes()
+            i = 5
+            while i != 0:
+                print('Reloading configuration in ' + str(i) + ' seconds...')
+                GLib.idle_add(lambda: self.titlebar_title.set_title(_('Reloading last connections in ') + str(i) + _(' seconds...')))
+
+                time.sleep(1)
+                i -= 1
+
+            GLib.idle_add(lambda: self.titlebar_title.set_title(title))
+            
+            if self.settings.get_boolean('stand-by'):
+                return
+            
+            self.settings.set_boolean('stand-by', True)
+            for link in config:
+                try:
+                    logging.info('Resuming link ' + str(link))
+                    link_output_input(link['output'], link['input'])
+                except Exception as e:
+                    logging.warn(str(link) + ' is not linkable (devices might be disconnected)')
+
+            time.sleep(1)
+            self.settings.set_boolean('stand-by', False)
+            self.refresh_active_connections(force_refresh=True)
+            self.refresh_active_connections_volumes()
+
+        t = threading.Thread(target=countdown, daemon=False).start()
 
         with open(GLib.get_user_data_dir() + '/last_connections.json', 'w+') as f:
             f.write('[]')
@@ -310,4 +334,5 @@ class WhisperWindow(Gtk.ApplicationWindow):
                 self.pulse_listener.event_listen_stop()
                 self.pulse_listener.disconnect()
         finally:
+            self.settings.set_boolean('stand-by', True)
             return False
