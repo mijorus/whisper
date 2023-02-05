@@ -15,11 +15,11 @@ class WhisperPreferencesWindow(Adw.PreferencesWindow):
         self.settings = Gio.Settings.new('it.mijorus.whisper')
 
         self.general_page = Adw.PreferencesPage()
-        self.general_page_general = Adw.PreferencesGroup(title='General')
+        self.general_page_general = Adw.PreferencesGroup(title=_('General'))
 
-        self.start_onboot = self.create_toggle_row('Start on boot', 'Open Whisper when the system starts', 'start-on-boot')
-        self.load_last_conf = self.create_toggle_row('Reopen the last configuration at startup', 'Unplugged devices will be skipped', 'load-last-config')
-        self.show_ids = self.create_toggle_row('Show connection IDs', 'For the geeks out there', 'show-connection-ids')
+        self.start_onboot = self.create_toggle_row(_('Start on boot'), _('Open Whisper when the system starts'), 'start-on-boot')
+        self.load_last_conf = self.create_toggle_row(_('Reopen the last configuration at startup'), _('Unplugged devices will be skipped'), 'load-last-config')
+        self.show_ids = self.create_toggle_row(_('Show connection IDs'), _('For the geeks out there'), 'show-connection-ids')
 
         self.general_page_general.add(self.start_onboot)
         self.general_page_general.add(self.load_last_conf)
