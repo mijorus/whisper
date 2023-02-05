@@ -117,11 +117,12 @@ class WhisperWindow(Gtk.ApplicationWindow):
             self.viewport.append(self.nolinks_placeholder)
             self.refresh_active_connections(force_refresh=True)
 
+            self.pulse_listener = Optional[pulsectl.Pulse]
+
             self.auto_refresh = True
             self.start_auto_refresh()
-            # self.pw = Pipewire()
-            # self.pw.watch(callback=self.refresh_active_connections_volumes)
-            # self.connect('close-request', lambda *args: self.pw.unwatch())
+            threading.Thread(target=self.create_pulse_events_listener).start()
+            self.connect('close-request', self.on_close_request)
 
         clamp = Adw.Clamp(tightening_threshold=700)
         clamp.set_child(self.viewport)
@@ -168,6 +169,20 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
             self.viewport.remove(self.pw_connection_box)
             self.viewport.prepend(self.create_connection_box())
+
+    def pulse_event_listener(self, ev):
+        if ev.t == 'change' and self.active_connection_boxes:
+            self.pulse_listener.event_listen_stop()
+            self.refresh_active_connections_volumes()
+
+            self.create_pulse_events_listener()
+
+    def create_pulse_events_listener(self):
+        with pulsectl.Pulse('whisper-event-listen') as self.pulse_listener:
+
+            self.pulse_listener.event_mask_set('all')
+            self.pulse_listener.event_callback_set(self.pulse_event_listener)
+            self.pulse_listener.event_listen(raise_on_disconnect=False)
 
     @async_utils._async
     def start_auto_refresh(self):
@@ -259,6 +274,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
         self.refresh_active_connections()
 
+    @async_utils.debounce(0.5)
     def refresh_active_connections_volumes(self):
         logging.info('Refreshing active connections volumes')
         for b in self.active_connection_boxes:
@@ -287,3 +303,11 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
         with open(GLib.get_user_data_dir() + '/last_connections.json', 'w+') as f:
             f.write('[]')
+
+    def on_close_request(self, _):
+        try:
+            if self.pulse_listener:
+                self.pulse_listener.event_listen_stop()
+                self.pulse_listener.disconnect()
+        finally:
+            return False
