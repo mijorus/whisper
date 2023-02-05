@@ -6,3 +6,4 @@ run.sh
 install.sh
 venv
 _build
+po/*.mo

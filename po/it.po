@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-05 19:27+0100\n"
-"PO-Revision-Date: 2023-02-05 19:33+0100\n"
+"POT-Creation-Date: 2023-02-05 20:08+0100\n"
+"PO-Revision-Date: 2023-02-05 20:10+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -24,6 +24,14 @@ msgstr ""
 #: data/it.mijorus.whisper.appdata.xml.in:7
 msgid "No description"
 msgstr "Nessuna descrizione"
+
+#: src/window.py:303
+msgid "Reloading last connections in "
+msgstr "Riapro le vecchie connessioni in "
+
+#: src/window.py:303
+msgid " seconds..."
+msgstr " secondi..."
 
 #: src/components/NoLinksPlaceholder.py:10
 msgid "No active connections"
@@ -57,29 +65,37 @@ msgstr "Connetti"
 msgid "General"
 msgstr "Generale"
 
-#: src/Preferences.py:20
-msgid "Start on boot"
-msgstr "Lancia all'avvio"
-
-#: src/Preferences.py:20
-msgid "Open Whisper when the system starts"
-msgstr "Apri Whisper all'avvio del sistema"
+#: src/Preferences.py:19
+msgid "Autostart"
+msgstr "Avvio automatico"
 
 #: src/Preferences.py:21
-msgid "Reopen the last configuration at startup"
-msgstr "Riapri l'ultima configurazione all'avvio"
-
-#: src/Preferences.py:21
-msgid "Unplugged devices will be skipped"
-msgstr "I dispositivi disconnessi saranno ignorati"
-
-#: src/Preferences.py:22
 msgid "Show connection IDs"
 msgstr "Mostra gli ID delle connessioni"
 
-#: src/Preferences.py:22
+#: src/Preferences.py:21
 msgid "For the geeks out there"
 msgstr "Solo per veri geeks"
+
+#: src/Preferences.py:23
+msgid "Start on boot"
+msgstr "Lancia all'avvio"
+
+#: src/Preferences.py:23
+msgid "Open Whisper when the system starts"
+msgstr "Apri Whisper all'avvio del sistema"
+
+#: src/Preferences.py:24
+msgid "Reconnect all the devices at startup"
+msgstr "Riconnetti tutti i dispositivi all'avvio dell'applicazione"
+
+#: src/Preferences.py:24
+msgid ""
+"Reload all the connections if they are no longer active. Unplugged devices "
+"will be skipped"
+msgstr ""
+"Ricarica tutte le connessioni se non sono più attive. I dispositivi "
+"disconnessi saranno ignorati"
 
 #: src/gtk/main-menu.ui:6
 msgid "_Preferences"
@@ -96,3 +112,9 @@ msgstr "Traduci quest'app"
 #: src/gtk/main-menu.ui:18
 msgid "_About"
 msgstr "Informazioni su Whisper"
+
+#~ msgid "Unplugged devices will be skipped"
+#~ msgstr "I dispositivi disconnessi saranno ignorati"
+
+#~ msgid "Reopen the last configuration at startup"
+#~ msgstr "Riapri l'ultima configurazione all'avvio"
