@@ -161,17 +161,18 @@ class WhisperWindow(Gtk.ApplicationWindow):
                 return dev
 
     def create_connection_box(self):
-        self.pw_connection_box = PwConnectionBox()
-        self.pw_connection_box.connect('new_connection', self.on_new_connection)
+        pw_connection_box = PwConnectionBox()
+        pw_connection_box.connect('new_connection', self.on_new_connection)
 
-        return self.pw_connection_box
+        return pw_connection_box
 
     def on_settings_changed(self, _, key: str):
         if key == 'show-connection-ids':
             self.refresh_active_connections(force_refresh=True)
+            self.connection_box_slot.remove(self.connection_box)
 
-            self.viewport.remove(self.pw_connection_box)
-            self.viewport.prepend(self.create_connection_box())
+            self.connection_box = self.create_connection_box()
+            self.connection_box_slot.append(self.connection_box)
 
     def pulse_event_listener(self, ev):
         if ev.t == 'change' and self.active_connection_boxes:

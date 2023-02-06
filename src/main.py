@@ -25,6 +25,7 @@ from gi.repository import Gtk, Gio, Adw, GLib
 import json
 import sys
 import logging
+import os
 import gi
 
 gi.require_version('Gtk', '4.0')
@@ -141,6 +142,10 @@ def main(version):
 
     if not GLib.file_test(GLib.get_user_cache_dir() + '/logs', GLib.FileTest.EXISTS):
         GLib.mkdir_with_parents(GLib.get_user_cache_dir() + '/logs', 0o755)
+
+    if not os.path.isfile(LOG_FILE):
+        with open(LOG_FILE, 'w+') as f:
+            f.write('')
 
     log_lines = 0
     with open(LOG_FILE, 'r') as f:
