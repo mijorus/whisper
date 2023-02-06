@@ -1,7 +1,7 @@
 # Whisper - Listen to your microphone
 
 <p align="center">
-<img src="data/icons/hicolor/scalable/apps/it.mijorus.whisper.svg">
+<img src="docs/it.mijorus.whisper.svg">
 </p>
 
 Whisper allows you to listen to your microphone through your speakers. It's useful for testing your microphone or for listening to your voice.
@@ -23,6 +23,11 @@ flatpak-builder build/ it.mijorus.whisper.json --user --install --force-clean
 ## Building
 
 Whisper can be built with Flatpak Builder
+
+## Source
+<a href="https://github.com/mijorus/whisper" align="center">
+  <img width="100" src="https://github.githubassets.com/images/modules/logos_page/GitHub-Logo.png">
+</a>
 
 ## Credits
 
