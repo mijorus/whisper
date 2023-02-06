@@ -14,6 +14,11 @@ Pirewire is available as the default audio server on
 
 
 ## Installation
+<a href="https://flathub.org/apps/details/it.mijorus.whisper" align="center">
+  <img width="200" src="https://flathub.org/assets/badges/flathub-badge-i-en.png">
+</a>
+
+___
 
 ```bash
 flatpak kill it.mijorus.smile
