@@ -2,7 +2,7 @@
 <component type="desktop">
 	<id>it.mijorus.whisper.desktop</id>
     <name>Whisper</name>
-    <url>https://whisper.mijorus.it</url>
+    <url type="homepage">https://github.com/mijorus/whisper</url>
     <summary>Listen to your mic</summary>
 	<metadata_license>CC0-1.0</metadata_license>
 	<project_license>GPL-3.0-or-later</project_license>
