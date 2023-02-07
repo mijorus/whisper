@@ -1,0 +1,115 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Whisper\n"
+"Report-Msgid-Bugs-To: https://github.com/mijorus/whisper\n"
+"POT-Creation-Date: 2023-02-05 20:08+0100\n"
+"PO-Revision-Date: 2023-02-07 19:31+0100\n"
+"Last-Translator: FineFindus <finefindus@proton.me>\n"
+"Language-Team: \n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.2.2\n"
+
+#: data/it.mijorus.whisper.desktop.in:3
+msgid "whisper"
+msgstr "whisper"
+
+#: data/it.mijorus.whisper.appdata.xml.in:7
+msgid "No description"
+msgstr "Keine Beschreibung"
+
+#: src/window.py:303
+msgid "Reloading last connections in "
+msgstr "Lade letzte Verbindungen in "
+
+#: src/window.py:303
+msgid " seconds..."
+msgstr " Sekunden…"
+
+#: src/components/NoLinksPlaceholder.py:10
+msgid "No active connections"
+msgstr "Keine aktiven Verbindungen"
+
+#: src/components/NoLinksPlaceholder.py:11
+msgid "To get started, connect a microphone and a speaker"
+msgstr "Um  zu starten,  verbinde ein Mikrofon mit einem Lautsprecher"
+
+#: src/components/PwActiveConnectionBox.py:73
+msgid "Disconnect"
+msgstr "Trennen"
+
+#: src/components/PwConnectionBox.py:15
+msgid "Create a connection"
+msgstr "Verbindung erstellen"
+
+#: src/components/PwConnectionBox.py:18
+msgid " -- Select a microphone --"
+msgstr " -- Mikrofon auswählen --"
+
+#: src/components/PwConnectionBox.py:31
+msgid " -- Select a speaker --"
+msgstr " -- Lautsprecher auswählen --"
+
+#: src/components/PwConnectionBox.py:46
+msgid "Connect"
+msgstr "Verbinden"
+
+#: src/Preferences.py:18
+msgid "General"
+msgstr "Allgemein"
+
+#: src/Preferences.py:19
+msgid "Autostart"
+msgstr "Autostart"
+
+#: src/Preferences.py:21
+msgid "Show connection IDs"
+msgstr "Verbindung IDs anzeigen"
+
+#: src/Preferences.py:21
+msgid "For the geeks out there"
+msgstr "Für die Nerds da draußen"
+
+#: src/Preferences.py:23
+msgid "Start on boot"
+msgstr "Beim Hochfahren starten"
+
+#: src/Preferences.py:23
+msgid "Open Whisper when the system starts"
+msgstr "Whisper öffnen, wenn das System startet"
+
+#: src/Preferences.py:24
+msgid "Reconnect all the devices at startup"
+msgstr "Alle Geräte beim Starten neuverbinden"
+
+#: src/Preferences.py:24
+msgid ""
+"Reload all the connections if they are no longer active. Unplugged devices "
+"will be skipped"
+msgstr ""
+"Alle nicht aktiven Verbindungen neu laden. Ausgesteckte Geräte werden "
+"übersprungen"
+
+#: src/gtk/main-menu.ui:6
+msgid "_Preferences"
+msgstr "_Einstellungen"
+
+#: src/gtk/main-menu.ui:10
+msgid "_Debug Log"
+msgstr "_Debug Protokoll"
+
+#: src/gtk/main-menu.ui:14
+msgid "_Translate this app"
+msgstr "_Diese App übersetzen"
+
+#: src/gtk/main-menu.ui:18
+msgid "_About"
+msgstr "_Info"
