@@ -6,6 +6,7 @@
     <url type="contribute">https://github.com/mijorus/whisper</url>
     <url type="donation">https://ko-fi.com/mijorus</url>
     <summary>Listen to your mic</summary>
+    <developer_name>Lorenzo Paderi</developer_name>
 	<metadata_license>CC0-1.0</metadata_license>
 	<project_license>GPL-3.0-or-later</project_license>
 	<description>
