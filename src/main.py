@@ -91,7 +91,7 @@ class WhisperApplication(Adw.Application):
 
         return -1
 
-    def on_about_action(self, widget, _):
+    def on_about_action(self, widget, k):
         """Callback for the app.about action."""
         about = Adw.AboutWindow(
             transient_for=self.props.active_window,
@@ -106,7 +106,8 @@ class WhisperApplication(Adw.Application):
             copyright='© 2023 Lorenzo Paderi'
         )
 
-        about.add_credit_section('Icon', ['Jakub Steiner (jimmac)'])
+        about.set_translator_credits(_("translator_credits"))
+        about.add_credit_section('Icon by', ['Jakub Steiner (jimmac)'])
 
         about.present()
 
