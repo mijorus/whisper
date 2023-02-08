@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Whisper\n"
 "Report-Msgid-Bugs-To: https://github.com/mijorus/whisper\n"
-"POT-Creation-Date: 2023-02-05 20:08+0100\n"
-"PO-Revision-Date: 2023-02-07 19:31+0100\n"
+"POT-Creation-Date: 2023-02-08 09:37+0100\n"
+"PO-Revision-Date: 2023-02-08 13:33+0100\n"
 "Last-Translator: FineFindus <finefindus@proton.me>\n"
 "Language-Team: \n"
 "Language: de\n"
@@ -22,17 +22,45 @@ msgstr ""
 msgid "whisper"
 msgstr "whisper"
 
-#: data/it.mijorus.whisper.appdata.xml.in:7
-msgid "No description"
-msgstr "Keine Beschreibung"
+#: data/it.mijorus.whisper.appdata.xml.in:4
+msgid "Whisper"
+msgstr "Whisper"
 
-#: src/window.py:303
+#: data/it.mijorus.whisper.appdata.xml.in:6
+msgid "Listen to your mic"
+msgstr "Mikrofon zuhören"
+
+#: data/it.mijorus.whisper.appdata.xml.in:10
+msgid ""
+"Whisper allows you to listen to your microphone through your speakers using "
+"Pipewire"
+msgstr ""
+"Whisper erlaubt es, das Mikrofon durch die Lautsprecher über Pipewire zu "
+"hören"
+
+#: data/it.mijorus.whisper.appdata.xml.in:15
+msgid "- First release"
+msgstr "- Erste Veröffentlichung"
+
+#: data/it.mijorus.whisper.appdata.xml.in:21
+msgid "Application showcase"
+msgstr "App Schaufenster"
+
+#: data/it.mijorus.whisper.appdata.xml.in:26
+msgid "Settings page"
+msgstr "Einstellungen"
+
+#: src/window.py:304
 msgid "Reloading last connections in "
 msgstr "Lade letzte Verbindungen in "
 
-#: src/window.py:303
+#: src/window.py:304
 msgid " seconds..."
 msgstr " Sekunden…"
+
+#: src/main.py:109
+msgid "translator_credits"
+msgstr "FineFindus <https://github.com/FineFindus>"
 
 #: src/components/NoLinksPlaceholder.py:10
 msgid "No active connections"
@@ -113,3 +141,6 @@ msgstr "_Diese App übersetzen"
 #: src/gtk/main-menu.ui:18
 msgid "_About"
 msgstr "_Info"
+
+#~ msgid "No description"
+#~ msgstr "Keine Beschreibung"
