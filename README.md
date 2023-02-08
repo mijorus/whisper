@@ -46,7 +46,7 @@ Whisper can be built with Flatpak Builder
 ## Under the hood
 This app does more or less the same thing as Helvum does, but with a simple UI: when you have more than a couple of apps playing audio, it gets quite hard to use Helvum.
 
-Futhermore, Whisper shows only phisical inputs, while the afroamentioned show all inputs, including audio streams created by apps and virtual ones.
+Furthermore, Whisper shows only physical inputs, while the afroamentioned show all inputs, including audio streams created by apps and virtual ones.
 
 Whisper can also control the microphone gain and the speaker volume.
 ## Screenshots

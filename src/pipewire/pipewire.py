@@ -150,7 +150,7 @@ class Pipewire():
 
                 last_call = time_ns()
                 while self.monitor:
-                    # caputure the first line output of the running process
+                    # capture the first line output of the running process
                     output = self.monitor.stdout.readlines(1)
                     if (time_ns() - last_call) > 10000000:
                         logging.info('Pipewire WATCH: executing callback ' + str(time_ns() - last_call))
