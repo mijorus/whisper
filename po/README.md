@@ -24,3 +24,15 @@ https://github.com/fsobolev/timeswitch/tree/master/po
 
 When an update is released, new strings might be added to the app.
 With Poedit, you can update translations by opening `<your_language>.pot` file and clicking on `Transations (in the menu bar)` > `Update from POT file`.
+
+## Credit
+
+You can add your name to the credit section in the app's About dialog by adding your name the `translator_credits` string.
+
+Optionally, you can also add your email address or a website.
+
+```yaml
+translator_credits: Allan Poe
+translator_credits: Allan Poe <edgar@poe.com>
+translator_credits: Allan Poe https://example.com
+```
