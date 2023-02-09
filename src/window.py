@@ -175,6 +175,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
     def pulse_event_listener_unsubscribe(self):
         if self.pulse_listener:
             self.pulse_listener.event_listen_stop()
+            self.pulse_listener.disconnect()
             self.pulse_listener = None
 
     def pulse_event_listener(self, ev):
@@ -255,8 +256,8 @@ class WhisperWindow(Gtk.ApplicationWindow):
                     )
 
                     box.connect('disconnect', self.on_disconnect_btn_clicked)
-                    box.connect('change-volume', lambda a, b: self.refresh_active_connections_volumes())
                     box.connect('before-change-volume', lambda a, b: self.pulse_event_listener_unsubscribe())
+                    box.connect('change-volume', lambda a, b: self.create_pulse_events_listener())
 
                     self.rendered_links.extend(dev['link_ids'])
                     self.active_connection_boxes.append(box)
@@ -340,9 +341,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
     def on_close_request(self, _):
         try:
-            if self.pulse_listener:
-                self.pulse_listener.event_listen_stop()
-                self.pulse_listener.disconnect()
+            self.pulse_event_listener_unsubscribe()
         finally:
             self.settings.set_boolean('stand-by', True)
             return False
