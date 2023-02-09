@@ -155,9 +155,9 @@ class WhisperWindow(Gtk.ApplicationWindow):
             for kk, vv in v.items():
                 logging.info(f'Pipewire link {k}: ' + pprint.pformat(vv.__dict__))
 
-    def _is_alsa_device(self, pw_list: dict[str, PwLink], link_id) -> Optional[PwLink]:
+    def _is_supported_device(self, pw_list: dict[str, PwLink], link_id) -> Optional[PwLink]:
         for d, dev in pw_list.items():
-            if (link_id in dev.channels) and dev.alsa.startswith('alsa:'):
+            if (link_id in dev.channels) and (dev.alsa.startswith('alsa:') or dev.resource_name.startswith('bluez_output')):
                 return dev
 
     def create_connection_box(self):
@@ -218,11 +218,11 @@ class WhisperWindow(Gtk.ApplicationWindow):
             for l, link in Pipewire.list_links().items():
                 # cycle on every pw output, check if it is an alsa device
 
-                output_device = self._is_alsa_device(outputs, l)
+                output_device = self._is_supported_device(outputs, l)
                 if output_device:
                     for i, link_info in link.items():
                         # cycle on every active link for that output
-                        input_device = self._is_alsa_device(inputs, link_info._id)
+                        input_device = self._is_supported_device(inputs, link_info._id)
                         if input_device:
                             if not output_device.resource_name in device_links:
                                 device_links[output_device.resource_name] = {}
