@@ -11,6 +11,10 @@
                 <attribute name="action">app.opendebuglog</attribute>
             </item>
             <item>
+                <attribute name="label" translatable="no">Changelog</attribute>
+                <attribute name="action">app.open_changelog</attribute>
+            </item>
+            <item>
                 <attribute name="label" translatable="yes">_Translate this app</attribute>
                 <attribute name="action">app.translate</attribute>
             </item>

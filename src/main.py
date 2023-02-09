@@ -43,6 +43,7 @@ class WhisperApplication(Adw.Application):
         self.create_action('about', self.on_about_action)
         self.create_action('preferences', self.on_preferences_action)
         self.create_action('opendebuglog', self.on_opendebuglog_action)
+        self.create_action('open_changelog', self.on_open_changelog)
         self.create_action('translate', lambda w, _: Gio.AppInfo.launch_default_for_uri('https://github.com/mijorus/whisper/tree/master/po', None))
 
         self.add_main_option_entries([
@@ -63,7 +64,7 @@ class WhisperApplication(Adw.Application):
         """
         win = self.props.active_window
         if not win:
-            
+
             last_config = []
             if self.autostarting:
                 with open(GLib.get_user_data_dir() + '/last_connections.json', 'r') as f:
@@ -74,7 +75,7 @@ class WhisperApplication(Adw.Application):
                         pass
 
             win = WhisperWindow(application=self)
-            
+
             if self.autostarting:
                 win.start_with_config(last_config)
 
@@ -119,6 +120,12 @@ class WhisperApplication(Adw.Application):
     def on_opendebuglog_action(self, widget, _):
         Gio.AppInfo.launch_default_for_uri(
             f'file://' + LOG_FILE.split("/whisper.log")[0],
+            None
+        )
+
+    def on_open_changelog(self, widget, _):
+        Gio.AppInfo.launch_default_for_uri(
+            'https://whisper.mijorus.it/changelog',
             None
         )
 
