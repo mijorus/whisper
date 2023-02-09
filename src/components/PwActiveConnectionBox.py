@@ -30,6 +30,7 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
     __gsignals__ = {
         'disconnect': (GObject.SIGNAL_RUN_FIRST, None, (object,)),
         'change-volume': (GObject.SIGNAL_RUN_FIRST, None, (int, )),
+        'before-change-volume': (GObject.SIGNAL_RUN_FIRST, None, (int, )),
     }
 
     def __init__(self, input_link: PwLink, output_link: PwLink, connection_name: str, link_ids: list[str], show_link_ids: bool, **kwargs):
@@ -100,6 +101,7 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
         if self.pa_sink:
 
             with Pulse() as pulse_client:
+                self.emit('before-change-volume', value)
                 pulse_client.volume_set_all_chans(self.pa_sink, (value / 100))
                 self.emit('change-volume', value)
 
@@ -108,5 +110,6 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
         if self.pa_source:
 
             with Pulse() as pulse_client:
+                self.emit('before-change-volume', value)
                 pulse_client.volume_set_all_chans(self.pa_source, (value / 100))
                 self.emit('change-volume', value)

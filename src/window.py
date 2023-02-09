@@ -172,11 +172,15 @@ class WhisperWindow(Gtk.ApplicationWindow):
             self.connection_box = self.create_connection_box()
             self.connection_box_slot.append(self.connection_box)
 
+    def pulse_event_listener_unsubscribe(self):
+        if self.pulse_listener:
+            self.pulse_listener.event_listen_stop()
+            self.pulse_listener = None
+
     def pulse_event_listener(self, ev):
         if ev.t == 'change':
             logging.info(msg=f'PulseAudio event: change')
-            self.pulse_listener.event_listen_stop()
-            self.pulse_listener = None
+            self.pulse_event_listener_unsubscribe()
 
             GLib.idle_add(self.refresh_active_connections)
             GLib.idle_add(self.refresh_active_connections_volumes)
@@ -188,10 +192,9 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
     @async_utils.debounce(wait_time=1)
     def create_pulse_events_listener(self):
-        if self.pulse_listener:
-            self.pulse_listener.event_listen_stop()
-            self.pulse_listener = None
+        self.pulse_event_listener_unsubscribe()
 
+        logging.info(msg=f'Creating PulseAudio event listener')
         with pulsectl.Pulse('whisper-event-listen') as self.pulse_listener:
             self.pulse_listener.event_mask_set('sink')
             self.pulse_listener.event_callback_set(self.pulse_event_listener)
@@ -253,6 +256,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
                     box.connect('disconnect', self.on_disconnect_btn_clicked)
                     box.connect('change-volume', lambda a, b: self.refresh_active_connections_volumes())
+                    box.connect('before-change-volume', lambda a, b: self.pulse_event_listener_unsubscribe())
 
                     self.rendered_links.extend(dev['link_ids'])
                     self.active_connection_boxes.append(box)
@@ -280,9 +284,13 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
     @async_utils.debounce(0.5)
     def refresh_active_connections_volumes(self):
-        logging.info('Refreshing active connections volumes')
-        for b in self.active_connection_boxes:
-            b.refresh_volume_levels()
+        if self.active_connection_boxes:
+            logging.info('Refreshing active connections volumes')
+            for b in self.active_connection_boxes:
+                b.refresh_volume_levels()
+
+        if not self.pulse_listener:
+            self.create_pulse_events_listener()
 
     def on_refresh_button_clicked(self, _):
         self.connection_box_slot.remove(self.connection_box)
