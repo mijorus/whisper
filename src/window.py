@@ -22,7 +22,7 @@ from .components.PwActiveConnectionBox import PwActiveConnectionBox
 from .components.NoLinksPlaceholder import NoLinksPlaceholder
 from .components.PwConnectionBox import PwConnectionBox
 from .utils import async_utils
-from .utils.utils import link_output_input
+from .utils.utils import link_output_input, array_diff
 from pprint import pprint
 from typing import Optional
 import json
@@ -158,6 +158,8 @@ class WhisperWindow(Gtk.ApplicationWindow):
             if (link_id in dev.channels) and (dev.alsa.startswith('alsa:') or dev.resource_name.startswith('bluez_output')):
                 return dev
 
+        return None
+
     def create_connection_box(self):
         pw_connection_box = PwConnectionBox()
         pw_connection_box.connect('new_connection', self.on_new_connection)
@@ -209,7 +211,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
             for i, link_info in link.items():
                 new_links_to_render.append(i)
 
-        if force_refresh or list(set(self.rendered_links) - set(new_links_to_render)) or (list(set(new_links_to_render) - set(self.rendered_links))):
+        if force_refresh or array_diff(self.rendered_links, new_links_to_render):
             logging.info('Refreshing active connections')
             # recheck if there are new links
             inputs = Pipewire.list_inputs()
@@ -219,7 +221,8 @@ class WhisperWindow(Gtk.ApplicationWindow):
             device_links: dict[str, dict] = {}
 
             # cycle on every active link
-            for l, link in Pipewire.list_links().items():
+            new_links_to_render = []
+            for l, link in list_links.items():
                 # cycle on every pw output, check if it is an alsa device
 
                 output_device = self._is_supported_device(outputs, l)
@@ -238,6 +241,10 @@ class WhisperWindow(Gtk.ApplicationWindow):
                                 }
 
                             device_links[output_device.resource_name][input_device.resource_name]['link_ids'].append(i)
+                            new_links_to_render.append(i)
+
+            if (not force_refresh) and (not array_diff(self.rendered_links, new_links_to_render)):
+                return
 
             for b in self.active_connection_boxes:
                 self.active_connections_list.remove(b)
@@ -289,6 +296,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
             logging.info('Refreshing active connections volumes')
             for b in self.active_connection_boxes:
                 b.refresh_volume_levels()
+                # pass
 
         if not self.pulse_listener:
             self.create_pulse_events_listener()
