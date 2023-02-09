@@ -120,11 +120,9 @@ class WhisperWindow(Gtk.ApplicationWindow):
             self.viewport.append(self.nolinks_placeholder)
             self.refresh_active_connections(force_refresh=True)
 
-            self.pulse_listener = Optional[pulsectl.Pulse]
-
-            self.auto_refresh = True
-            self.start_auto_refresh()
+            self.pulse_listener: Optional[pulsectl.Pulse] = None
             threading.Thread(target=self.create_pulse_events_listener).start()
+
             self.connect('close-request', self.on_close_request)
 
         clamp = Adw.Clamp(tightening_threshold=700)
@@ -175,27 +173,29 @@ class WhisperWindow(Gtk.ApplicationWindow):
             self.connection_box_slot.append(self.connection_box)
 
     def pulse_event_listener(self, ev):
-        if ev.t == 'change' and self.active_connection_boxes:
+        if ev.t == 'change':
+            logging.info(msg=f'PulseAudio event: change')
             self.pulse_listener.event_listen_stop()
-            self.refresh_active_connections_volumes()
+            self.pulse_listener = None
 
-            self.create_pulse_events_listener()
+            GLib.idle_add(self.refresh_active_connections)
+            GLib.idle_add(self.refresh_active_connections_volumes)
 
+            try:
+                self.create_pulse_events_listener()
+            except Exception as e:
+                pass
+
+    @async_utils.debounce(wait_time=1)
     def create_pulse_events_listener(self):
-        with pulsectl.Pulse('whisper-event-listen') as self.pulse_listener:
+        if self.pulse_listener:
+            self.pulse_listener.event_listen_stop()
+            self.pulse_listener = None
 
-            self.pulse_listener.event_mask_set('all')
+        with pulsectl.Pulse('whisper-event-listen') as self.pulse_listener:
+            self.pulse_listener.event_mask_set('sink')
             self.pulse_listener.event_callback_set(self.pulse_event_listener)
             self.pulse_listener.event_listen(raise_on_disconnect=False)
-
-    @async_utils._async
-    def start_auto_refresh(self):
-        while self.auto_refresh:
-            time.sleep(5)
-            GLib.idle_add(self.refresh_active_connections)
-
-    def stop_auto_refresh(self):
-        self.auto_refresh = False
 
     def refresh_active_connections(self, force_refresh=False):
         list_links = Pipewire.list_links(quiet=(not force_refresh))
@@ -290,6 +290,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
         self.connection_box_slot.append(self.connection_box)
 
         self.refresh_active_connections(force_refresh=True)
+        self.create_pulse_events_listener()
 
     def start_with_config(self, config: list):
         if not self.settings.get_boolean('load-last-config'):
@@ -307,10 +308,10 @@ class WhisperWindow(Gtk.ApplicationWindow):
                 i -= 1
 
             GLib.idle_add(lambda: self.titlebar_title.set_title(title))
-            
+
             if self.settings.get_boolean('stand-by'):
                 return
-            
+
             self.settings.set_boolean('stand-by', True)
             for link in config:
                 try:
