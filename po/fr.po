@@ -1,0 +1,143 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-02-08 09:37+0100\n"
+"PO-Revision-Date: 2023-02-12 21:20+0100\n"
+"Last-Translator: Irénée Thirion <irenee.thirion@e.email>\n"
+"Language-Team: \n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 3.2.2\n"
+
+#: data/it.mijorus.whisper.desktop.in:3
+msgid "whisper"
+msgstr "whisper"
+
+#: data/it.mijorus.whisper.appdata.xml.in:4
+msgid "Whisper"
+msgstr "Whisper"
+
+#: data/it.mijorus.whisper.appdata.xml.in:6
+msgid "Listen to your mic"
+msgstr "Écoutez votre micro"
+
+#: data/it.mijorus.whisper.appdata.xml.in:10
+msgid ""
+"Whisper allows you to listen to your microphone through your speakers using "
+"Pipewire"
+msgstr ""
+"Whisper vous permet d’écouter votre microphone à travers vos haut-parleurs "
+"en utilisant Pipewire"
+
+#: data/it.mijorus.whisper.appdata.xml.in:15
+msgid "- First release"
+msgstr "- Première version"
+
+#: data/it.mijorus.whisper.appdata.xml.in:21
+msgid "Application showcase"
+msgstr "Présentation de l’application"
+
+#: data/it.mijorus.whisper.appdata.xml.in:26
+msgid "Settings page"
+msgstr "Fenêtre de paramètres"
+
+#: src/window.py:304
+msgid "Reloading last connections in "
+msgstr "Rechargement des dernières connexions dans "
+
+#: src/window.py:304
+msgid " seconds..."
+msgstr " secondes..."
+
+#: src/main.py:109
+msgid "translator_credits"
+msgstr "Irénée Thirion"
+
+#: src/components/NoLinksPlaceholder.py:10
+msgid "No active connections"
+msgstr "Aucune connexion active"
+
+#: src/components/NoLinksPlaceholder.py:11
+msgid "To get started, connect a microphone and a speaker"
+msgstr "Pour commencer, connectez-vous à un microphone et un haut-parleur"
+
+#: src/components/PwActiveConnectionBox.py:73
+msgid "Disconnect"
+msgstr "Déconnecter"
+
+#: src/components/PwConnectionBox.py:15
+msgid "Create a connection"
+msgstr "Créer une connexion"
+
+#: src/components/PwConnectionBox.py:18
+msgid " -- Select a microphone --"
+msgstr " -- Sélectionnez un microphone --"
+
+#: src/components/PwConnectionBox.py:31
+msgid " -- Select a speaker --"
+msgstr " -- Sélectionnez un haut-parleur --"
+
+#: src/components/PwConnectionBox.py:46
+msgid "Connect"
+msgstr "Connecter"
+
+#: src/Preferences.py:18
+msgid "General"
+msgstr "Général"
+
+#: src/Preferences.py:19
+msgid "Autostart"
+msgstr "Démarrage automatique"
+
+#: src/Preferences.py:21
+msgid "Show connection IDs"
+msgstr "Afficher les identifiants de connexion"
+
+#: src/Preferences.py:21
+msgid "For the geeks out there"
+msgstr "Pour les geeks"
+
+#: src/Preferences.py:23
+msgid "Start on boot"
+msgstr "Lancer au démarrage"
+
+#: src/Preferences.py:23
+msgid "Open Whisper when the system starts"
+msgstr "Ouvrir Whisper quand le système démarre"
+
+#: src/Preferences.py:24
+msgid "Reconnect all the devices at startup"
+msgstr "Reconnecter tous les appareils au démarrage"
+
+#: src/Preferences.py:24
+msgid ""
+"Reload all the connections if they are no longer active. Unplugged devices "
+"will be skipped"
+msgstr ""
+"Recharge toutes les connexions si elles ne sont plus actives. Les appareils "
+"débranchés seront ignorés"
+
+#: src/gtk/main-menu.ui:6
+msgid "_Preferences"
+msgstr "_Préférences"
+
+#: src/gtk/main-menu.ui:10
+msgid "_Debug Log"
+msgstr "Journal de _débogage"
+
+#: src/gtk/main-menu.ui:14
+msgid "_Translate this app"
+msgstr "_Traduire cette application"
+
+#: src/gtk/main-menu.ui:18
+msgid "_About"
+msgstr "À _propos"
