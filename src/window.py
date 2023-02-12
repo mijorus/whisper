@@ -175,30 +175,34 @@ class WhisperWindow(Gtk.ApplicationWindow):
             self.connection_box_slot.append(self.connection_box)
 
     def pulse_event_listener_unsubscribe(self):
-        if self.pulse_listener:
+        if self.pulse_listener is not None:
             self.pulse_listener.event_listen_stop()
-            self.pulse_listener.disconnect()
+            self.pulse_listener.close()
             self.pulse_listener = None
+
+            try:
+                raise pulsectl.PulseLoopStop()
+            except pulsectl.PulseLoopStop as e:
+                logging.debug('PulseAudio event listener unsubscribed')
+                pass
 
     def pulse_event_listener(self, ev):
         if ev.t == 'change':
-            logging.info(msg=f'PulseAudio event: change')
+            logging.debug(msg=f'PulseAudio event: change')
             self.pulse_event_listener_unsubscribe()
 
             GLib.idle_add(self.refresh_active_connections)
             GLib.idle_add(self.refresh_active_connections_volumes)
 
-            try:
-                self.create_pulse_events_listener()
-            except Exception as e:
-                pass
+            self.create_pulse_events_listener()
 
-    @async_utils.debounce(wait_time=1)
+    @async_utils._async
     def create_pulse_events_listener(self):
         self.pulse_event_listener_unsubscribe()
 
-        logging.info(msg=f'Creating PulseAudio event listener')
-        with pulsectl.Pulse('whisper-event-listen') as self.pulse_listener:
+        logging.debug(msg=f'Creating PulseAudio event listener')
+        with pulsectl.Pulse('whisper-event-listen') as listener:
+            self.pulse_listener = listener
             self.pulse_listener.event_mask_set('sink')
             self.pulse_listener.event_callback_set(self.pulse_event_listener)
             self.pulse_listener.event_listen(raise_on_disconnect=False)
@@ -348,8 +352,10 @@ class WhisperWindow(Gtk.ApplicationWindow):
             f.write('[]')
 
     def on_close_request(self, _):
-        try:
-            self.pulse_event_listener_unsubscribe()
-        finally:
-            self.settings.set_boolean('stand-by', True)
-            return False
+        print('Closing...')
+
+        self.pulse_event_listener_unsubscribe()
+        # try:
+        # finally:
+        #     self.settings.set_boolean('stand-by', True)
+        #     return False

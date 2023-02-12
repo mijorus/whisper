@@ -167,7 +167,7 @@ def main(version):
         filename=LOG_FILE,
         filemode='a',
         encoding='utf-8',
-        level=logging.DEBUG,
+        level=(logging.DEBUG if os.getenv(key='WHISPER_DEBUG', default=False) else logging.INFO),
         format='%(levelname)s - %(message)s\n',
         force=True
     )
