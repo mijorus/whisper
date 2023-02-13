@@ -20,7 +20,7 @@
 from pulsectl import Pulse
 import time
 from gi.repository import Adw
-from gi.repository import Gtk, GObject
+from gi.repository import Gtk, GObject, Gio
 from pprint import pprint
 from ..utils import async_utils
 from ..pipewire.pipewire import Pipewire, PwLink
@@ -28,12 +28,12 @@ from ..pipewire.pipewire import Pipewire, PwLink
 
 class PwActiveConnectionBox(Adw.PreferencesGroup):
     __gsignals__ = {
-        'disconnect': (GObject.SIGNAL_RUN_FIRST, None, (object,)),
+        'disconnect': (GObject.SIGNAL_RUN_FIRST, None, (object, object, object)),
         'change-volume': (GObject.SIGNAL_RUN_FIRST, None, (int, )),
         'before-change-volume': (GObject.SIGNAL_RUN_FIRST, None, (int, )),
     }
 
-    def __init__(self, input_link: PwLink, output_link: PwLink, connection_name: str, link_ids: list[str], show_link_ids: bool, **kwargs):
+    def __init__(self, input_link: PwLink, output_link: PwLink, connection_name: str, link_ids: list[str], show_link_ids: bool, has_manual_link_indicator=True, **kwargs):
         super().__init__(css_classes=['boxed-list'])
 
         self.input_link = input_link
@@ -41,6 +41,10 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
         self.input_name = input_link.name
         self.output_name = output_link.name
         self.link_ids: list[str] = link_ids
+        self.has_manual_link_indicator = has_manual_link_indicator
+
+        self.settings: Gio.Settings = Gio.Settings.new('it.mijorus.whisper')
+        self.settings.connect('changed::release-links-on-quit', self.on_change_manual_link_indicator)
 
         self.set_title(connection_name)
 
@@ -74,7 +78,17 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
         disconnect_btn = Gtk.Button(label=_('Disconnect'), css_classes=['destructive-action'])
         disconnect_btn.connect('clicked', self.on_disconnect_btn_clicked)
 
-        self.header_suffix = disconnect_btn
+        self.header_suffix = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, valign=Gtk.Align.CENTER, spacing=12)
+
+        self.manual_link_indicator = Gtk.Image.new_from_resource('/it/mijorus/whisper/assets/manual-link-indicator.svg')
+        self.manual_link_indicator.set_icon_size(Gtk.IconSize.NORMAL)
+        self.manual_link_indicator.set_tooltip_text(_('This connection will be closed when you quit the application'))
+
+        self.manual_link_indicator.set_visible(has_manual_link_indicator and self.settings.get_boolean('release-links-on-quit'))
+
+        self.header_suffix.append(self.manual_link_indicator)
+        self.header_suffix.append(disconnect_btn)
+
         self.set_header_suffix(self.header_suffix)
 
         self.pa_sink = None
@@ -93,8 +107,11 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
             print(e)
             pass
 
-    def on_disconnect_btn_clicked(self, _):
-        self.emit('disconnect', self.link_ids)
+    def on_change_manual_link_indicator(self, settings, key):
+        self.manual_link_indicator.set_visible(self.settings.get_boolean(key) and self.has_manual_link_indicator)
+
+    def on_disconnect_btn_clicked(self, event):
+        self.emit('disconnect', self.link_ids, self.output_link, self.input_link)
 
     @async_utils.debounce(0.5)
     def on_change_input_range(self, widget, _, value: float):

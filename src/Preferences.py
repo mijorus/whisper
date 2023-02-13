@@ -21,12 +21,15 @@ class WhisperPreferencesWindow(Adw.PreferencesWindow):
         self.show_ids = self.create_toggle_row(_('Show connection IDs'), _('For the geeks out there'), 'show-connection-ids')
 
         self.start_onboot = self.create_toggle_row(_('Start on boot'), _('Open Whisper when the system starts'), 'start-on-boot')
+        self.release_conn_on_exit = self.create_toggle_row(_('Release connections on close'), _('Closes all the connections created with Whisper when leaving the app'), 'release-links-on-quit')
         self.load_last_conf = self.create_toggle_row(_('Reconnect all the devices at startup'), _('Reload all the connections if they are no longer active. Unplugged devices will be skipped'), 'load-last-config')
 
         self.autostart_page.add(self.start_onboot)
         self.autostart_page.add(self.load_last_conf)
 
         self.general_page_general.add(self.show_ids)
+        self.general_page_general.add(self.release_conn_on_exit)
+
         self.general_page.add(self.general_page_general)
         self.general_page.add(self.autostart_page)
         self.settings.connect('changed', self.on_settings_changes)

@@ -73,6 +73,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
         self.viewport = Gtk.Box(halign=Gtk.Align.CENTER, orientation=Gtk.Orientation.VERTICAL, spacing=30, margin_top=20, width_request=500)
 
         self.rendered_links = []
+        self.manually_created_links = []
 
         self.auto_refresh = False
         pulse_connection_ok = False
@@ -258,11 +259,20 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
             for output_device_resource_name, connected_devices in device_links.items():
                 for d, dev in connected_devices.items():
+                    is_manually_created = False
+
+                    for manually_created_link in self.manually_created_links:
+                        if manually_created_link['output'] == dev['device_link'].output_device.resource_name and \
+                                manually_created_link['input'] == dev['device_link'].input_device.resource_name:
+                            is_manually_created = True
+                            break
+
                     box = PwActiveConnectionBox(
                         link_ids=dev['link_ids'],
                         connection_name=f'Connection #{j}',
                         output_link=dev['device_link'].output_device,
                         input_link=dev['device_link'].input_device,
+                        has_manual_link_indicator=is_manually_created,
                         show_link_ids=self.settings.get_boolean('show-connection-ids')
                     )
 
@@ -285,12 +295,22 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
         self.nolinks_placeholder.set_visible(not self.active_connection_boxes)
 
-    def on_new_connection(self, _, output_id, input_id):
+    def on_new_connection(self, widget, output_id, input_id):
+        self.manually_created_links.append({
+            'output': output_id,
+            'input': input_id
+        })
+
         self.refresh_active_connections()
 
-    def on_disconnect_btn_clicked(self, _, link_ids: list[str]):
+    def on_disconnect_btn_clicked(self, event, link_ids: list[str], output_link: PwLink, input_link: PwLink):
         for l in link_ids:
             Pipewire.unlink(l)
+
+        for i, l in enumerate(self.manually_created_links):
+            if l['output'] == output_link.resource_name and l['input'] == input_link.resource_name:
+                del self.manually_created_links[i]
+                break
 
         self.refresh_active_connections()
 
@@ -351,11 +371,22 @@ class WhisperWindow(Gtk.ApplicationWindow):
         with open(GLib.get_user_data_dir() + '/last_connections.json', 'w+') as f:
             f.write('[]')
 
-    def on_close_request(self, _):
+    def on_close_request(self, event):
         print('Closing...')
+
+        if self.settings.get_boolean('release-links-on-quit'):
+            try:
+                for connection_box in self.active_connection_boxes:
+                    for manually_created_link in self.manually_created_links:
+                        if manually_created_link['output'] == connection_box.output_link.resource_name and \
+                                manually_created_link['input'] == connection_box.input_link.resource_name:
+                            connection_box.on_disconnect_btn_clicked(None)
+            except:
+                pass
 
         try:
             self.pulse_event_listener_unsubscribe()
+        except:
+            logging.warn(msg='Error while unsubscribing from pulse events')
         finally:
-            self.settings.set_boolean('stand-by', False)
             return False

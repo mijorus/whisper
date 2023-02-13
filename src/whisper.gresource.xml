@@ -2,5 +2,6 @@
 <gresources>
   <gresource prefix="/it/mijorus/whisper">
     <file preprocess="xml-stripblanks">gtk/main-menu.ui</file>
+    <file preprocess="xml-stripblanks">assets/manual-link-indicator.svg</file>
   </gresource>
 </gresources>
