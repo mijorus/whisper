@@ -354,8 +354,8 @@ class WhisperWindow(Gtk.ApplicationWindow):
     def on_close_request(self, _):
         print('Closing...')
 
-        self.pulse_event_listener_unsubscribe()
-        # try:
-        # finally:
-        #     self.settings.set_boolean('stand-by', True)
-        #     return False
+        try:
+            self.pulse_event_listener_unsubscribe()
+        finally:
+            self.settings.set_boolean('stand-by', False)
+            return False
