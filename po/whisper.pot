@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-08 09:37+0100\n"
+"POT-Creation-Date: 2023-02-14 09:31+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,44 +18,53 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: data/it.mijorus.whisper.desktop.in:3
-msgid "whisper"
-msgstr ""
-
 #: data/it.mijorus.whisper.appdata.xml.in:4
 msgid "Whisper"
 msgstr ""
 
-#: data/it.mijorus.whisper.appdata.xml.in:6
+#: data/it.mijorus.whisper.appdata.xml.in:8
 msgid "Listen to your mic"
 msgstr ""
 
-#: data/it.mijorus.whisper.appdata.xml.in:10
+#: data/it.mijorus.whisper.appdata.xml.in:9
+msgid "Lorenzo Paderi"
+msgstr ""
+
+#: data/it.mijorus.whisper.appdata.xml.in:13
 msgid ""
 "Whisper allows you to listen to your microphone through your speakers using "
 "Pipewire"
 msgstr ""
 
-#: data/it.mijorus.whisper.appdata.xml.in:15
+#: data/it.mijorus.whisper.appdata.xml.in:18
+msgid "- Added support for Bluetooth speakers"
+msgstr ""
+
+#: data/it.mijorus.whisper.appdata.xml.in:19
+msgid "- Performance improvements"
+msgstr ""
+
+#: data/it.mijorus.whisper.appdata.xml.in:24
 msgid "- First release"
 msgstr ""
 
-#: data/it.mijorus.whisper.appdata.xml.in:21
+#: data/it.mijorus.whisper.appdata.xml.in:30
 msgid "Application showcase"
 msgstr ""
 
-#: data/it.mijorus.whisper.appdata.xml.in:26
+#: data/it.mijorus.whisper.appdata.xml.in:35
 msgid "Settings page"
 msgstr ""
 
-#: src/window.py:304
+#: src/window.py:346
 msgid "Reloading last connections in "
 msgstr ""
 
-#: src/window.py:304
+#: src/window.py:346
 msgid " seconds..."
 msgstr ""
 
-#: src/main.py:109
+#: src/main.py:110
 msgid "translator_credits"
 msgstr ""
 
@@ -67,8 +76,12 @@ msgstr ""
 msgid "To get started, connect a microphone and a speaker"
 msgstr ""
 
-#: src/components/PwActiveConnectionBox.py:73
+#: src/components/PwActiveConnectionBox.py:78
 msgid "Disconnect"
+msgstr ""
+
+#: src/components/PwActiveConnectionBox.py:85
+msgid "This connection will be closed when you quit the application"
 msgstr ""
 
 #: src/components/PwConnectionBox.py:15
@@ -79,11 +92,11 @@ msgstr ""
 msgid " -- Select a microphone --"
 msgstr ""
 
-#: src/components/PwConnectionBox.py:31
+#: src/components/PwConnectionBox.py:34
 msgid " -- Select a speaker --"
 msgstr ""
 
-#: src/components/PwConnectionBox.py:46
+#: src/components/PwConnectionBox.py:51
 msgid "Connect"
 msgstr ""
 
@@ -112,10 +125,18 @@ msgid "Open Whisper when the system starts"
 msgstr ""
 
 #: src/Preferences.py:24
-msgid "Reconnect all the devices at startup"
+msgid "Release connections on close"
 msgstr ""
 
 #: src/Preferences.py:24
+msgid "Closes all the connections created with Whisper when leaving the app"
+msgstr ""
+
+#: src/Preferences.py:25
+msgid "Reconnect all the devices at startup"
+msgstr ""
+
+#: src/Preferences.py:25
 msgid ""
 "Reload all the connections if they are no longer active. Unplugged devices "
 "will be skipped"
@@ -129,10 +150,10 @@ msgstr ""
 msgid "_Debug Log"
 msgstr ""
 
-#: src/gtk/main-menu.ui:14
+#: src/gtk/main-menu.ui:18
 msgid "_Translate this app"
 msgstr ""
 
-#: src/gtk/main-menu.ui:18
+#: src/gtk/main-menu.ui:22
 msgid "_About"
 msgstr ""
