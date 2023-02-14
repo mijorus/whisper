@@ -82,7 +82,7 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
 
         self.manual_link_indicator = Gtk.Image.new_from_resource('/it/mijorus/whisper/assets/manual-link-indicator.svg')
         self.manual_link_indicator.set_icon_size(Gtk.IconSize.NORMAL)
-        self.manual_link_indicator.set_tooltip_text(_('This connection will be closed when you quit the application'))
+        self.manual_link_indicator.set_tooltip_text(_('This connection will be closed when quitting the application'))
 
         self.manual_link_indicator.set_visible(has_manual_link_indicator and self.settings.get_boolean('release-links-on-quit'))
 

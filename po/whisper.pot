@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-14 09:31+0100\n"
+"POT-Creation-Date: 2023-02-14 12:42+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -81,7 +81,7 @@ msgid "Disconnect"
 msgstr ""
 
 #: src/components/PwActiveConnectionBox.py:85
-msgid "This connection will be closed when you quit the application"
+msgid "This connection will be closed when quitting the application"
 msgstr ""
 
 #: src/components/PwConnectionBox.py:15

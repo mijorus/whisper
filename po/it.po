@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-14 09:31+0100\n"
-"PO-Revision-Date: 2023-02-14 09:36+0100\n"
+"POT-Creation-Date: 2023-02-14 12:42+0100\n"
+"PO-Revision-Date: 2023-02-14 12:43+0100\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: it\n"
@@ -83,8 +83,8 @@ msgid "Disconnect"
 msgstr "Disconnetti"
 
 #: src/components/PwActiveConnectionBox.py:85
-msgid "This connection will be closed when you quit the application"
-msgstr "Questa connessione verrà terminata quando chiudi l'applicazione"
+msgid "This connection will be closed when quitting the application"
+msgstr "Questa connessione verrà terminata chiuderai chiudi l'applicazione"
 
 #: src/components/PwConnectionBox.py:15
 msgid "Create a connection"
