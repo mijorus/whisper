@@ -3,10 +3,9 @@ import subprocess
 import re
 import threading
 import logging
-from typing import Optional
 from time import sleep, time_ns
 from ..utils.async_utils import debounce
-from typing import Callable, List, Union
+from typing import Optional, Callable, List, Union
 
 
 class PwLink():
