@@ -34,12 +34,12 @@
         <screenshot type="default">
             <caption>Application showcase</caption>
             <image type="source">
-                https://raw.githubusercontent.com/mijorus/whisper/master/docs/img1.png</image>
+                https://raw.githubusercontent.com/mijorus/whisper/master/docs/preview_whisper1.png</image>
         </screenshot>
         <screenshot>
             <caption>Settings page</caption>
             <image type="source">
-                https://raw.githubusercontent.com/mijorus/whisper/master/docs/img3.png</image>
+                https://raw.githubusercontent.com/mijorus/whisper/master/docs/preview_whisper2.png</image>
         </screenshot>
     </screenshots>
     <content_rating type="oars-1.0" />
