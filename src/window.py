@@ -343,7 +343,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
             i = 5
             while i != 0:
                 print('Reloading configuration in ' + str(i) + ' seconds...')
-                GLib.idle_add(lambda: self.titlebar_title.set_title(_('Reloading last connections in ') + str(i) + _(' seconds...')))
+                GLib.idle_add(lambda: self.titlebar_title.set_title(_('Reloading last connections in {0} seconds...'.format(i))))
 
                 time.sleep(1)
                 i -= 1
