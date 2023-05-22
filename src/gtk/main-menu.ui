@@ -19,7 +19,7 @@
                 <attribute name="action">app.translate</attribute>
             </item>
             <item>
-                <attribute name="label" translatable="yes">_About</attribute>
+                <attribute name="label" translatable="yes">_About Whisper</attribute>
                 <attribute name="action">app.about</attribute>
             </item>
         </section>
