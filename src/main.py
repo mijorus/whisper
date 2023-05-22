@@ -99,7 +99,7 @@ class WhisperApplication(Adw.Application):
             application_name='Whisper',
             website='https://github.com/mijorus/whisper',
             issue_url='https://github.com/mijorus/whisper/issues',
-            comments='Listen to your mic',
+            comments=_('Listen to your mic'),
             application_icon='it.mijorus.whisper',
             developer_name='Lorenzo Paderi',
             version=self.version,
@@ -108,7 +108,7 @@ class WhisperApplication(Adw.Application):
         )
 
         about.set_translator_credits(_("translator_credits"))
-        about.add_credit_section('Icon by', ['Jakub Steiner (jimmac)'])
+        about.add_credit_section(_('Icon by'), ['Jakub Steiner (jimmac)'])
 
         about.present()
 

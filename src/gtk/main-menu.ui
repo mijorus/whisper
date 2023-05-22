@@ -11,7 +11,7 @@
                 <attribute name="action">app.opendebuglog</attribute>
             </item>
             <item>
-                <attribute name="label" translatable="no">Changelog</attribute>
+                <attribute name="label" translatable="yes">Changelog</attribute>
                 <attribute name="action">app.open_changelog</attribute>
             </item>
             <item>
