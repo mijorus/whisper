@@ -17,7 +17,7 @@
                 <description>
                     <p>- Added turkish translation. Thanks to Sabri Ünal</p>
                 </description>
-      </release>"
+      </release>
     	<release type="stable" version="1.1.5" date="2023-02-14T00:00:00Z">
                 <description>
                     <p>- Added an option to terminate all the connections when closing the app</p>
