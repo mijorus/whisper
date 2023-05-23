@@ -1,0 +1,172 @@
+# Turkish translation of it.mijorus.whisper.
+# Copyright (C) 2023 it.mijorus.whisper's COPYRIGHT HOLDER
+# This file is distributed under the same license as the it.mijorus.whisper package.
+#
+# Sabri Ünal <libreajans@gmail.com>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: it.mijorus.whisper\n"
+"Report-Msgid-Bugs-To: https://github.com/mijorus/whisper/issues\n"
+"POT-Creation-Date: 2023-02-14 12:42+0100\n"
+"PO-Revision-Date: 2023-05-22 14:32+0300\n"
+"Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
+"Language-Team: Turkish <takim@gnome.org.tr>\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Poedit 3.2.2\n"
+"X-POOTLE-MTIME: 1433334275.000000\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+
+#: data/it.mijorus.whisper.desktop.in:3
+#: data/it.mijorus.whisper.appdata.xml.in:4
+msgid "Whisper"
+msgstr "Whisper"
+
+#: data/it.mijorus.whisper.appdata.xml.in:8
+msgid "Listen to your mic"
+msgstr "Mikrofonunu dinle"
+
+#: data/it.mijorus.whisper.appdata.xml.in:9
+msgid "Lorenzo Paderi"
+msgstr "Lorenzo Paderi"
+
+#: data/it.mijorus.whisper.appdata.xml.in:13
+msgid ""
+"Whisper allows you to listen to your microphone through your speakers using "
+"Pipewire"
+msgstr ""
+"Whisper, Pipewire kullanarak mikrofonunuzu hoparlörlerinizden dinlemenizi "
+"sağlar"
+
+#: data/it.mijorus.whisper.appdata.xml.in:18
+msgid "- Added support for Bluetooth speakers"
+msgstr "- Bluetooth hoparlör desteği eklendi"
+
+#: data/it.mijorus.whisper.appdata.xml.in:19
+msgid "- Performance improvements"
+msgstr "- Performans iyileştirmeleri"
+
+#: data/it.mijorus.whisper.appdata.xml.in:24
+msgid "- First release"
+msgstr "- İlk sürüm"
+
+#: data/it.mijorus.whisper.appdata.xml.in:30
+msgid "Application showcase"
+msgstr "Uygulama vitrini"
+
+#: data/it.mijorus.whisper.appdata.xml.in:35
+msgid "Settings page"
+msgstr "Ayarlar sayfası"
+
+#: src/window.py:346
+msgid "Reloading last connections in {0} seconds..."
+msgstr "Son bağlantılar {0} saniye içinde yeniden yüklenecek..."
+
+#: src/main.py:110
+msgid "translator_credits"
+msgstr "Sabri Ünal <libreajans@gmail.com>, 2023"
+
+#: src/components/NoLinksPlaceholder.py:10
+msgid "No active connections"
+msgstr "Etkin bağlantı yok"
+
+#: src/components/NoLinksPlaceholder.py:11
+msgid "To get started, connect a microphone and a speaker"
+msgstr "Başlamak için bir mikrofon ve hoparlör bağlayın"
+
+#: src/components/PwActiveConnectionBox.py:78
+msgid "Disconnect"
+msgstr "Bağlantıyı Kes"
+
+#: src/components/PwActiveConnectionBox.py:85
+msgid "This connection will be closed when quitting the application"
+msgstr "Uygulamadan çıkarken bu bağlantı kapatılacak"
+
+#: src/components/PwConnectionBox.py:15
+msgid "Create a connection"
+msgstr "Bağlantı oluştur"
+
+#: src/components/PwConnectionBox.py:18
+msgid " -- Select a microphone --"
+msgstr " -- Mikrofon seç --"
+
+#: src/components/PwConnectionBox.py:34
+msgid " -- Select a speaker --"
+msgstr " -- Hoparlör seç --"
+
+#: src/components/PwConnectionBox.py:51
+msgid "Connect"
+msgstr "Bağlan"
+
+#: src/Preferences.py:18
+msgid "General"
+msgstr "Genel"
+
+#: src/Preferences.py:19
+msgid "Autostart"
+msgstr "Kendiliğinden Başlat"
+
+#: src/Preferences.py:21
+msgid "Show connection IDs"
+msgstr "Bağlantı kimliğini göster"
+
+#: src/Preferences.py:21
+msgid "For the geeks out there"
+msgstr "İleri düzey kullanıcılar için"
+
+#: src/Preferences.py:23
+msgid "Start on boot"
+msgstr "Başlangıçta başlat"
+
+#: src/Preferences.py:23
+msgid "Open Whisper when the system starts"
+msgstr "Sistem başladığında Whisperʼı aç"
+
+#: src/Preferences.py:24
+msgid "Release connections on close"
+msgstr "Kapatıldığında bağlantıları serbest bırak"
+
+#: src/Preferences.py:24
+msgid "Closes all the connections created with Whisper when leaving the app"
+msgstr "Uygulamadan çıkarken Whisper ile oluşturulan tüm bağlantıları kapatır"
+
+#: src/Preferences.py:25
+msgid "Reconnect all the devices at startup"
+msgstr "Başlangıçta tüm aygıtları yeniden bağla"
+
+#: src/Preferences.py:25
+msgid ""
+"Reload all the connections if they are no longer active. Unplugged devices "
+"will be skipped"
+msgstr ""
+"Artık etkin değillerse tüm bağlantıları yeniden yükler. Takılı olmayan "
+"aygıtlar atlanır"
+
+#: src/gtk/main-menu.ui:6
+msgid "_Preferences"
+msgstr "Ter_cihler"
+
+#: src/gtk/main-menu.ui:10
+msgid "_Debug Log"
+msgstr "_Hata Ayıklama Günlüğü"
+
+#: src/gtk/main-menu.ui:18
+msgid "_Translate This App"
+msgstr "Bu Uygulamayı Çevir"
+
+#: src/gtk/main-menu.ui:22
+msgid "_About Whisper"
+msgstr "Whisper _Hakkında"
+
+msgid "Icon by"
+msgstr "Simgeyi tasarlayan"
+
+msgid "Changelog"
+msgstr "Değişiklik Günlüğü"
+
+msgid "Refresh"
+msgstr "Yenile"
