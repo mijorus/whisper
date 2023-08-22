@@ -4,6 +4,12 @@
 <img src="docs/it.mijorus.whisper.svg">
 </p>
 
+<p align="center">
+<a href="https://ko-fi.com/mijorus" align="center">
+  <img width="250" src="https://mijorus.it/kofi-support.png">
+</a>
+</p>
+
 Whisper allows you to listen to your microphone through your speakers. It's useful for testing your microphone or for listening to your voice.
 
 This app requires both PulseAudio and Pipewire to be installed on your system.
@@ -11,7 +17,6 @@ This app requires both PulseAudio and Pipewire to be installed on your system.
 Pirewire is available as the default audio server on 
 - Fedora 34 and later
 - Ubuntu 22.04 and later
-
 
 ## Installation
 <a href="https://flathub.org/apps/details/it.mijorus.whisper" align="center">
