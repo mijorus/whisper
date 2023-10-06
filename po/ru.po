@@ -1,0 +1,164 @@
+# Russian translation for Whisper
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Сергей Ворон <voron@duck.com>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-02-14 12:42+0100\n"
+"PO-Revision-Date: 2023-08-17 22:25+0300\n"
+"Last-Translator: Сергей Ворон <voron@duck.com>\n"
+"Language-Team: \n"
+"Language: ru_RU\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.3.2\n"
+
+#: data/it.mijorus.whisper.desktop.in:3
+#: data/it.mijorus.whisper.appdata.xml.in:4
+msgid "Whisper"
+msgstr "Whisper"
+
+#: data/it.mijorus.whisper.appdata.xml.in:8
+msgid "Listen to your mic"
+msgstr "Слушай свой микрофон"
+
+#: data/it.mijorus.whisper.appdata.xml.in:9
+msgid "Lorenzo Paderi"
+msgstr "Lorenzo Paderi"
+
+#: data/it.mijorus.whisper.appdata.xml.in:13
+msgid ""
+"Whisper allows you to listen to your microphone through your speakers using "
+"Pipewire"
+msgstr ""
+"Whisper позволяет прослушивать микрофон через динамики с помощью Pipewire"
+
+#: data/it.mijorus.whisper.appdata.xml.in:18
+msgid "- Added support for Bluetooth speakers"
+msgstr "- Добавлена поддержка Bluetooth-динамиков"
+
+#: data/it.mijorus.whisper.appdata.xml.in:19
+msgid "- Performance improvements"
+msgstr "- Улучшения производительности"
+
+#: data/it.mijorus.whisper.appdata.xml.in:24
+msgid "- First release"
+msgstr "- Первый выпуск"
+
+#: data/it.mijorus.whisper.appdata.xml.in:30
+msgid "Application showcase"
+msgstr "Демонстрация приложения"
+
+#: data/it.mijorus.whisper.appdata.xml.in:35
+msgid "Settings page"
+msgstr "Страница настроек"
+
+#: src/window.py:346
+msgid "Reloading last connections in "
+msgstr "Перезагружаем последние подключения в "
+
+#: src/window.py:346
+msgid " seconds..."
+msgstr " секунд..."
+
+#: src/main.py:110
+msgid "translator_credits"
+msgstr "Сергей Ворон <voron@duck.com>"
+
+#: src/components/NoLinksPlaceholder.py:10
+msgid "No active connections"
+msgstr "Нет активных подключений"
+
+#: src/components/NoLinksPlaceholder.py:11
+msgid "To get started, connect a microphone and a speaker"
+msgstr "Чтобы начать, подключите микрофон и динамики"
+
+#: src/components/PwActiveConnectionBox.py:78
+msgid "Disconnect"
+msgstr "Отключить"
+
+#: src/components/PwActiveConnectionBox.py:85
+msgid "This connection will be closed when quitting the application"
+msgstr "Это подключение будет закрыто при выходе из приложения"
+
+#: src/components/PwConnectionBox.py:15
+msgid "Create a connection"
+msgstr "Создать подключение"
+
+#: src/components/PwConnectionBox.py:18
+msgid " -- Select a microphone --"
+msgstr " -- Выберите микрофон --"
+
+#: src/components/PwConnectionBox.py:34
+msgid " -- Select a speaker --"
+msgstr " -- Выберите динамик --"
+
+#: src/components/PwConnectionBox.py:51
+msgid "Connect"
+msgstr "Подключить"
+
+#: src/Preferences.py:18
+msgid "General"
+msgstr "Общие"
+
+#: src/Preferences.py:19
+msgid "Autostart"
+msgstr "Автозапуск"
+
+#: src/Preferences.py:21
+msgid "Show connection IDs"
+msgstr "Показывать идентификаторы подключений"
+
+#: src/Preferences.py:21
+msgid "For the geeks out there"
+msgstr "Для гиков"
+
+#: src/Preferences.py:23
+msgid "Start on boot"
+msgstr "Запускать при загрузке"
+
+#: src/Preferences.py:23
+msgid "Open Whisper when the system starts"
+msgstr "Открывать Whisper при запуске системы"
+
+#: src/Preferences.py:24
+msgid "Release connections on close"
+msgstr "Разъединять подключения при закрытии"
+
+#: src/Preferences.py:24
+msgid "Closes all the connections created with Whisper when leaving the app"
+msgstr ""
+"Закрывает все подключения, созданные с помощью Whisper, при выходе из "
+"приложения"
+
+#: src/Preferences.py:25
+msgid "Reconnect all the devices at startup"
+msgstr "Переподключать все устройства при запуске"
+
+#: src/Preferences.py:25
+msgid ""
+"Reload all the connections if they are no longer active. Unplugged devices "
+"will be skipped"
+msgstr ""
+"Перезагрузить все подключения, если они больше не активны. Отключенные "
+"устройства будут пропущены"
+
+#: src/gtk/main-menu.ui:6
+msgid "_Preferences"
+msgstr "_Настройки"
+
+#: src/gtk/main-menu.ui:10
+msgid "_Debug Log"
+msgstr "_Журнал отладки"
+
+#: src/gtk/main-menu.ui:18
+msgid "_Translate this app"
+msgstr "_Перевести это приложение"
+
+#: src/gtk/main-menu.ui:22
+msgid "_About"
+msgstr "_О программе"
