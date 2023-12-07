@@ -40,7 +40,7 @@ class WhisperPreferencesWindow(Adw.PreferencesWindow):
         row = Adw.ActionRow(title=title, subtitle=subtitle)
         switch = Gtk.Switch(valign=Gtk.Align.CENTER)
         row.add_suffix(switch)
-        self.settings.bind(key, switch, 'state', Gio.SettingsBindFlags.DEFAULT)
+        self.settings.bind(key, switch, 'active', Gio.SettingsBindFlags.DEFAULT)
 
         return row
 
