@@ -84,7 +84,7 @@ msgstr "Disconnetti"
 
 #: src/components/PwActiveConnectionBox.py:85
 msgid "This connection will be closed when quitting the application"
-msgstr "Questa connessione verrà terminata chiuderai chiudi l'applicazione"
+msgstr "Questa connessione verrà terminata quando chiuderai l'applicazione"
 
 #: src/components/PwConnectionBox.py:15
 msgid "Create a connection"
