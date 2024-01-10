@@ -2,7 +2,7 @@
 <component type="desktop">
 	<id>it.mijorus.whisper.desktop</id>
     <name>Whisper</name>
-    <url type="homepage">https://whisper.mijorus.it</url>
+    <url type="homepage">https://mijorus.it/projects/whisper</url>
     <url type="contribute">https://github.com/mijorus/whisper</url>
     <url type="donation">https://ko-fi.com/mijorus</url>
     <summary>Listen to your mic</summary>
