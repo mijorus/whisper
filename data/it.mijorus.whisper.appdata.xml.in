@@ -9,29 +9,29 @@
     <developer_name>Lorenzo Paderi</developer_name>
 	<metadata_license>CC0-1.0</metadata_license>
 	<project_license>GPL-3.0-or-later</project_license>
-	<description>
+	<description translate="no">
 	  <p>Whisper allows you to listen to your microphone through your speakers using Pipewire</p>
 	</description>
     <releases>
     <release type="stable" version="1.1.6" date="2023-12-07T00:00:00Z">
-                <description>
+                <description translate="no">
                      <p>- Fixed an error causing settings toggles to be displayed incorrecly</p>
                 </description>
       </release>
     	<release type="stable" version="1.1.5" date="2023-02-14T00:00:00Z">
-                <description>
+                <description translate="no">
                     <p>- Added an option to terminate all the connections when closing the app</p>
                      <p>- Added turkish translation. Thanks to Sabri Ünal</p>
                 </description>
       </release>
     	<release type="stable" version="1.1.0" date="2023-02-09T00:00:00Z">
-                <description>
+                <description translate="no">
                     <p>- Added support for Bluetooth speakers</p>
                     <p>- Performance improvements</p>
                 </description>
         </release>
         <release type="stable" version="1.0.0" date="2023-02-05T00:00:00Z">
-            <description>
+            <description translate="no">
                 <p>- First release</p>
             </description>
         </release>
