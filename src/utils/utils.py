@@ -25,7 +25,7 @@ def make_option(long_name, short_name=None, flags=0, arg=0, arg_data=None, descr
 
 
 def array_diff(listA, listB):
-    return set(listA) - set(listB) | set(listB) - set(listA)create_pulse_events_listener
+    return set(listA) - set(listB) | set(listB) - set(listA)
 
 
 def link_output_input(output_id: str, input_id: str):
