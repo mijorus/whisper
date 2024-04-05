@@ -177,6 +177,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
     def pulse_event_listener_unsubscribe(self):
         if self.pulse_listener is not None:
+            logging.debug('Stopping event listener...')
             self.pulse_listener.event_listen_stop()
             self.pulse_listener.close()
             self.pulse_listener = None
