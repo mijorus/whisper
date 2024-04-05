@@ -1,0 +1,165 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Scrambled777 <weblate.scrambled777@simplelogin.com>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: whisper\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-02-14 12:42+0100\n"
+"PO-Revision-Date: 2024-04-04 20:07+0530\n"
+"Last-Translator: Scrambled777 <weblate.scrambled777@simplelogin.com>\n"
+"Language-Team: Hindi\n"
+"Language: hi\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Gtranslator 46.0\n"
+
+#: data/it.mijorus.whisper.desktop.in:3
+#: data/it.mijorus.whisper.appdata.xml.in:4
+msgid "Whisper"
+msgstr "Whisper"
+
+#: data/it.mijorus.whisper.appdata.xml.in:8
+msgid "Listen to your mic"
+msgstr "अपने माइक को सुनो"
+
+#: data/it.mijorus.whisper.appdata.xml.in:9
+msgid "Lorenzo Paderi"
+msgstr "लोरेंजो पदेरी"
+
+#: data/it.mijorus.whisper.appdata.xml.in:13
+msgid ""
+"Whisper allows you to listen to your microphone through your speakers using "
+"Pipewire"
+msgstr ""
+"Whisper आपको Pipewire का उपयोग करके अपने स्पीकर के माध्यम से अपने माइक्रोफ़ोन को सुनने "
+"की अनुमति देता है"
+
+#: data/it.mijorus.whisper.appdata.xml.in:18
+msgid "- Added support for Bluetooth speakers"
+msgstr "- ब्लूटूथ स्पीकर के लिए समर्थन जोड़ा गया"
+
+#: data/it.mijorus.whisper.appdata.xml.in:19
+msgid "- Performance improvements"
+msgstr "- निष्पादन में सुधार"
+
+#: data/it.mijorus.whisper.appdata.xml.in:24
+msgid "- First release"
+msgstr "- पहली विज्ञप्ति"
+
+#: data/it.mijorus.whisper.appdata.xml.in:30
+msgid "Application showcase"
+msgstr "अनुप्रयोग प्रदर्शन"
+
+#: data/it.mijorus.whisper.appdata.xml.in:35
+msgid "Settings page"
+msgstr "सेटिंग्स पृष्ठ"
+
+#: src/window.py:346
+msgid "Reloading last connections in "
+msgstr "अंतिम सम्पर्क को पुनः लोड किया जा रहा है "
+
+#: src/window.py:346
+msgid " seconds..."
+msgstr " सेकंड..."
+
+#: src/main.py:110
+msgid "translator_credits"
+msgstr "Scrambled777 <weblate.scrambled777@simplelogin.com>"
+
+#: src/components/NoLinksPlaceholder.py:10
+msgid "No active connections"
+msgstr "कोई सक्रिय सम्पर्क नहीं"
+
+#: src/components/NoLinksPlaceholder.py:11
+msgid "To get started, connect a microphone and a speaker"
+msgstr "प्रारंभ करने के लिए, एक माइक्रोफ़ोन और एक स्पीकर जोड़ें"
+
+#: src/components/PwActiveConnectionBox.py:78
+msgid "Disconnect"
+msgstr "सम्पर्क तोड़ें"
+
+#: src/components/PwActiveConnectionBox.py:85
+msgid "This connection will be closed when quitting the application"
+msgstr "अनुप्रयोग बंद करने पर यह सम्पर्क बंद हो जाएगा"
+
+#: src/components/PwConnectionBox.py:15
+msgid "Create a connection"
+msgstr "एक सम्पर्क बनाएं"
+
+#: src/components/PwConnectionBox.py:18
+msgid " -- Select a microphone --"
+msgstr " -- एक माइक्रोफ़ोन चुनें --"
+
+#: src/components/PwConnectionBox.py:34
+msgid " -- Select a speaker --"
+msgstr " -- एक स्पीकर चुनें --"
+
+#: src/components/PwConnectionBox.py:51
+msgid "Connect"
+msgstr "जुड़ें"
+
+#: src/Preferences.py:18
+msgid "General"
+msgstr "जनरल"
+
+#: src/Preferences.py:19
+msgid "Autostart"
+msgstr "स्वतः प्रारंभ"
+
+#: src/Preferences.py:21
+msgid "Show connection IDs"
+msgstr "सम्पर्क IDs दिखाएँ"
+
+#: src/Preferences.py:21
+msgid "For the geeks out there"
+msgstr "वहाँ बाहर मौजूद गीकों के लिए"
+
+#: src/Preferences.py:23
+msgid "Start on boot"
+msgstr "बूट पर प्रारंभ करें"
+
+#: src/Preferences.py:23
+msgid "Open Whisper when the system starts"
+msgstr "सिस्टम प्रारंभ होने पर Whisper खोलें"
+
+#: src/Preferences.py:24
+msgid "Release connections on close"
+msgstr "बंद होने पर सम्पर्क छोड़ें"
+
+#: src/Preferences.py:24
+msgid "Closes all the connections created with Whisper when leaving the app"
+msgstr "ऐप छोड़ते समय Whisper से बनाए गए सभी सम्पर्क बंद हो जाते हैं"
+
+#: src/Preferences.py:25
+msgid "Reconnect all the devices at startup"
+msgstr "चालू होने पर सभी उपकरण पुनः जोड़ें"
+
+#: src/Preferences.py:25
+msgid ""
+"Reload all the connections if they are no longer active. Unplugged devices "
+"will be skipped"
+msgstr ""
+"यदि सभी सम्पर्क अब सक्रिय नहीं हैं तो उन्हें पुनः लोड करें। अनप्लग किए गए उपकरण छोड़ दिए "
+"जाएंगे"
+
+#: src/gtk/main-menu.ui:6
+msgid "_Preferences"
+msgstr "प्राथमिकताएँ (_P)"
+
+#: src/gtk/main-menu.ui:10
+msgid "_Debug Log"
+msgstr "डिबग लेखा (_D)"
+
+#: src/gtk/main-menu.ui:18
+msgid "_Translate this app"
+msgstr "इस ऐप का अनुवाद करें (_T)"
+
+#: src/gtk/main-menu.ui:22
+msgid "_About"
+msgstr "Whisper के बारे में (_A)"
