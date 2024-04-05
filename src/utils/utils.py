@@ -11,7 +11,7 @@ from gi.repository import Gtk, Gio, Adw, GLib  # noqa
 # https://github.com/gtimelog/gtimelog/blob/6e4b07b58c730777dbdb00b3b85291139f8b10aa/src/gtimelog/main.py#L159
 
 
-def make_option(long_name, short_name=None, flags=0, arg=GLib.OptionArg.NONE, arg_data=None, description=None, arg_description=None):
+def make_option(long_name, short_name=None, flags=0, arg=0, arg_data=None, description=None, arg_description=None):
     # surely something like this should exist inside PyGObject itself?!
     option = GLib.OptionEntry()
     option.long_name = long_name.lstrip('-')
@@ -25,7 +25,7 @@ def make_option(long_name, short_name=None, flags=0, arg=GLib.OptionArg.NONE, ar
 
 
 def array_diff(listA, listB):
-    return set(listA) - set(listB) | set(listB) - set(listA)
+    return set(listA) - set(listB) | set(listB) - set(listA)create_pulse_events_listener
 
 
 def link_output_input(output_id: str, input_id: str):
