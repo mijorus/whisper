@@ -1,34 +1,41 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
-	<id>it.mijorus.whisper.desktop</id>
+    <id>it.mijorus.whisper.desktop</id>
     <name>Whisper</name>
     <url type="homepage">https://mijorus.it/projects/whisper</url>
     <url type="contribute">https://github.com/mijorus/whisper</url>
     <url type="donation">https://ko-fi.com/mijorus</url>
     <summary>Listen to your mic</summary>
     <developer_name>Lorenzo Paderi</developer_name>
-	<metadata_license>CC0-1.0</metadata_license>
-	<project_license>GPL-3.0-or-later</project_license>
-	<description>
-	  <p>Whisper allows you to listen to your microphone through your speakers using Pipewire</p>
-	</description>
+    <metadata_license>CC0-1.0</metadata_license>
+    <project_license>GPL-3.0-or-later</project_license>
+    <description>
+        <p>Whisper allows you to listen to your microphone through your speakers using Pipewire</p>
+    </description>
     <releases>
-    <release type="stable" version="1.1.6" date="2023-12-07T00:00:00Z">
-                <description>
-                     <p>- Fixed an error causing settings toggles to be displayed incorrecly</p>
-                </description>
-      </release>
-    	<release type="stable" version="1.1.5" date="2023-02-14T00:00:00Z">
-                <description>
-                    <p>- Added an option to terminate all the connections when closing the app</p>
-                     <p>- Added turkish translation. Thanks to Sabri Ünal</p>
-                </description>
-      </release>
-    	<release type="stable" version="1.1.0" date="2023-02-09T00:00:00Z">
-                <description>
-                    <p>- Added support for Bluetooth speakers</p>
-                    <p>- Performance improvements</p>
-                </description>
+        <release type="stable" version="1.2.0" date="2024-05-04T00:00:00Z">
+            <description>
+                <p>- Updated translations</p>
+                <p>- Bug fix</p>
+                <p>- Improved stability by updating to the lastest PulseCtl library</p>
+            </description>
+        </release>
+        <release type="stable" version="1.1.6" date="2023-12-07T00:00:00Z">
+            <description>
+                <p>- Fixed an error causing settings toggles to be displayed incorrecly</p>
+            </description>
+        </release>
+        <release type="stable" version="1.1.5" date="2023-02-14T00:00:00Z">
+            <description>
+                <p>- Added an option to terminate all the connections when closing the app</p>
+                <p>- Added turkish translation. Thanks to Sabri Ünal</p>
+            </description>
+        </release>
+        <release type="stable" version="1.1.0" date="2023-02-09T00:00:00Z">
+            <description>
+                <p>- Added support for Bluetooth speakers</p>
+                <p>- Performance improvements</p>
+            </description>
         </release>
         <release type="stable" version="1.0.0" date="2023-02-05T00:00:00Z">
             <description>
