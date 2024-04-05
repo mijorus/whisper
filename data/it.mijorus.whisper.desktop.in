@@ -4,5 +4,5 @@ Exec=whisper
 Icon=it.mijorus.whisper
 Terminal=false
 Type=Application
-Categories=GTK;
+Categories=Utility;GTK;
 StartupNotify=true
