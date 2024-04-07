@@ -143,6 +143,18 @@ class WhisperApplication(Adw.Application):
         if shortcuts:
             self.set_accels_for_action(f"app.{name}", shortcuts)
 
+    def do_startup(self):
+        logging.info('\n\n---- Application startup')
+
+        settings = Gio.Settings.new('it.mijorus.whisper')
+        logging.debug('::: Settings')
+        for k in settings.props.settings_schema.list_keys():
+            logging.debug(k + ': ' + str(settings.get_value(k)))
+
+        logging.debug('::: End settings')
+
+        Adw.Application.do_startup(self)
+
 
 def main(version):
     """The application's entry point."""
@@ -167,11 +179,11 @@ def main(version):
         filename=LOG_FILE,
         filemode='a',
         encoding='utf-8',
-        level=(logging.DEBUG if os.getenv(key='WHISPER_DEBUG', default=False) else logging.INFO),
-        format='%(levelname)s - %(message)s\n',
+        level=(logging.DEBUG),
+        format='%(levelname)s - %(message)s',
         force=True
     )
 
     print('Logging to file: ' + LOG_FILE)
-    logging.info('==== Starting whisper ====')
+
     return app.run(sys.argv)
