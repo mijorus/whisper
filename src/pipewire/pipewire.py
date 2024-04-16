@@ -71,7 +71,12 @@ class Pipewire():
             if group_line_at == 1:
                 elements[resource_tag].alsa = line
             else:
-                name, ch = line.split(':')
+                line_data = line.split(':') 
+                
+                if len(line_data) <= 1:
+                    continue
+
+                name, ch = line_data
 
                 elements[resource_tag].name = name
                 elements[resource_tag].channels[line_id] = ch
