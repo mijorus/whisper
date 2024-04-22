@@ -73,7 +73,7 @@ class Pipewire():
             else:
                 line_data = line.split(':') 
                 
-                if len(line_data) <= 1:
+                if len(line_data) <= 2:
                     continue
 
                 name, ch = line_data
