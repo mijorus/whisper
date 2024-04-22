@@ -76,7 +76,7 @@ class Pipewire():
                 if len(line_data) <= 2:
                     continue
 
-                name, ch = line_data
+                name, *ch = line_data
 
                 elements[resource_tag].name = name
                 elements[resource_tag].channels[line_id] = ch
