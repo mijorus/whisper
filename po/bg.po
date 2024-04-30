@@ -1,0 +1,166 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# twlvnn <kraft_werk@tutanota.com>, 2024.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: whisper\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-02-14 12:42+0100\n"
+"PO-Revision-Date: 2024-04-27 16:56+0200\n"
+"Last-Translator: twlvnn <kraft_werk@tutanota.com>\n"
+"Language-Team: Bulgarian <dict-notifications@fsa-bg.org>\n"
+"Language: bg\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1)\n"
+"X-Generator: Gtranslator 46.0\n"
+
+#: data/it.mijorus.whisper.desktop.in:3
+#: data/it.mijorus.whisper.appdata.xml.in:4
+msgid "Whisper"
+msgstr "Whisper"
+
+#: data/it.mijorus.whisper.appdata.xml.in:8
+msgid "Listen to your mic"
+msgstr "Слушайте своя микрофон"
+
+#: data/it.mijorus.whisper.appdata.xml.in:9
+msgid "Lorenzo Paderi"
+msgstr "Lorenzo Paderi"
+
+#: data/it.mijorus.whisper.appdata.xml.in:13
+msgid ""
+"Whisper allows you to listen to your microphone through your speakers using "
+"Pipewire"
+msgstr ""
+"„Whisper“ ви позволява да слушате микрофона си през говорителите с помощта "
+"на „Pipewire“"
+
+#: data/it.mijorus.whisper.appdata.xml.in:18
+msgid "- Added support for Bluetooth speakers"
+msgstr "— Добавена е способност за работа с „Bluetooth“ говорители"
+
+#: data/it.mijorus.whisper.appdata.xml.in:19
+msgid "- Performance improvements"
+msgstr "— Подобрения на пройзводителността"
+
+#: data/it.mijorus.whisper.appdata.xml.in:24
+msgid "- First release"
+msgstr "— Първо издание"
+
+#: data/it.mijorus.whisper.appdata.xml.in:30
+msgid "Application showcase"
+msgstr "Представяне на приложението"
+
+#: data/it.mijorus.whisper.appdata.xml.in:35
+msgid "Settings page"
+msgstr "Страница с настройки"
+
+#: src/window.py:346
+msgid "Reloading last connections in "
+msgstr "Преустановяване на последните връзки след "
+
+#: src/window.py:346
+msgid " seconds..."
+msgstr " секунди…"
+
+#: src/main.py:110
+msgid "translator_credits"
+msgstr "twlvnn <kraft_werk@tutanota.com>"
+
+#: src/components/NoLinksPlaceholder.py:10
+msgid "No active connections"
+msgstr "Няма активни връзки"
+
+#: src/components/NoLinksPlaceholder.py:11
+msgid "To get started, connect a microphone and a speaker"
+msgstr "За да започнете, свържете микрофон и говорител"
+
+#: src/components/PwActiveConnectionBox.py:78
+msgid "Disconnect"
+msgstr "Прекъсване"
+
+#: src/components/PwActiveConnectionBox.py:85
+msgid "This connection will be closed when quitting the application"
+msgstr "Тази връзка ще бъде спряна при спиране на програмата"
+
+#: src/components/PwConnectionBox.py:15
+msgid "Create a connection"
+msgstr "Създаване на връзка"
+
+#: src/components/PwConnectionBox.py:18
+msgid " -- Select a microphone --"
+msgstr "—— Избиране на микрофон ——"
+
+#: src/components/PwConnectionBox.py:34
+msgid " -- Select a speaker --"
+msgstr "—— Избиране на говорител ——"
+
+#: src/components/PwConnectionBox.py:51
+msgid "Connect"
+msgstr "Свързване"
+
+#: src/Preferences.py:18
+msgid "General"
+msgstr "Общи"
+
+#: src/Preferences.py:19
+msgid "Autostart"
+msgstr "Автоматично стартиране"
+
+#: src/Preferences.py:21
+msgid "Show connection IDs"
+msgstr "Показване на идентификаторите на връзките"
+
+#: src/Preferences.py:21
+msgid "For the geeks out there"
+msgstr "За напредналите"
+
+#: src/Preferences.py:23
+msgid "Start on boot"
+msgstr "Пускане при стартиране"
+
+#: src/Preferences.py:23
+msgid "Open Whisper when the system starts"
+msgstr "Отворяне на „Whisper“ когато системата се стартира"
+
+#: src/Preferences.py:24
+msgid "Release connections on close"
+msgstr "Прекратяване на връзките при затваряне"
+
+#: src/Preferences.py:24
+msgid "Closes all the connections created with Whisper when leaving the app"
+msgstr ""
+"Прекратява всички връзки, създадени с „Whisper“, при спиране на програмата"
+
+#: src/Preferences.py:25
+msgid "Reconnect all the devices at startup"
+msgstr "Възстановяване на връзката към всички устройства при стартиране"
+
+#: src/Preferences.py:25
+msgid ""
+"Reload all the connections if they are no longer active. Unplugged devices "
+"will be skipped"
+msgstr ""
+"Преустановява всички връзки, ако вече не са активни. Извадени от кабела "
+"устройства ще бъдат пропуснати"
+
+#: src/gtk/main-menu.ui:6
+msgid "_Preferences"
+msgstr "_Настройки"
+
+#: src/gtk/main-menu.ui:10
+msgid "_Debug Log"
+msgstr "_Дневник на грешки"
+
+#: src/gtk/main-menu.ui:18
+msgid "_Translate this app"
+msgstr "_Помогнете с превода"
+
+#: src/gtk/main-menu.ui:22
+msgid "_About"
+msgstr "Относно „Whisper“"
