@@ -14,6 +14,11 @@
         <p>Whisper allows you to listen to your microphone through your speakers using Pipewire</p>
     </description>
     <releases>
+        <release type="stable" version="1.2.4" date="2024-05-02T00:00:00Z">
+            <description>
+                <p>- Fixed a bug causing output names to show up empty</p>
+            </description>
+        </release>
         <release type="stable" version="1.2.1" date="2024-04-07T00:00:00Z">
             <description>
                 <p>- Fixed app not starting</p>
