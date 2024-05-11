@@ -9,15 +9,15 @@ msgstr ""
 "Project-Id-Version: whisper\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2023-02-14 12:42+0100\n"
-"PO-Revision-Date: 2024-04-04 20:07+0530\n"
+"PO-Revision-Date: 2024-05-11 15:02+0530\n"
 "Last-Translator: Scrambled777 <weblate.scrambled777@simplelogin.com>\n"
-"Language-Team: Hindi\n"
+"Language-Team: Hindi <indlinux-hindi@lists.sourceforge.net>\n"
 "Language: hi\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
-"X-Generator: Gtranslator 46.0\n"
+"X-Generator: Gtranslator 46.1\n"
 
 #: data/it.mijorus.whisper.desktop.in:3
 #: data/it.mijorus.whisper.appdata.xml.in:4
@@ -37,7 +37,7 @@ msgid ""
 "Whisper allows you to listen to your microphone through your speakers using "
 "Pipewire"
 msgstr ""
-"Whisper आपको Pipewire का उपयोग करके अपने स्पीकर के माध्यम से अपने माइक्रोफ़ोन को सुनने "
+"Whisper आपको Pipewire का उपयोग करके अपने स्पीकर के माध्यम से अपने माइक्रोफोन को सुनने "
 "की अनुमति देता है"
 
 #: data/it.mijorus.whisper.appdata.xml.in:18
@@ -54,7 +54,7 @@ msgstr "- पहली विज्ञप्ति"
 
 #: data/it.mijorus.whisper.appdata.xml.in:30
 msgid "Application showcase"
-msgstr "अनुप्रयोग प्रदर्शन"
+msgstr "अनुप्रयोग प्रदर्शन-मंजूषा"
 
 #: data/it.mijorus.whisper.appdata.xml.in:35
 msgid "Settings page"
@@ -78,7 +78,7 @@ msgstr "कोई सक्रिय सम्पर्क नहीं"
 
 #: src/components/NoLinksPlaceholder.py:11
 msgid "To get started, connect a microphone and a speaker"
-msgstr "प्रारंभ करने के लिए, एक माइक्रोफ़ोन और एक स्पीकर जोड़ें"
+msgstr "प्रारंभ करने के लिए, एक माइक्रोफोन और एक स्पीकर जोड़ें"
 
 #: src/components/PwActiveConnectionBox.py:78
 msgid "Disconnect"
@@ -94,7 +94,7 @@ msgstr "एक सम्पर्क बनाएं"
 
 #: src/components/PwConnectionBox.py:18
 msgid " -- Select a microphone --"
-msgstr " -- एक माइक्रोफ़ोन चुनें --"
+msgstr " -- एक माइक्रोफोन चुनें --"
 
 #: src/components/PwConnectionBox.py:34
 msgid " -- Select a speaker --"
@@ -106,7 +106,7 @@ msgstr "जुड़ें"
 
 #: src/Preferences.py:18
 msgid "General"
-msgstr "जनरल"
+msgstr "सामान्य"
 
 #: src/Preferences.py:19
 msgid "Autostart"
@@ -114,11 +114,11 @@ msgstr "स्वतः प्रारंभ"
 
 #: src/Preferences.py:21
 msgid "Show connection IDs"
-msgstr "सम्पर्क IDs दिखाएँ"
+msgstr "सम्पर्क IDs दिखाएं"
 
 #: src/Preferences.py:21
 msgid "For the geeks out there"
-msgstr "वहाँ बाहर मौजूद गीकों के लिए"
+msgstr "वहां बाहर मौजूद गीकों के लिए"
 
 #: src/Preferences.py:23
 msgid "Start on boot"
@@ -150,7 +150,7 @@ msgstr ""
 
 #: src/gtk/main-menu.ui:6
 msgid "_Preferences"
-msgstr "प्राथमिकताएँ (_P)"
+msgstr "प्राथमिकताएं (_P)"
 
 #: src/gtk/main-menu.ui:10
 msgid "_Debug Log"
