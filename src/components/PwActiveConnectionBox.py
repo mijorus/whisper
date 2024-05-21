@@ -31,9 +31,12 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
         'disconnect': (GObject.SIGNAL_RUN_FIRST, None, (object, object, object)),
         'change-volume': (GObject.SIGNAL_RUN_FIRST, None, (int, )),
         'before-change-volume': (GObject.SIGNAL_RUN_FIRST, None, (int, )),
+        'low-latency-change': (GObject.SIGNAL_RUN_FIRST, None, (bool, ))
     }
 
-    def __init__(self, input_link: PwLink, output_link: PwLink, connection_name: str, link_ids: list[str], show_link_ids: bool, has_manual_link_indicator=True, **kwargs):
+    def __init__(self, input_link: PwLink, output_link: PwLink, connection_name: str, 
+        link_ids: list[str], show_link_ids: bool, has_manual_link_indicator=True, is_low_latency=False **kwargs):
+
         super().__init__(css_classes=['boxed-list'])
 
         self.input_link = input_link
@@ -41,6 +44,7 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
         self.input_name = input_link.name
         self.output_name = output_link.name
         self.link_ids: list[str] = link_ids
+        self.is_low_latency = is_low_latency
         self.has_manual_link_indicator = has_manual_link_indicator
 
         self.settings: Gio.Settings = Gio.Settings.new('it.mijorus.whisper')
@@ -69,9 +73,17 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
         outp_r = Gtk.ListBoxRow()
         outp_r.set_child(self.output_range)
 
+        low_latency_row = Adw.SwitchRow(
+            title=_('Enable low-latency mode'),
+        )
+
+        low_latency_row.set_tooltip_text(_('This setting attemps to reduce the micrphone latency, but may increase CPU usage and cause distortions'))
+        low_latency_row.connect('notify::active', self.on_latency_row_toggled)
+
         self.input_exp.add_row(inp_r)
         self.output_exp.add_row(outp_r)
 
+        self.add(low_latency_row)
         self.add(self.output_exp)
         self.add(self.input_exp)
 
@@ -112,6 +124,9 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
 
     def on_disconnect_btn_clicked(self, event):
         self.emit('disconnect', self.link_ids, self.output_link, self.input_link)
+
+    def on_latency_row_toggled(self, w, _):
+        self.emit('low-latency-change', w.get_active())
 
     @async_utils.debounce(0.5)
     def on_change_input_range(self, widget, _, value: float):

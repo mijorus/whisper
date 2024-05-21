@@ -1,12 +1,15 @@
+import re
 import signal
 import subprocess
 import re
 import threading
 import logging
-from time import sleep, time_ns
+from time import sleep, time_ns, time
 from ..utils.async_utils import debounce
 from typing import Optional, Callable, List, Union
+from pprint import pprint
 
+LOW_LATENCY_NODE_NAME = 'whisper-low-latency-node'
 
 class PwLink():
     def __init__(self, resource_name: str):
@@ -26,6 +29,7 @@ class PwActiveConnectionLink():
 class Pipewire():
     def __init__(self):
         self.monitor: Optional[subprocess.Popen] = None
+        self.top_output: Optional[subprocess.Popen] = None
         self.monitor_callback: Optional[Callable] = None
 
     def _run(command: List[str], quiet=False) -> str:
@@ -88,7 +92,7 @@ class Pipewire():
 
         return elements
 
-    def _parse_pwlink_list_return(output: str) -> [str, dict[str, PwActiveConnectionLink]]:
+    def _parse_pwlink_list_return(output: str) -> list[str, dict[str, PwActiveConnectionLink]]:
         elements = {}
         output_id = None
 
@@ -143,44 +147,126 @@ class Pipewire():
     def unlink(link_id):
         Pipewire._run(['pw-link', '--disconnect', link_id])
 
-    def list_links(quiet=False) -> [str, dict[str, PwActiveConnectionLink]]:
+    def list_links(quiet=False) -> list[str, dict[str, PwActiveConnectionLink]]:
         return Pipewire._parse_pwlink_list_return(Pipewire._run(['pw-link', '--links', '--id'], quiet=quiet))
 
     def get_info_raw() -> str:
         return Pipewire._run(['pw-cli', 'info', '0'])
 
-    def watch(self, callback: Callable[[str], None] = None):
-        output = None
+    def list_objects():
+        output = Pipewire._run(['pw-cli', 'info'])
+        rows = output.split('\n')
 
-        def run_command(callback: Callable[[str], None] = None):
-            try:
-                logging.info('Pipewire WATCH: starting monitor')
-                self.monitor = subprocess.Popen(['pw-mon', '--no-colors'], encoding='utf-8', shell=False, stdout=subprocess.PIPE)
+        result = {}
 
-                last_call = time_ns()
-                while self.monitor:
-                    # capture the first line output of the running process
-                    output = self.monitor.stdout.readlines(1)
-                    if (time_ns() - last_call) > 10000000:
-                        logging.info('Pipewire WATCH: executing callback ' + str(time_ns() - last_call))
+        o_id = ''
+        s_reg = re.compile(r'^"')
+        e_reg = re.compile(r'"$')
 
-                        last_call = time_ns()
-                        if callback:
-                            callback()
+        for r in rows:
+            trimmed: str = r.strip()
 
-            except subprocess.CalledProcessError as e:
-                print(e.stderr)
-                logging.error(msg=e.stderr)
-                raise e
+            if r.startswith('\tid'):
+                [o_id, o_type] = trimmed.split(',', maxsplit=1)
+                o_id = o_id.replace('id ', '')
+                _, o_type = o_type.strip().split(' ',  maxsplit=1)
 
-        thread = threading.Thread(target=run_command, daemon=True, args=(callback,))
-        thread.start()
+                result[o_id] = {'type': o_type}
+            elif o_id:
+                key, val = trimmed.split('=')
+                key = key.strip()
+                val = val.strip().replace('"', '')
+                result[o_id][key] = val
 
-    def unwatch(self):
-        if self.monitor:
-            logging.info('Pipewire WATCH: stopping monitor')
-            self.monitor.kill()
-            self.monitor = None
+        return result
+
+    def get_default_clock_info():
+        info_raw = Pipewire.get_info_raw()
+
+        info = {'rate': -1, 'quantum': -1, 'min-quantum': -1}
+        for r in info_raw.split('\n'):
+            if 'default.clock.rate' in r:
+                _, val = r.split('=', maxsplit=1)
+                val = val.replace('"', '')
+                info['rate'] = int(val)
+
+            if 'default.clock.quantum' in r:
+                _, val = r.split('=', maxsplit=1)
+                val = val.replace('"', '')
+                info['quantum'] = int(val)
+
+            if 'default.clock.min-quantum' in r:
+                _, val = r.split('=', maxsplit=1)
+                val = val.replace('"', '')
+                info['min-quantum'] = int(val)
+
+        return info
+
+    def create_low_latency_node() -> str:
+        objs = Pipewire.list_objects()
+
+        whisper_objs_count = -1
+
+        for o, obj in objs.items():
+            if 'PipeWire:Interface:Node' in obj['type'] and \
+                'name' in obj and \
+                LOW_LATENCY_NODE_NAME in obj['name']:
+
+                whisper_objs_count += 1
+
+        clock_rate = Pipewire.get_default_clock_info()
+        buffer_size = 64
+
+        if clock_rate['min-quantum'] > 0:
+            while buffer_size < clock_rate['min-quantum']:
+                buffer_size = buffer_size * 2
+
+        node_name = f"{LOW_LATENCY_NODE_NAME}-{(whisper_objs_count + 1)}"
+        node_conf = f"factory.name=support.null-audio-sink node.name={node_name}"
+        node_conf += f" media.class=Audio/Sink object.linger=true audio.position=[FL FR] node.latency={buffer_size}/{clock_rate['rate']}"
+
+        Pipewire._run(['pw-cli', 'create-node', 'adapter', ('{' +  node_conf + '}', )])
+
+        objs = Pipewire.list_objects()
+
+        for o, obj in objs.items():
+            if 'PipeWire:Interface:Node' in obj['type'] and \
+                'name' in obj and \
+                node_name == obj['name']:
+
+                return o
+
+    def top_output(self, callback: Callable[[str], None] = None):
+        # output = None
+
+        # def run_command(callback: Callable[[str], None] = None):
+        #     try:
+        #         logging.info('Pipewire WATCH: starting top')
+        #         self.top_output = subprocess.Popen(['pw-top'], encoding='utf-8', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        #         last_call = time()
+        #         while self.top_output:
+        #             output  = self.top_output.communicate()[0]
+
+        #             if (time() - last_call) > 3:
+        #                 print(output)
+        #                 logging.info('Pipewire TOP: executing callback ' + str(time_ns() - last_call))
+
+        #                 last_call = time()
+
+        #                 if callback:
+        #                     callback(output)
+
+        #     except subprocess.CalledProcessError as e:
+        #         print(e.stderr)
+        #         logging.error(msg=e.stderr)
+        #         raise e
+
+        # thread = threading.Thread(target=run_command, daemon=False, args=(callback,))
+        # thread.start()
+        # o =  self.top_output = subprocess.run([" pw-cli create-node adapter '{ factory.name=support.null-audio-sink node.name=whisper-low-latency-node-test media.class=Audio/Sink object.linger=true audio.position=[FL FR] monitor.channel-volumes=true monitor.passthrough=true node.latency=128/48000}'"], shell=True, check=True, encoding='utf-8')
+        # print(o.stdout, o.stderr)
+        Pipewire.list_objects()
 
 # def threaded_sh(command: Union[str, List[str]], callback: Callable[[str], None]=None, return_stderr=False):
 #     to_check = command if isinstance(command, str) else command[0]
@@ -198,3 +284,12 @@ class Pipewire():
 
 #     thread = threading.Thread(target=run_command, daemon=True, args=(command, callback, ))
 #     thread.start()
+
+
+        
+
+
+
+        
+
+

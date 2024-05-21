@@ -123,6 +123,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
             self.pulse_listener: Optional[pulsectl.Pulse] = None
             threading.Thread(target=self.create_pulse_events_listener).start()
+            Pipewire.top_output(lambda r: print(r))
 
             self.connect('close-request', self.on_close_request)
 
@@ -197,6 +198,9 @@ class WhisperWindow(Gtk.ApplicationWindow):
             GLib.idle_add(self.refresh_active_connections_volumes)
 
             self.create_pulse_events_listener()
+
+    # @async_utils._async
+    # def create_pw_top_listener():
 
     @async_utils._async
     def create_pulse_events_listener(self):

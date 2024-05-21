@@ -51,3 +51,8 @@ def link_output_input(output_id: str, input_id: str):
                 Pipewire.link(c, fl_fr[0])
             elif (channel.endswith('_FR')) and fl_fr[1]:
                 Pipewire.link(c, fl_fr[1])
+
+def link_low_latency(output_id: str, input_id: str):
+    pass
+
+    df
