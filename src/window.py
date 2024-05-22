@@ -56,6 +56,8 @@ class WhisperWindow(Gtk.ApplicationWindow):
         self.settings: Gio.Settings = Gio.Settings.new('it.mijorus.whisper')
         self.settings.connect('changed', self.on_settings_changed)
         self.settings.set_boolean('stand-by', False)
+        
+        self.is_changing_volume = False
 
         self.titlebar = Adw.HeaderBar()
         self.titlebar_title = Adw.WindowTitle(title='Whisper')
@@ -82,7 +84,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
             with pulsectl.Pulse() as pulse:
                 pulse.connect()
                 pulse_connection_ok = True
-
+            
             logging.info('PulseAudio connection OK')
         except Exception as e:
             logging.error(e)
@@ -187,9 +189,11 @@ class WhisperWindow(Gtk.ApplicationWindow):
                 raise pulsectl.PulseLoopStop()
             except pulsectl.PulseLoopStop as e:
                 logging.debug('PulseAudio event listener unsubscribed')
-                pass
 
     def pulse_event_listener(self, ev):
+        if self.is_changing_volume:
+            return
+
         if ev.t == 'change':
             logging.debug(msg=f'PulseAudio event: change')
             self.pulse_event_listener_unsubscribe()
@@ -198,6 +202,15 @@ class WhisperWindow(Gtk.ApplicationWindow):
             GLib.idle_add(self.refresh_active_connections_volumes)
 
             self.create_pulse_events_listener()
+
+    def pulse_change_volume(self, ev, sink, volume):
+        if not self.pulse_listener:
+            return
+
+        self.is_changing_volume = True
+        with pulsectl.Pulse() as pulse_client:
+            pulse_client.volume_set_all_chans(sink, (volume / 100))
+            self.is_changing_volume = False
 
     # @async_utils._async
     # def create_pw_top_listener():
@@ -282,8 +295,8 @@ class WhisperWindow(Gtk.ApplicationWindow):
                     )
 
                     box.connect('disconnect', self.on_disconnect_btn_clicked)
-                    box.connect('before-change-volume', lambda a, b: self.pulse_event_listener_unsubscribe())
-                    box.connect('change-volume', lambda a, b: self.create_pulse_events_listener())
+                    # box.connect('before-change-volume', lambda a, b: self.pulse_event_listener_unsubscribe())
+                    box.connect('change-volume', self.pulse_change_volume)
 
                     self.rendered_links.extend(dev['link_ids'])
                     self.active_connection_boxes.append(box)

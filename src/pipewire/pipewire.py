@@ -1,3 +1,4 @@
+import json
 import re
 import signal
 import subprocess
@@ -154,53 +155,28 @@ class Pipewire():
         return Pipewire._run(['pw-cli', 'info', '0'])
 
     def list_objects():
-        output = Pipewire._run(['pw-cli', 'info'])
-        rows = output.split('\n')
-
+        output = json.loads(Pipewire._run(['pw-dump', '--no-colors']))
         result = {}
 
-        o_id = ''
-        s_reg = re.compile(r'^"')
-        e_reg = re.compile(r'"$')
-
-        for r in rows:
-            trimmed: str = r.strip()
-
-            if r.startswith('\tid'):
-                [o_id, o_type] = trimmed.split(',', maxsplit=1)
-                o_id = o_id.replace('id ', '')
-                _, o_type = o_type.strip().split(' ',  maxsplit=1)
-
-                result[o_id] = {'type': o_type}
-            elif o_id:
-                key, val = trimmed.split('=')
-                key = key.strip()
-                val = val.strip().replace('"', '')
-                result[o_id][key] = val
+        for o in output:
+            result[o['id']] = o
+            del result[o['id']]
 
         return result
 
     def get_default_clock_info():
-        info_raw = Pipewire.get_info_raw()
+        objs = Pipewire.list_objects()
 
-        info = {'rate': -1, 'quantum': -1, 'min-quantum': -1}
-        for r in info_raw.split('\n'):
-            if 'default.clock.rate' in r:
-                _, val = r.split('=', maxsplit=1)
-                val = val.replace('"', '')
-                info['rate'] = int(val)
+        props_0 = objs['0']['info']['props']
 
-            if 'default.clock.quantum' in r:
-                _, val = r.split('=', maxsplit=1)
-                val = val.replace('"', '')
-                info['quantum'] = int(val)
-
-            if 'default.clock.min-quantum' in r:
-                _, val = r.split('=', maxsplit=1)
-                val = val.replace('"', '')
-                info['min-quantum'] = int(val)
-
-        return info
+        return {
+            "default.clock.max-quantum": props_0.get("default.clock.max-quantum", -1),
+            "default.clock.min-quantum": props_0.get("default.clock.min-quantum", -1),
+            "default.clock.quantum": props_0.get("default.clock.quantum", -1),
+            "default.clock.quantum-floor": props_0.get("default.clock.quantum-floor", -1),
+            "default.clock.quantum-limit": props_0.get("default.clock.quantum-limit", -1),
+            "default.clock.rate": props_0.get("default.clock.rate", -1),
+        }
 
     def create_low_latency_node() -> str:
         objs = Pipewire.list_objects()
@@ -208,31 +184,31 @@ class Pipewire():
         whisper_objs_count = -1
 
         for o, obj in objs.items():
-            if 'PipeWire:Interface:Node' in obj['type'] and \
-                'name' in obj and \
-                LOW_LATENCY_NODE_NAME in obj['name']:
+            if obj['type'] == 'PipeWire:Interface:Node' and \
+                'info' in obj and 'props' in obj['info'] and \
+                LOW_LATENCY_NODE_NAME in obj['application.name']:
 
                 whisper_objs_count += 1
 
         clock_rate = Pipewire.get_default_clock_info()
         buffer_size = 64
 
-        if clock_rate['min-quantum'] > 0:
-            while buffer_size < clock_rate['min-quantum']:
+        if clock_rate['default.clock.min-quantum'] > 0:
+            while buffer_size < clock_rate['default.clock.min-quantum']:
                 buffer_size = buffer_size * 2
 
         node_name = f"{LOW_LATENCY_NODE_NAME}-{(whisper_objs_count + 1)}"
-        node_conf = f"factory.name=support.null-audio-sink node.name={node_name}"
-        node_conf += f" media.class=Audio/Sink object.linger=true audio.position=[FL FR] node.latency={buffer_size}/{clock_rate['rate']}"
+        node_conf = f"factory.name=support.null-audio-sink node.name={node_name} media.class=Audio/Sink object.linger=true"
+        node_conf += f" audio.position=[FL FR] node.latency={buffer_size}/{clock_rate['default.clock.rate']}"
 
-        Pipewire._run(['pw-cli', 'create-node', 'adapter', ('{' +  node_conf + '}', )])
+        Pipewire._run(['pw-cli', 'create-node', 'adapter', ('{' +  node_conf + '}')])
 
         objs = Pipewire.list_objects()
 
         for o, obj in objs.items():
-            if 'PipeWire:Interface:Node' in obj['type'] and \
-                'name' in obj and \
-                node_name == obj['name']:
+            if obj['type'] == 'PipeWire:Interface:Node' and \
+                'info' in obj and 'props' in obj['info'] and \
+                node_name == obj['application.name']:
 
                 return o
 
@@ -264,8 +240,6 @@ class Pipewire():
 
         # thread = threading.Thread(target=run_command, daemon=False, args=(callback,))
         # thread.start()
-        # o =  self.top_output = subprocess.run([" pw-cli create-node adapter '{ factory.name=support.null-audio-sink node.name=whisper-low-latency-node-test media.class=Audio/Sink object.linger=true audio.position=[FL FR] monitor.channel-volumes=true monitor.passthrough=true node.latency=128/48000}'"], shell=True, check=True, encoding='utf-8')
-        # print(o.stdout, o.stderr)
         Pipewire.list_objects()
 
 # def threaded_sh(command: Union[str, List[str]], callback: Callable[[str], None]=None, return_stderr=False):

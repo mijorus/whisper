@@ -29,13 +29,12 @@ from ..pipewire.pipewire import Pipewire, PwLink
 class PwActiveConnectionBox(Adw.PreferencesGroup):
     __gsignals__ = {
         'disconnect': (GObject.SIGNAL_RUN_FIRST, None, (object, object, object)),
-        'change-volume': (GObject.SIGNAL_RUN_FIRST, None, (int, )),
-        'before-change-volume': (GObject.SIGNAL_RUN_FIRST, None, (int, )),
+        'change-volume': (GObject.SIGNAL_RUN_FIRST, None, (object, int, )),
         'low-latency-change': (GObject.SIGNAL_RUN_FIRST, None, (bool, ))
     }
 
     def __init__(self, input_link: PwLink, output_link: PwLink, connection_name: str, 
-        link_ids: list[str], show_link_ids: bool, has_manual_link_indicator=True, is_low_latency=False **kwargs):
+        link_ids: list[str], show_link_ids: bool, has_manual_link_indicator=True, is_low_latency=False, **kwargs):
 
         super().__init__(css_classes=['boxed-list'])
 
@@ -52,8 +51,11 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
 
         self.set_title(connection_name)
 
-        if show_link_ids:
-            self.set_description('Link IDs: ' + ', '.join(link_ids))
+        # if show_link_ids:
+        #     self.set_description('Link IDs: ' + ', '.join(link_ids))
+
+        # if not self.is_low_latency:
+        #     clock_data = Pipewire.get_default_clock_info()
 
         self.output_exp = Adw.ExpanderRow(title=self.output_name)
         self.input_exp = Adw.ExpanderRow(title=self.input_name)
@@ -113,6 +115,7 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
                 self.pa_sink = pulse_client.get_sink_by_name(self.input_link.resource_name)
                 self.pa_source = pulse_client.get_source_by_name(self.output_link.resource_name)
 
+            print(self.pa_source)
             self.input_range.set_value(self.pa_sink.volume.value_flat * 100)
             self.output_range.set_value(self.pa_source.volume.value_flat * 100)
         except Exception as e:
@@ -131,17 +134,9 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
     @async_utils.debounce(0.5)
     def on_change_input_range(self, widget, _, value: float):
         if self.pa_sink:
-
-            with Pulse() as pulse_client:
-                self.emit('before-change-volume', value)
-                pulse_client.volume_set_all_chans(self.pa_sink, (value / 100))
-                self.emit('change-volume', value)
+            self.emit('change-volume', self.pa_sink, value)
 
     @async_utils.debounce(0.5)
     def on_change_output_range(self, widget, _, value: float):
         if self.pa_source:
-
-            with Pulse() as pulse_client:
-                self.emit('before-change-volume', value)
-                pulse_client.volume_set_all_chans(self.pa_source, (value / 100))
-                self.emit('change-volume', value)
+            self.emit('change-volume', self.pa_source, value)
