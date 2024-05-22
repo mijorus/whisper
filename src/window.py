@@ -17,20 +17,19 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from .pipewire.pipewire import Pipewire, PwLink
+from .pipewire.pipewire import Pipewire, PwLink, PwLowLatencyNode, LOW_LATENCY_NODE_NAME
 from .components.PwActiveConnectionBox import PwActiveConnectionBox
 from .components.NoLinksPlaceholder import NoLinksPlaceholder
 from .components.PwConnectionBox import PwConnectionBox
 from .utils import async_utils
 from .utils.utils import link_output_input, array_diff
-from pprint import pprint
 from typing import Optional
 import json
+import pprint
 import threading
 import pulsectl
 import logging
 import json
-import pprint
 import time
 import os
 import gi
@@ -125,7 +124,6 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
             self.pulse_listener: Optional[pulsectl.Pulse] = None
             threading.Thread(target=self.create_pulse_events_listener).start()
-            Pipewire.top_output(lambda r: print(r))
 
             self.connect('close-request', self.on_close_request)
 
@@ -159,7 +157,9 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
     def _is_supported_device(self, pw_list: dict[str, PwLink], link_id) -> Optional[PwLink]:
         for d, dev in pw_list.items():
-            if (link_id in dev.channels) and (dev.alsa.startswith('alsa:') or dev.resource_name.startswith('bluez_output')):
+            if (link_id in dev.channels) and (dev.alsa.startswith('alsa:') \
+                or dev.resource_name.startswith('bluez_output')) or \
+                LOW_LATENCY_NODE_NAME in dev.resource_name:
                 return dev
 
         return None
@@ -236,9 +236,11 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
         if force_refresh or array_diff(self.rendered_links, new_links_to_render):
             logging.info('Refreshing active connections')
+
             # recheck if there are new links
             inputs = Pipewire.list_inputs()
             outputs = Pipewire.list_outputs()
+            dump = Pipewire.list_objects()
 
             j = 1
             device_links: dict[str, dict] = {}
@@ -258,10 +260,19 @@ class WhisperWindow(Gtk.ApplicationWindow):
                                 device_links[output_device.resource_name] = {}
 
                             if not input_device.resource_name in device_links[output_device.resource_name]:
-                                device_links[output_device.resource_name][input_device.resource_name] = {
-                                    'device_link': DeviceLink(input_device, output_device, 0),
-                                    'link_ids': []
-                                }
+                                
+                                if LOW_LATENCY_NODE_NAME in input_device.resource_name:
+                                    device_links[output_device.resource_name][input_device.resource_name] = {
+                                        'device_link': DeviceLink(None, output_device, -1),
+                                        'low_latency_node': True,
+                                        'link_ids': []
+                                    }
+                                else:
+                                    device_links[output_device.resource_name][input_device.resource_name] = {
+                                        'device_link': DeviceLink(input_device, output_device, 0),
+                                        'low_latency_node': False,
+                                        'link_ids': []
+                                    }
 
                             device_links[output_device.resource_name][input_device.resource_name]['link_ids'].append(i)
                             new_links_to_render.append(i)
@@ -274,9 +285,19 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
             self.active_connection_boxes = []
             self.rendered_links = []
-
+            
             for output_device_resource_name, connected_devices in device_links.items():
+
+                low_latency_nodes = {}
+                connected_devices_without_lln = {}
+
                 for d, dev in connected_devices.items():
+                    if dev['low_latency_node']:
+                        low_latency_nodes[d] = dev
+                    else:
+                        connected_devices_without_lln[d] = dev
+
+                for d, dev in connected_devices_without_lln.items():
                     is_manually_created = False
 
                     for manually_created_link in self.manually_created_links:
@@ -285,8 +306,17 @@ class WhisperWindow(Gtk.ApplicationWindow):
                             is_manually_created = True
                             break
 
+                    lln = None
+                    for n, lln in low_latency_nodes.items():
+                        ddev: DeviceLink = lln['device_link']
+                        
+                        if ddev.output_device.resource_name == dev['device_link'].output_device.resource_name:
+                            node = Pipewire.find_node_by_name(dump, n)
+                            lln = PwLowLatencyNode(node['id'], node['info']['props']['node.name'])
+
                     box = PwActiveConnectionBox(
                         link_ids=dev['link_ids'],
+                        initial_lln=lln,
                         connection_name=f'Connection #{j}',
                         output_link=dev['device_link'].output_device,
                         input_link=dev['device_link'].input_device,
@@ -295,7 +325,6 @@ class WhisperWindow(Gtk.ApplicationWindow):
                     )
 
                     box.connect('disconnect', self.on_disconnect_btn_clicked)
-                    # box.connect('before-change-volume', lambda a, b: self.pulse_event_listener_unsubscribe())
                     box.connect('change-volume', self.pulse_change_volume)
 
                     self.rendered_links.extend(dev['link_ids'])
@@ -321,9 +350,13 @@ class WhisperWindow(Gtk.ApplicationWindow):
 
         self.refresh_active_connections()
 
-    def on_disconnect_btn_clicked(self, event, link_ids: list[str], output_link: PwLink, input_link: PwLink):
+    def on_disconnect_btn_clicked(self, event, link_ids: list[str], output_link: PwLink, input_link: PwLink, low_latency_node: PwLowLatencyNode=None):
         for l in link_ids:
             Pipewire.unlink(l)
+
+        if low_latency_node:
+            Pipewire.destroy_node(low_latency_node)
+
 
         for i, l in enumerate(self.manually_created_links):
             if l['output'] == output_link.resource_name and l['input'] == input_link.resource_name:
@@ -401,6 +434,18 @@ class WhisperWindow(Gtk.ApplicationWindow):
                             connection_box.on_disconnect_btn_clicked(None)
             except:
                 pass
+
+        dump = Pipewire.list_objects()
+
+        for obj in dump:
+            if obj['type'] == 'PipeWire:Interface:Node' and \
+                'info' in obj and \
+                'props' in obj['info'] and \
+                'node.name' in obj['info']['props'] and \
+                LOW_LATENCY_NODE_NAME in obj['info']['props']['node.name']:
+
+                node = PwLowLatencyNode(obj['id'], obj['info']['props']['node.name'])
+                Pipewire.destroy_node(node)
 
         try:
             self.pulse_event_listener_unsubscribe()

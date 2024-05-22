@@ -30,13 +30,13 @@ from ..pipewire.pipewire import Pipewire, PwLink, PwLowLatencyNode
 
 class PwActiveConnectionBox(Adw.PreferencesGroup):
     __gsignals__ = {
-        'disconnect': (GObject.SIGNAL_RUN_FIRST, None, (object, object, object)),
+        'disconnect': (GObject.SIGNAL_RUN_FIRST, None, (object, object, object, object)),
         'change-volume': (GObject.SIGNAL_RUN_FIRST, None, (object, int, )),
         'low-latency-change': (GObject.SIGNAL_RUN_FIRST, None, (bool, ))
     }
 
     def __init__(self, input_link: PwLink, output_link: PwLink, connection_name: str, 
-        link_ids: list[str], show_link_ids: bool, has_manual_link_indicator=True, is_low_latency=False, **kwargs):
+        link_ids: list[str], show_link_ids: bool, has_manual_link_indicator=True, initial_lln:Optional[PwLowLatencyNode]=None, **kwargs):
 
         super().__init__(css_classes=['boxed-list'])
 
@@ -45,9 +45,8 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
         self.input_name = input_link.name
         self.output_name = output_link.name
         self.link_ids: list[str] = link_ids
-        self.is_low_latency = is_low_latency
         self.has_manual_link_indicator = has_manual_link_indicator
-        self.low_latency_node: Optional[PwLowLatencyNode] = None
+        self.low_latency_node: Optional[PwLowLatencyNode] = initial_lln
 
         self.settings: Gio.Settings = Gio.Settings.new('it.mijorus.whisper')
         self.settings.connect('changed::release-links-on-quit', self.on_change_manual_link_indicator)
@@ -80,6 +79,7 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
 
         low_latency_row = Adw.SwitchRow(
             title=_('Enable low-latency mode'),
+            active=(initial_lln != None)
         )
 
         low_latency_row.set_tooltip_text(_('This setting attemps to reduce the micrphone latency, but may increase CPU usage and cause distortions'))
@@ -97,8 +97,9 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
 
         self.header_suffix = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, valign=Gtk.Align.CENTER, spacing=12)
 
-        self.manual_link_indicator = Gtk.Image.new_from_resource('/it/mijorus/whisper/assets/manual-link-indicator.svg')
+        self.manual_link_indicator = Gtk.Image.new_from_icon_name('whisper-edit-undo-symbolic')
         self.manual_link_indicator.set_icon_size(Gtk.IconSize.NORMAL)
+        self.manual_link_indicator.add_css_class('dim-label')
         self.manual_link_indicator.set_tooltip_text(_('This connection will be closed when quitting the application'))
 
         self.manual_link_indicator.set_visible(has_manual_link_indicator and self.settings.get_boolean('release-links-on-quit'))
@@ -127,18 +128,14 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
         self.manual_link_indicator.set_visible(self.settings.get_boolean(key) and self.has_manual_link_indicator)
 
     def on_disconnect_btn_clicked(self, event):
-        if self.low_latency_node:
-            Pipewire.destroy_node(self.low_latency_node)
-            self.low_latency_node = None
-
-        self.emit('disconnect', self.link_ids, self.output_link, self.input_link)
+        self.emit('disconnect', self.link_ids, self.output_link, self.input_link, self.low_latency_node)
 
     def on_latency_row_toggled(self, w, _):
         active = w.get_active()
 
         if active:
             self.low_latency_node = link_low_latency(self.output_link.resource_name, self.input_link.resource_name)
-        else:
+        elif not active and self.low_latency_node:
             Pipewire.destroy_node(self.low_latency_node)
             self.low_latency_node = None
 

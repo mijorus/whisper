@@ -55,6 +55,4 @@ def link_output_input(output_id: str, input_id: str):
 def link_low_latency(output_id: str, input_id: str) -> PwLowLatencyNode:
     lln = Pipewire.create_low_latency_node()
     link_output_input(output_id, lln.name)
-    link_output_input(lln.name, input_id)
-
     return lln

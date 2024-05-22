@@ -33,10 +33,10 @@ class PwLowLatencyNode():
 
 
 class Pipewire():
+    top_output: Optional[subprocess.Popen] = None
+
     def __init__(self):
-        self.monitor: Optional[subprocess.Popen] = None
-        self.top_output: Optional[subprocess.Popen] = None
-        self.monitor_callback: Optional[Callable] = None
+        pass
 
     def _run(command: List[str], quiet=False) -> str:
         to_check = command if isinstance(command, str) else ' '.join(command)
@@ -160,7 +160,13 @@ class Pipewire():
         return Pipewire._run(['pw-cli', 'info', '0'])
 
     def list_objects():
-        return json.loads(Pipewire._run(['pw-dump', '--no-colors']))
+        output = {}
+        try:
+            output = json.loads(Pipewire._run(['pw-dump', '--no-colors']))
+        except:
+            pass
+
+        return output
 
     def get_default_clock_info():
         objs = Pipewire.list_objects()
@@ -213,48 +219,23 @@ class Pipewire():
         Pipewire._run(['pw-cli', 'create-node', 'adapter', ('{' +  node_conf + '}')])
 
         objs = Pipewire.list_objects()
+        node = Pipewire.find_node_by_name(objs, node_name)
+        return PwLowLatencyNode(node_id=node['id'], name=node_name)
 
+    def find_node_by_name(objs: list, name: str) -> dict:
         for obj in objs:
             if obj['type'] == 'PipeWire:Interface:Node' and \
                 'info' in obj and \
                 'props' in obj['info'] and \
                 'node.name' in obj['info']['props'] and \
-                node_name == obj['info']['props']['node.name']:
+                name == obj['info']['props']['node.name']:
 
-                return PwLowLatencyNode(node_id=obj['id'], name=node_name)
+                return obj
+        
+        return None
 
     def destroy_node(node: PwLowLatencyNode):
         Pipewire._run(['pw-cli', 'destroy', node.name])
-
-    def top_output(self, callback: Callable[[str], None] = None):
-        # output = None
-
-        # def run_command(callback: Callable[[str], None] = None):
-        #     try:
-        #         logging.info('Pipewire WATCH: starting top')
-        #         self.top_output = subprocess.Popen(['pw-top'], encoding='utf-8', stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
-        #         last_call = time()
-        #         while self.top_output:
-        #             output  = self.top_output.communicate()[0]
-
-        #             if (time() - last_call) > 3:
-        #                 print(output)
-        #                 logging.info('Pipewire TOP: executing callback ' + str(time_ns() - last_call))
-
-        #                 last_call = time()
-
-        #                 if callback:
-        #                     callback(output)
-
-        #     except subprocess.CalledProcessError as e:
-        #         print(e.stderr)
-        #         logging.error(msg=e.stderr)
-        #         raise e
-
-        # thread = threading.Thread(target=run_command, daemon=False, args=(callback,))
-        # thread.start()
-        pass
 
 # def threaded_sh(command: Union[str, List[str]], callback: Callable[[str], None]=None, return_stderr=False):
 #     to_check = command if isinstance(command, str) else command[0]
