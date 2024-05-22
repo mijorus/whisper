@@ -72,14 +72,12 @@ This app does more or less the same thing as Helvum does, but with a simple UI: 
 Furthermore, Whisper shows only physical inputs, while the afroamentioned show all inputs, including audio streams created by apps and virtual ones.
 
 Whisper can also control the microphone gain and the speaker volume.
+
 ## Screenshots
 
 <p align="center">
-<img src="docs/img1.png">
+<img src="docs/screenshot5.png">
 </p>
 <p align="center">
-<img src="docs/img4.png">
-</p>
-<p align="center">
-<img src="docs/img3.png">
+<img src="docs/screenshot3.png">
 </p>

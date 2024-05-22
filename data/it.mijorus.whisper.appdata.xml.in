@@ -64,12 +64,17 @@
         <screenshot type="default">
             <caption>Application showcase</caption>
             <image type="source">
-                https://raw.githubusercontent.com/mijorus/whisper/master/docs/preview_whisper1.png</image>
+                https://raw.githubusercontent.com/mijorus/whisper/master/docs/screenshot5.png</image>
+        </screenshot>
+        <screenshot>
+            <caption>Application showcase</caption>
+            <image type="source">
+                https://raw.githubusercontent.com/mijorus/whisper/master/docs/screenshot3.png</image>
         </screenshot>
         <screenshot>
             <caption>Settings page</caption>
             <image type="source">
-                https://raw.githubusercontent.com/mijorus/whisper/master/docs/whisper10.png</image>
+                https://raw.githubusercontent.com/mijorus/whisper/master/docs/screenshot2.png</image>
         </screenshot>
     </screenshots>
     <content_rating type="oars-1.0" />
