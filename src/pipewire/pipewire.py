@@ -11,6 +11,7 @@ from typing import Optional, Callable, List, Union
 from pprint import pprint
 
 LOW_LATENCY_NODE_NAME = 'whisper-low-latency-node'
+LOW_LATENCY_STARTING_BUFF_SIZE = 64
 
 class PwLink():
     def __init__(self, resource_name: str):
@@ -206,7 +207,7 @@ class Pipewire():
             whisper_node_name += 1
 
         clock_rate = Pipewire.get_default_clock_info()
-        buffer_size = 64
+        buffer_size = LOW_LATENCY_STARTING_BUFF_SIZE
 
         if clock_rate['default.clock.min-quantum'] > 0:
             while buffer_size < clock_rate['default.clock.min-quantum']:
