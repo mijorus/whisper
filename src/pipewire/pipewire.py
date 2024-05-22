@@ -26,6 +26,11 @@ class PwActiveConnectionLink():
         self.channel: str = channel
         self._id: str = _id
 
+class PwLowLatencyNode():
+    def __init__(self, node_id, name):
+        self.node_id = node_id
+        self.name = name
+
 
 class Pipewire():
     def __init__(self):
@@ -155,19 +160,12 @@ class Pipewire():
         return Pipewire._run(['pw-cli', 'info', '0'])
 
     def list_objects():
-        output = json.loads(Pipewire._run(['pw-dump', '--no-colors']))
-        result = {}
-
-        for o in output:
-            result[o['id']] = o
-            del result[o['id']]
-
-        return result
+        return json.loads(Pipewire._run(['pw-dump', '--no-colors']))
 
     def get_default_clock_info():
         objs = Pipewire.list_objects()
 
-        props_0 = objs['0']['info']['props']
+        props_0 = objs[0]['info']['props']
 
         return {
             "default.clock.max-quantum": props_0.get("default.clock.max-quantum", -1),
@@ -178,17 +176,28 @@ class Pipewire():
             "default.clock.rate": props_0.get("default.clock.rate", -1),
         }
 
-    def create_low_latency_node() -> str:
+    def create_low_latency_node() -> PwLowLatencyNode:
         objs = Pipewire.list_objects()
 
-        whisper_objs_count = -1
+        whisper_node_name = 0
+        whisper_objs_names = []
 
-        for o, obj in objs.items():
+
+        for obj in objs:
             if obj['type'] == 'PipeWire:Interface:Node' and \
-                'info' in obj and 'props' in obj['info'] and \
-                LOW_LATENCY_NODE_NAME in obj['application.name']:
+                'info' in obj and \
+                'props' in obj['info'] and \
+                'node.name' in obj['info']['props'] and \
+                LOW_LATENCY_NODE_NAME in obj['info']['props']['node.name']:
 
-                whisper_objs_count += 1
+                _, count = obj['info']['props']['node.name'].split(LOW_LATENCY_NODE_NAME, maxsplit=1)
+                count: str = count.replace('-', '')
+                count = int(count)
+
+                whisper_objs_names.append(count)
+
+        while (whisper_node_name in whisper_objs_names):
+            whisper_node_name += 1
 
         clock_rate = Pipewire.get_default_clock_info()
         buffer_size = 64
@@ -197,7 +206,7 @@ class Pipewire():
             while buffer_size < clock_rate['default.clock.min-quantum']:
                 buffer_size = buffer_size * 2
 
-        node_name = f"{LOW_LATENCY_NODE_NAME}-{(whisper_objs_count + 1)}"
+        node_name = f"{LOW_LATENCY_NODE_NAME}-{(whisper_node_name)}"
         node_conf = f"factory.name=support.null-audio-sink node.name={node_name} media.class=Audio/Sink object.linger=true"
         node_conf += f" audio.position=[FL FR] node.latency={buffer_size}/{clock_rate['default.clock.rate']}"
 
@@ -205,12 +214,17 @@ class Pipewire():
 
         objs = Pipewire.list_objects()
 
-        for o, obj in objs.items():
+        for obj in objs:
             if obj['type'] == 'PipeWire:Interface:Node' and \
-                'info' in obj and 'props' in obj['info'] and \
-                node_name == obj['application.name']:
+                'info' in obj and \
+                'props' in obj['info'] and \
+                'node.name' in obj['info']['props'] and \
+                node_name == obj['info']['props']['node.name']:
 
-                return o
+                return PwLowLatencyNode(node_id=obj['id'], name=node_name)
+
+    def destroy_node(node: PwLowLatencyNode):
+        Pipewire._run(['pw-cli', 'destroy', node.name])
 
     def top_output(self, callback: Callable[[str], None] = None):
         # output = None
@@ -240,7 +254,7 @@ class Pipewire():
 
         # thread = threading.Thread(target=run_command, daemon=False, args=(callback,))
         # thread.start()
-        Pipewire.list_objects()
+        pass
 
 # def threaded_sh(command: Union[str, List[str]], callback: Callable[[str], None]=None, return_stderr=False):
 #     to_check = command if isinstance(command, str) else command[0]

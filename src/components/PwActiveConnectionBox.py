@@ -17,13 +17,15 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from typing import Optional
 from pulsectl import Pulse
 import time
 from gi.repository import Adw
 from gi.repository import Gtk, GObject, Gio
 from pprint import pprint
 from ..utils import async_utils
-from ..pipewire.pipewire import Pipewire, PwLink
+from ..utils.utils import link_low_latency
+from ..pipewire.pipewire import Pipewire, PwLink, PwLowLatencyNode
 
 
 class PwActiveConnectionBox(Adw.PreferencesGroup):
@@ -45,14 +47,15 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
         self.link_ids: list[str] = link_ids
         self.is_low_latency = is_low_latency
         self.has_manual_link_indicator = has_manual_link_indicator
+        self.low_latency_node: Optional[PwLowLatencyNode] = None
 
         self.settings: Gio.Settings = Gio.Settings.new('it.mijorus.whisper')
         self.settings.connect('changed::release-links-on-quit', self.on_change_manual_link_indicator)
 
         self.set_title(connection_name)
 
-        # if show_link_ids:
-        #     self.set_description('Link IDs: ' + ', '.join(link_ids))
+        if show_link_ids:
+            self.set_description('Link IDs: ' + ', '.join(link_ids))
 
         # if not self.is_low_latency:
         #     clock_data = Pipewire.get_default_clock_info()
@@ -115,22 +118,31 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
                 self.pa_sink = pulse_client.get_sink_by_name(self.input_link.resource_name)
                 self.pa_source = pulse_client.get_source_by_name(self.output_link.resource_name)
 
-            print(self.pa_source)
             self.input_range.set_value(self.pa_sink.volume.value_flat * 100)
             self.output_range.set_value(self.pa_source.volume.value_flat * 100)
         except Exception as e:
             print(e)
-            pass
 
     def on_change_manual_link_indicator(self, settings, key):
         self.manual_link_indicator.set_visible(self.settings.get_boolean(key) and self.has_manual_link_indicator)
 
     def on_disconnect_btn_clicked(self, event):
+        if self.low_latency_node:
+            Pipewire.destroy_node(self.low_latency_node)
+            self.low_latency_node = None
+
         self.emit('disconnect', self.link_ids, self.output_link, self.input_link)
 
     def on_latency_row_toggled(self, w, _):
-        self.emit('low-latency-change', w.get_active())
+        active = w.get_active()
 
+        if active:
+            self.low_latency_node = link_low_latency(self.output_link.resource_name, self.input_link.resource_name)
+        else:
+            Pipewire.destroy_node(self.low_latency_node)
+            self.low_latency_node = None
+
+        self.emit('low-latency-change', active)
     @async_utils.debounce(0.5)
     def on_change_input_range(self, widget, _, value: float):
         if self.pa_sink:

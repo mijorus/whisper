@@ -1,6 +1,6 @@
 import logging
 import gi
-from ..pipewire.pipewire import Pipewire
+from ..pipewire.pipewire import Pipewire, PwLowLatencyNode
 
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
@@ -52,7 +52,9 @@ def link_output_input(output_id: str, input_id: str):
             elif (channel.endswith('_FR')) and fl_fr[1]:
                 Pipewire.link(c, fl_fr[1])
 
-def link_low_latency(output_id: str, input_id: str):
-    pass
+def link_low_latency(output_id: str, input_id: str) -> PwLowLatencyNode:
+    lln = Pipewire.create_low_latency_node()
+    link_output_input(output_id, lln.name)
+    link_output_input(lln.name, input_id)
 
-    df
+    return lln
