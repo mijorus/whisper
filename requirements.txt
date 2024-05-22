@@ -1,2 +1,2 @@
-pulsectl == 23.5.2
+pulsectl == 24.4.0
 dbus-python == 1.2.18

@@ -1,7 +1,7 @@
 {
     "app-id" : "it.mijorus.whisper",
     "runtime" : "org.gnome.Platform",
-    "runtime-version" : "45",
+    "runtime-version" : "46",
     "sdk" : "org.gnome.Sdk",
     "command" : "whisper",
     "finish-args" : [
@@ -37,6 +37,7 @@
             ]
         }
     ],
+    
     "build-options" : {
         "env" : {
             "DEBUG_MODE" : "dev"
