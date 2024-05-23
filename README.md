@@ -23,7 +23,7 @@ Pirewire is available as the default audio server on
 >
 > Enabling low-latency mode may cause audio "pops" if your system is too busy.<br>
 > These pops will be recorded in any app which may be using the same microphone at the same time.<br>
-> For this reason, **low-latency mode will be deactivated when you close Whisper**, regarding of your settings.
+> For this reason, **low-latency mode will be deactivated when you close Whisper**, regardless of your settings.
 
 Starting from v1.3.0, a new "low-latency" mode was added.
 This option forces a smaller buffer size for a specific device to reduce latency, at the expense of CPU usage and, potencially, audio quality.
