@@ -6,7 +6,6 @@
     "command" : "whisper",
     "finish-args" : [
         "--share=ipc",
-        "--share=network",
         "--socket=wayland",
         "--socket=pulseaudio",
         "--socket=fallback-x11",
