@@ -10,6 +10,10 @@
     <developer_name>Lorenzo Paderi</developer_name>
     <metadata_license>CC0-1.0</metadata_license>
     <project_license>GPL-3.0-or-later</project_license>
+    <branding>
+      <color type="primary" scheme_preference="light">#eafad6</color>
+      <color type="primary" scheme_preference="dark">#162206</color>
+    </branding>
     <description>
         <p>Whisper allows you to listen to your microphone through your speakers using Pipewire</p>
     </description>
