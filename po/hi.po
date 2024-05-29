@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: whisper\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-14 12:42+0100\n"
-"PO-Revision-Date: 2024-05-11 15:02+0530\n"
+"POT-Creation-Date: 2024-05-22 16:52+0200\n"
+"PO-Revision-Date: 2024-05-26 12:46+0530\n"
 "Last-Translator: Scrambled777 <weblate.scrambled777@simplelogin.com>\n"
 "Language-Team: Hindi <indlinux-hindi@lists.sourceforge.net>\n"
 "Language: hi\n"
@@ -24,53 +24,86 @@ msgstr ""
 msgid "Whisper"
 msgstr "Whisper"
 
-#: data/it.mijorus.whisper.appdata.xml.in:8
+#: data/it.mijorus.whisper.appdata.xml.in:9 src/main.py:102
 msgid "Listen to your mic"
 msgstr "अपने माइक को सुनो"
 
-#: data/it.mijorus.whisper.appdata.xml.in:9
+#: data/it.mijorus.whisper.appdata.xml.in:10
 msgid "Lorenzo Paderi"
 msgstr "लोरेंजो पदेरी"
 
-#: data/it.mijorus.whisper.appdata.xml.in:13
+#: data/it.mijorus.whisper.appdata.xml.in:14
 msgid ""
 "Whisper allows you to listen to your microphone through your speakers using "
 "Pipewire"
 msgstr ""
-"Whisper आपको Pipewire का उपयोग करके अपने स्पीकर के माध्यम से अपने माइक्रोफोन को सुनने "
+"व्हिस्पर आपको पाइपवायर का उपयोग करके अपने स्पीकर के माध्यम से अपने माइक्रोफोन को सुनने "
 "की अनुमति देता है"
 
-#: data/it.mijorus.whisper.appdata.xml.in:18
+#: data/it.mijorus.whisper.appdata.xml.in:19
+msgid "- Fixed a bug causing output names to show up empty"
+msgstr "- उस बग को ठीक किया गया जिसके कारण आउटपुट नाम खाली दिखाई दे रहे थे"
+
+#: data/it.mijorus.whisper.appdata.xml.in:24
+msgid "- Fixed app not starting"
+msgstr "- ऐप के प्रारंभ न होने की समस्या को ठीक किया गया"
+
+#: data/it.mijorus.whisper.appdata.xml.in:29
+msgid "- Updated translations"
+msgstr "- अद्यतित अनुवाद"
+
+#: data/it.mijorus.whisper.appdata.xml.in:30
+msgid "- Bug fix"
+msgstr "- बग समाधान"
+
+#: data/it.mijorus.whisper.appdata.xml.in:31
+msgid "- Improved stability by updating to the lastest PulseCtl library"
+msgstr "- नवीनतम PulseCtl लाइब्रेरी में अद्यतन करके स्थिरता में सुधार किया गया"
+
+#: data/it.mijorus.whisper.appdata.xml.in:36
+msgid "- Fixed an error causing settings toggles to be displayed incorrecly"
+msgstr "- सेटिंग्स टॉगल को गलत तरीके से प्रदर्शित करने वाली त्रुटि को ठीक किया गया"
+
+#: data/it.mijorus.whisper.appdata.xml.in:41
+msgid "- Added an option to terminate all the connections when closing the app"
+msgstr "- ऐप बंद करते समय सभी कनेक्शन समाप्त करने का विकल्प जोड़ा गया"
+
+#: data/it.mijorus.whisper.appdata.xml.in:42
+msgid "- Added turkish translation. Thanks to Sabri Ünal"
+msgstr "- तुर्की अनुवाद जोड़ा गया। साबरी उनाल को धन्यवाद"
+
+#: data/it.mijorus.whisper.appdata.xml.in:47
 msgid "- Added support for Bluetooth speakers"
 msgstr "- ब्लूटूथ स्पीकर के लिए समर्थन जोड़ा गया"
 
-#: data/it.mijorus.whisper.appdata.xml.in:19
+#: data/it.mijorus.whisper.appdata.xml.in:48
 msgid "- Performance improvements"
 msgstr "- निष्पादन में सुधार"
 
-#: data/it.mijorus.whisper.appdata.xml.in:24
+#: data/it.mijorus.whisper.appdata.xml.in:53
 msgid "- First release"
 msgstr "- पहली विज्ञप्ति"
 
-#: data/it.mijorus.whisper.appdata.xml.in:30
+#: data/it.mijorus.whisper.appdata.xml.in:59
 msgid "Application showcase"
 msgstr "अनुप्रयोग प्रदर्शन-मंजूषा"
 
-#: data/it.mijorus.whisper.appdata.xml.in:35
+#: data/it.mijorus.whisper.appdata.xml.in:64
 msgid "Settings page"
 msgstr "सेटिंग्स पृष्ठ"
 
-#: src/window.py:346
-msgid "Reloading last connections in "
-msgstr "अंतिम सम्पर्क को पुनः लोड किया जा रहा है "
-
-#: src/window.py:346
-msgid " seconds..."
-msgstr " सेकंड..."
+#: src/window.py:397
+#, python-brace-format
+msgid "Reloading last connections in {0} seconds..."
+msgstr "अंतिम कनेक्शन को {0} सेकंड में पुनः लोड किया जा रहा है..."
 
 #: src/main.py:110
 msgid "translator_credits"
 msgstr "Scrambled777 <weblate.scrambled777@simplelogin.com>"
+
+#: src/main.py:111
+msgid "Icon by"
+msgstr "आइकॉन प्रदानकर्ता"
 
 #: src/components/NoLinksPlaceholder.py:10
 msgid "No active connections"
@@ -80,11 +113,23 @@ msgstr "कोई सक्रिय सम्पर्क नहीं"
 msgid "To get started, connect a microphone and a speaker"
 msgstr "प्रारंभ करने के लिए, एक माइक्रोफोन और एक स्पीकर जोड़ें"
 
-#: src/components/PwActiveConnectionBox.py:78
+#: src/components/PwActiveConnectionBox.py:81
+msgid "Enable low-latency mode"
+msgstr "निम्न-विलंबता मोड सक्षम करें"
+
+#: src/components/PwActiveConnectionBox.py:85
+msgid ""
+"This setting attemps to reduce the micrphone latency, but may increase CPU "
+"usage and cause distortions"
+msgstr ""
+"यह सेटिंग माइक्रोफोन विलंबता को कम करने का प्रयास करती है, लेकिन CPU उपयोग को बढ़ा "
+"सकती है और विकृतियां पैदा कर सकती है"
+
+#: src/components/PwActiveConnectionBox.py:95
 msgid "Disconnect"
 msgstr "सम्पर्क तोड़ें"
 
-#: src/components/PwActiveConnectionBox.py:85
+#: src/components/PwActiveConnectionBox.py:103
 msgid "This connection will be closed when quitting the application"
 msgstr "अनुप्रयोग बंद करने पर यह सम्पर्क बंद हो जाएगा"
 
@@ -114,7 +159,7 @@ msgstr "स्वतः प्रारंभ"
 
 #: src/Preferences.py:21
 msgid "Show connection IDs"
-msgstr "सम्पर्क IDs दिखाएं"
+msgstr "सम्पर्क ID दिखाएं"
 
 #: src/Preferences.py:21
 msgid "For the geeks out there"
@@ -126,7 +171,7 @@ msgstr "बूट पर प्रारंभ करें"
 
 #: src/Preferences.py:23
 msgid "Open Whisper when the system starts"
-msgstr "सिस्टम प्रारंभ होने पर Whisper खोलें"
+msgstr "सिस्टम प्रारंभ होने पर व्हिस्पर खोलें"
 
 #: src/Preferences.py:24
 msgid "Release connections on close"
@@ -134,7 +179,7 @@ msgstr "बंद होने पर सम्पर्क छोड़ें"
 
 #: src/Preferences.py:24
 msgid "Closes all the connections created with Whisper when leaving the app"
-msgstr "ऐप छोड़ते समय Whisper से बनाए गए सभी सम्पर्क बंद हो जाते हैं"
+msgstr "ऐप छोड़ते समय व्हिस्पर से बनाए गए सभी सम्पर्क बंद हो जाते हैं"
 
 #: src/Preferences.py:25
 msgid "Reconnect all the devices at startup"
@@ -156,10 +201,14 @@ msgstr "प्राथमिकताएं (_P)"
 msgid "_Debug Log"
 msgstr "डिबग लेखा (_D)"
 
+#: src/gtk/main-menu.ui:14
+msgid "Changelog"
+msgstr "चेंजलॉग"
+
 #: src/gtk/main-menu.ui:18
 msgid "_Translate this app"
 msgstr "इस ऐप का अनुवाद करें (_T)"
 
 #: src/gtk/main-menu.ui:22
-msgid "_About"
-msgstr "Whisper के बारे में (_A)"
+msgid "_About Whisper"
+msgstr "व्हिस्पर के बारे में (_A)"
