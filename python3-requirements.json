@@ -7,13 +7,13 @@
             "name": "python3-pulsectl",
             "buildsystem": "simple",
             "build-commands": [
-                "pip3 install --verbose --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"pulsectl==24.4.0\" --no-build-isolation"
+                "pip3 install --verbose --exists-action=i --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} \"pulsectl==24.11.0\" --no-build-isolation"
             ],
             "sources": [
                 {
                     "type": "file",
-                    "url": "https://files.pythonhosted.org/packages/bd/e7/36106bb3e2241a5092af5b5384cffad4bd9c805f5355ca32450da6597900/pulsectl-24.4.0-py2.py3-none-any.whl",
-                    "sha256": "ca2c71bf9cac485db6264112c1d50a2b6e94b8b61b7b7dd2211135f94f9ee3e2"
+                    "url": "https://files.pythonhosted.org/packages/7f/0d/3e12ca4c2c97509597a3a082813d12b5a9c656ae04bc7c02b29ff128c809/pulsectl-24.11.0-py2.py3-none-any.whl",
+                    "sha256": "7d49641656c88e897492092d1940276e9e83351b3f1a75ee2d02ebc45bb89228"
                 }
             ]
         },
