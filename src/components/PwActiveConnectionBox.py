@@ -97,7 +97,7 @@ class PwActiveConnectionBox(Adw.PreferencesGroup):
 
         self.header_suffix = Gtk.Box(orientation=Gtk.Orientation.HORIZONTAL, valign=Gtk.Align.CENTER, spacing=12)
 
-        self.manual_link_indicator = Gtk.Image.new_from_icon_name('whisper-edit-undo-symbolic')
+        self.manual_link_indicator = Gtk.Image.new_from_icon_name('whisper-audio-only-symbolic')
         self.manual_link_indicator.set_icon_size(Gtk.IconSize.NORMAL)
         self.manual_link_indicator.add_css_class('dim-label')
         self.manual_link_indicator.set_tooltip_text(_('This connection will be closed when quitting the application'))
