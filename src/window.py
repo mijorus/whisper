@@ -71,7 +71,7 @@ class WhisperWindow(Gtk.ApplicationWindow):
         self.titlebar.pack_start(self.refresh_button)
 
         self.set_titlebar(self.titlebar)
-        self.viewport = Gtk.Box(halign=Gtk.Align.CENTER, orientation=Gtk.Orientation.VERTICAL, spacing=30, margin_top=20, width_request=500)
+        self.viewport = Gtk.Box(halign=Gtk.Align.CENTER, orientation=Gtk.Orientation.VERTICAL, spacing=30, margin_top=20, width_request=400)
 
         self.rendered_links = []
         self.manually_created_links = []
@@ -134,8 +134,8 @@ class WhisperWindow(Gtk.ApplicationWindow):
         scrolled.set_child(clamp)
 
         self.set_child(scrolled)
-        self.set_default_size(700, 800)
-        self.set_size_request(650, 300)
+        self.set_default_size(600, 700)
+        self.set_size_request(440, 300)
 
         return None
 
