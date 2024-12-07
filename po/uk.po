@@ -1,0 +1,219 @@
+# Ukrainian translation for Whisper.
+# Copyright (C) 2024 THE Whisper'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Whisper package.
+# volkov <volkovissocool@gmail.com>, 2024.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Whisper\n"
+"Report-Msgid-Bugs-To: https://github.com/mijorus/whisper/issues\n"
+"POT-Creation-Date: 2024-05-22 16:52+0200\n"
+"PO-Revision-Date: 2024-12-07 14:36+0200\n"
+"Last-Translator: volkov <volkovissocool@gmail.com>\n"
+"Language-Team: volkov <volkovissocool@gmail.com>\n"
+"Language: uk\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.5\n"
+
+#: data/it.mijorus.whisper.desktop.in:3
+#: data/it.mijorus.whisper.appdata.xml.in:4
+msgid "Whisper"
+msgstr "Шепіт"
+
+#: data/it.mijorus.whisper.appdata.xml.in:9 src/main.py:102
+msgid "Listen to your mic"
+msgstr "Слухайте ваш мікрофон"
+
+#: data/it.mijorus.whisper.appdata.xml.in:10
+msgid "Lorenzo Paderi"
+msgstr ""
+
+#: data/it.mijorus.whisper.appdata.xml.in:14
+msgid ""
+"Whisper allows you to listen to your microphone through your speakers using "
+"Pipewire"
+msgstr ""
+"Шепіт дозволяє вам прослуховувати ваш мікрофон через ваші колонки за "
+"допомогою Pipewire"
+
+#: data/it.mijorus.whisper.appdata.xml.in:19
+msgid "- Fixed a bug causing output names to show up empty"
+msgstr ""
+"- Виправлено ваду через яку назви пристрої виводу відображались порожніми"
+
+#: data/it.mijorus.whisper.appdata.xml.in:24
+msgid "- Fixed app not starting"
+msgstr "- Виправлено ваду через яку додаток не стартував"
+
+#: data/it.mijorus.whisper.appdata.xml.in:29
+msgid "- Updated translations"
+msgstr "- Оновлено переклади"
+
+#: data/it.mijorus.whisper.appdata.xml.in:30
+msgid "- Bug fix"
+msgstr "- Виправлення вад"
+
+#: data/it.mijorus.whisper.appdata.xml.in:31
+msgid "- Improved stability by updating to the lastest PulseCtl library"
+msgstr ""
+"- Покращено стабільність завдяки оновленню бібліотеки PulseCtl до останньої "
+"версії"
+
+#: data/it.mijorus.whisper.appdata.xml.in:36
+msgid "- Fixed an error causing settings toggles to be displayed incorrecly"
+msgstr ""
+"- Виправлено помилку, через яку перемикачі у налаштуваннях відображались не "
+"правильно"
+
+#: data/it.mijorus.whisper.appdata.xml.in:41
+msgid "- Added an option to terminate all the connections when closing the app"
+msgstr ""
+"- Додано опцію, яка буде закривати усі з'єднання при закриванні додатку"
+
+#: data/it.mijorus.whisper.appdata.xml.in:42
+msgid "- Added turkish translation. Thanks to Sabri Ünal"
+msgstr "- Додано турецький переклад. Дякуємо Sabri Ünal"
+
+#: data/it.mijorus.whisper.appdata.xml.in:47
+msgid "- Added support for Bluetooth speakers"
+msgstr "- Додана підтримка до Bluetooth колонок"
+
+#: data/it.mijorus.whisper.appdata.xml.in:48
+msgid "- Performance improvements"
+msgstr "- Покращення швидкодії"
+
+#: data/it.mijorus.whisper.appdata.xml.in:53
+msgid "- First release"
+msgstr "- Перший випуск"
+
+#: data/it.mijorus.whisper.appdata.xml.in:59
+msgid "Application showcase"
+msgstr "Демонстрація додатку"
+
+#: data/it.mijorus.whisper.appdata.xml.in:64
+msgid "Settings page"
+msgstr "Сторніка налаштувань"
+
+#: src/window.py:397
+#, python-brace-format
+msgid "Reloading last connections in {0} seconds..."
+msgstr "Перезавантаження останніх з'єднань через {0} секунд(и)..."
+
+#: src/main.py:110
+msgid "translator_credits"
+msgstr "volkov <volkovissocool@gmail.com>"
+
+#: src/main.py:111
+msgid "Icon by"
+msgstr "Піктограму зробив"
+
+#: src/components/NoLinksPlaceholder.py:10
+msgid "No active connections"
+msgstr "Немає активних з'єднань"
+
+#: src/components/NoLinksPlaceholder.py:11
+msgid "To get started, connect a microphone and a speaker"
+msgstr "Щоб розпочати, з'єднайте мікрофон і колонки"
+
+#: src/components/PwActiveConnectionBox.py:81
+msgid "Enable low-latency mode"
+msgstr "Ввімкнути режим низької затримки"
+
+#: src/components/PwActiveConnectionBox.py:85
+msgid ""
+"This setting attemps to reduce the micrphone latency, but may increase CPU "
+"usage and cause distortions"
+msgstr ""
+"Ця опція спробує зменшити затримку мікрофона, але може збільшити "
+"навантаження на процесор та викликати викривлення звуку"
+
+#: src/components/PwActiveConnectionBox.py:95
+msgid "Disconnect"
+msgstr "Від'єднати"
+
+#: src/components/PwActiveConnectionBox.py:103
+msgid "This connection will be closed when quitting the application"
+msgstr "Це з'єднання буде закрито при виходу з додатку"
+
+#: src/components/PwConnectionBox.py:15
+msgid "Create a connection"
+msgstr "Створити з'єднання"
+
+#: src/components/PwConnectionBox.py:18
+msgid " -- Select a microphone --"
+msgstr " -- Обрати мікрофон --"
+
+#: src/components/PwConnectionBox.py:34
+msgid " -- Select a speaker --"
+msgstr " -- Обрати колонки --"
+
+#: src/components/PwConnectionBox.py:51
+msgid "Connect"
+msgstr "З'єднати"
+
+#: src/Preferences.py:18
+msgid "General"
+msgstr "Загальні"
+
+#: src/Preferences.py:19
+msgid "Autostart"
+msgstr "Автозапуск"
+
+#: src/Preferences.py:21
+msgid "Show connection IDs"
+msgstr "Показувати ідентифікатор з'єднання"
+
+#: src/Preferences.py:21
+msgid "For the geeks out there"
+msgstr "Для гіків"
+
+#: src/Preferences.py:23
+msgid "Start on boot"
+msgstr "Запускатися при завантаженні"
+
+#: src/Preferences.py:23
+msgid "Open Whisper when the system starts"
+msgstr "Відкривати Шепіт при завантаженні системи"
+
+#: src/Preferences.py:24
+msgid "Release connections on close"
+msgstr "Від'єднувати з'єднання при зачиненні"
+
+#: src/Preferences.py:24
+msgid "Closes all the connections created with Whisper when leaving the app"
+msgstr "Від'єднувати усі з'єднання створені Шепітом коли додаток закрито"
+
+#: src/Preferences.py:25
+msgid "Reconnect all the devices at startup"
+msgstr "Повторно з'єднувати усі пристрої при запуску"
+
+#: src/Preferences.py:25
+msgid ""
+"Reload all the connections if they are no longer active. Unplugged devices "
+"will be skipped"
+msgstr ""
+"Перезавантажити усі з'єднання, якщо вони більше не активні. Від'єднані "
+"пристрої будуть пропущені"
+
+#: src/gtk/main-menu.ui:6
+msgid "_Preferences"
+msgstr "_Налаштування"
+
+#: src/gtk/main-menu.ui:10
+msgid "_Debug Log"
+msgstr "_Журнал налагодження"
+
+#: src/gtk/main-menu.ui:14
+msgid "Changelog"
+msgstr "Список змін"
+
+#: src/gtk/main-menu.ui:18
+msgid "_Translate this app"
+msgstr "_Перекласти цей додаток"
+
+#: src/gtk/main-menu.ui:22
+msgid "_About Whisper"
+msgstr "_Про Шепіт"
