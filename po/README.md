@@ -23,7 +23,7 @@ https://github.com/fsobolev/timeswitch/tree/master/po
 ## Updating translations
 
 When an update is released, new strings might be added to the app.
-With Poedit, you can update translations by opening `<your_language>.pot` file and clicking on `Transations (in the menu bar)` > `Update from POT file`.
+With Poedit, you can update translations by opening `<your_language>.pot` file and clicking on `Translations (in the menu bar)` > `Update from POT file`.
 
 ## Credit
 
