@@ -45,6 +45,7 @@ class WhisperApplication(Adw.Application):
         self.create_action('opendebuglog', self.on_opendebuglog_action)
         self.create_action('open_changelog', self.on_open_changelog)
         self.create_action('translate', lambda w, _: Gio.AppInfo.launch_default_for_uri('https://github.com/mijorus/whisper/tree/master/po', None))
+        self.create_action('quit', lambda *_: self.quit(), ['<primary>q'])
 
         self.add_main_option_entries([
             make_option('autostart'),
