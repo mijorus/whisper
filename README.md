@@ -14,19 +14,18 @@ Whisper allows you to listen to your microphone through your speakers. It's usef
 
 This app requires both PulseAudio and Pipewire to be installed on your system.
 
-Pirewire is available as the default audio server on 
+Pipewire is available as the default audio server on 
 - Fedora 34 and later
 - Ubuntu 22.04 and later
 
 ## "Low-latency" mode
-> **NOTE**
->
+> [!NOTE]
 > Enabling low-latency mode may cause audio "pops" if your system is too busy.<br>
 > These pops will be recorded in any app which may be using the same microphone at the same time.<br>
 > For this reason, **low-latency mode will be deactivated when you close Whisper**, regardless of your settings.
 
 Starting from v1.3.0, a new "low-latency" mode was added.
-This option forces a smaller buffer size for a specific device to reduce latency, at the expense of CPU usage and, potencially, audio quality.
+This option forces a smaller buffer size for a specific device to reduce latency, at the expense of CPU usage and, potentially, audio quality.
 
 By default, if supported by the system, Whisper tries to force a buffer size of 64, but it can rise it up if this value is too small for your system, according to the `default.clock.min-quantum` value specified in your Pipewire configuration.
 
@@ -69,7 +68,7 @@ Whisper can be built with Flatpak Builder
 ## Under the hood
 This app does more or less the same thing as Helvum does, but with a simple UI: when you have more than a couple of apps playing audio, it gets quite hard to use Helvum.
 
-Furthermore, Whisper shows only physical inputs, while the afroamentioned show all inputs, including audio streams created by apps and virtual ones.
+Furthermore, Whisper shows only physical inputs, while the aforementioned show all inputs, including audio streams created by apps and virtual ones.
 
 Whisper can also control the microphone gain and the speaker volume.
 
