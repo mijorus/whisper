@@ -1,0 +1,163 @@
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Luis Manuel Arrieta Ávila <lumanarav@gmail.com>, 2023.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2023-02-14 12:42+0100\n"
+"PO-Revision-Date: 2024-06-03 08:51-0300\n"
+"Last-Translator: Luis Manuel Arrieta Ávila <lumanarav@gmail.com>\n"
+"Language-Team: Spanish <kde-i18n-doc@kde.org>\n"
+"Language: es_MX\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.4.4\n"
+
+#: data/it.mijorus.whisper.desktop.in:3
+#: data/it.mijorus.whisper.appdata.xml.in:4
+msgid "Whisper"
+msgstr "Whisper"
+
+#: data/it.mijorus.whisper.appdata.xml.in:8
+msgid "Listen to your mic"
+msgstr "Ouça seu microfone"
+
+#: data/it.mijorus.whisper.appdata.xml.in:9
+msgid "Lorenzo Paderi"
+msgstr ""
+
+#: data/it.mijorus.whisper.appdata.xml.in:13
+msgid ""
+"Whisper allows you to listen to your microphone through your speakers using "
+"Pipewire"
+msgstr ""
+"Whisper te permite ouvir seu microfone através dos seus alto-falante "
+"utilizando o Pipewire"
+
+#: data/it.mijorus.whisper.appdata.xml.in:18
+msgid "- Added support for Bluetooth speakers"
+msgstr "- Adicionado suporte para auto-falante Bluetooth"
+
+#: data/it.mijorus.whisper.appdata.xml.in:19
+msgid "- Performance improvements"
+msgstr "- Melhorias de performance"
+
+#: data/it.mijorus.whisper.appdata.xml.in:24
+msgid "- First release"
+msgstr "- Primeiro lançamento"
+
+#: data/it.mijorus.whisper.appdata.xml.in:30
+msgid "Application showcase"
+msgstr "Apresentação da aplicação"
+
+#: data/it.mijorus.whisper.appdata.xml.in:35
+msgid "Settings page"
+msgstr "Página de opções"
+
+#: src/window.py:346
+msgid "Reloading last connections in "
+msgstr "Recarregando as últimas conexões em "
+
+#: src/window.py:346
+msgid " seconds..."
+msgstr " segundos..."
+
+#: src/main.py:110
+msgid "translator_credits"
+msgstr "begati <https://github.com/begati>"
+
+#: src/components/NoLinksPlaceholder.py:10
+msgid "No active connections"
+msgstr "Não há conexões ativas"
+
+#: src/components/NoLinksPlaceholder.py:11
+msgid "To get started, connect a microphone and a speaker"
+msgstr "Para começar, conecte um microfone a um alto-falante"
+
+#: src/components/PwActiveConnectionBox.py:78
+msgid "Disconnect"
+msgstr "Desconectar"
+
+#: src/components/PwActiveConnectionBox.py:85
+msgid "This connection will be closed when quitting the application"
+msgstr "Esta conexão será fechada quando sair da aplicação"
+
+#: src/components/PwConnectionBox.py:15
+msgid "Create a connection"
+msgstr "Criar uma conexão"
+
+#: src/components/PwConnectionBox.py:18
+msgid " -- Select a microphone --"
+msgstr " -- Selecione um microfone --"
+
+#: src/components/PwConnectionBox.py:34
+msgid " -- Select a speaker --"
+msgstr " -- Selecione um alto-falante --"
+
+#: src/components/PwConnectionBox.py:51
+msgid "Connect"
+msgstr "Conectar"
+
+#: src/Preferences.py:18
+msgid "General"
+msgstr "Geral"
+
+#: src/Preferences.py:19
+msgid "Autostart"
+msgstr "Começo automático"
+
+#: src/Preferences.py:21
+msgid "Show connection IDs"
+msgstr "Mostrar os IDs das conexões"
+
+#: src/Preferences.py:21
+msgid "For the geeks out there"
+msgstr "Para os geeks por aí"
+
+#: src/Preferences.py:23
+msgid "Start on boot"
+msgstr "Executar junto ao sistema"
+
+#: src/Preferences.py:23
+msgid "Open Whisper when the system starts"
+msgstr "Abrir Whisper na inicialização do sistema"
+
+#: src/Preferences.py:24
+msgid "Release connections on close"
+msgstr "Liberar as conexões ao fechar"
+
+#: src/Preferences.py:24
+msgid "Closes all the connections created with Whisper when leaving the app"
+msgstr "Fecha todas as conexões criadas com Whisper quando sair do aplicativo"
+
+#: src/Preferences.py:25
+msgid "Reconnect all the devices at startup"
+msgstr "Reconectar todos os dispositivos ao iniciar"
+
+#: src/Preferences.py:25
+msgid ""
+"Reload all the connections if they are no longer active. Unplugged devices "
+"will be skipped"
+msgstr ""
+"Recarregue todas as conexões se elas não estiverem mais ativas. Os "
+"dispositivos desconectados serão ignorados"
+
+#: src/gtk/main-menu.ui:6
+msgid "_Preferences"
+msgstr "_Preferencias"
+
+#: src/gtk/main-menu.ui:10
+msgid "_Debug Log"
+msgstr "Registro de _debug"
+
+#: src/gtk/main-menu.ui:18
+msgid "_Translate this app"
+msgstr "_Traduza esta aplicação"
+
+#: src/gtk/main-menu.ui:22
+msgid "_About"
+msgstr "_Sobre"
