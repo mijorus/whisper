@@ -19,6 +19,7 @@ class PwLink():
         self.alsa: str = ''
         self.name: str = ''
         self.channels: dict = {}
+        self.description: str = ''
 
 
 class PwActiveConnectionLink():
@@ -36,9 +37,7 @@ class PwLowLatencyNode():
 class Pipewire():
     top_output: Optional[subprocess.Popen] = None
 
-    def __init__(self):
-        pass
-
+    @staticmethod
     def _run(command: List[str], quiet=False) -> str:
         to_check = command if isinstance(command, str) else ' '.join(command)
 
@@ -54,6 +53,7 @@ class Pipewire():
 
         return re.sub(r'\n$', '', output.stdout)
 
+    @staticmethod
     def _parse_pwlink_return(output: str) -> dict[str, PwLink]:
         elements = {}
         resource_tag = None
@@ -99,6 +99,7 @@ class Pipewire():
 
         return elements
 
+    @staticmethod
     def _parse_pwlink_list_return(output: str) -> list[str, dict[str, PwActiveConnectionLink]]:
         elements = {}
         output_id = None
@@ -127,7 +128,19 @@ class Pipewire():
                 elements[output_id][connection_id] = PwActiveConnectionLink(connected_item.split(':')[0], connected_item.split(':')[1], _id)
 
         return elements
+    
+    @staticmethod
+    def _get_node_description(obj_list: str, node_name: str):
+        for d in obj_list:
+            if d['type'] == 'PipeWire:Interface:Node' and \
+                'info' in d and \
+                'props' in d['info'] and \
+                d['info']['props']['node.name'] == node_name:
+                return d['info']['props'].get('node.description')
+            
+        return ''
 
+    @staticmethod
     def check_installed(quiet=False) -> bool:
         try:
             Pipewire._run(['which', 'pw-cli']).strip() and Pipewire._run(['which', 'pw-link']).strip() and Pipewire._run(['pw-cli', 'info', '0']).strip()
@@ -136,30 +149,43 @@ class Pipewire():
 
         return True
 
+    @staticmethod
     def list_inputs(quiet=False) -> dict[str, PwLink]:
         output: list[str] = Pipewire._run(['pw-link', '--input', '--verbose', '--id'], quiet=quiet)
         inputs = Pipewire._parse_pwlink_return(output)
+        dump = Pipewire.list_objects()
 
+        for k, v in inputs.items():
+            v.description = Pipewire._get_node_description(dump, k)
         return inputs
 
+    @staticmethod
     def list_outputs(quiet=False) -> dict[str, PwLink]:
         output: list[str] = Pipewire._run(['pw-link', '--output', '--verbose', '--id'], quiet=quiet)
         items = Pipewire._parse_pwlink_return(output)
+        dump = Pipewire.list_objects()
 
+        for k, v in items.items():
+            v.description = Pipewire._get_node_description(dump, k)
         return items
 
+    @staticmethod
     def link(inp: str, out: str):
         Pipewire._run(['pw-link', '--linger', inp, out])
 
+    @staticmethod
     def unlink(link_id):
         Pipewire._run(['pw-link', '--disconnect', link_id])
 
+    @staticmethod
     def list_links(quiet=False) -> list[str, dict[str, PwActiveConnectionLink]]:
         return Pipewire._parse_pwlink_list_return(Pipewire._run(['pw-link', '--links', '--id'], quiet=quiet))
 
+    @staticmethod
     def get_info_raw() -> str:
         return Pipewire._run(['pw-cli', 'info', '0'])
 
+    @staticmethod
     def list_objects():
         output = {}
         try:
@@ -169,6 +195,7 @@ class Pipewire():
 
         return output
 
+    @staticmethod
     def get_default_clock_info():
         objs = Pipewire.list_objects()
 
@@ -183,6 +210,7 @@ class Pipewire():
             "default.clock.rate": props_0.get("default.clock.rate", -1),
         }
 
+    @staticmethod
     def create_low_latency_node() -> PwLowLatencyNode:
         objs = Pipewire.list_objects()
 
@@ -223,6 +251,7 @@ class Pipewire():
         node = Pipewire.find_node_by_name(objs, node_name)
         return PwLowLatencyNode(node_id=node['id'], name=node_name)
 
+    @staticmethod
     def find_node_by_name(objs: list, name: str) -> dict:
         for obj in objs:
             if obj['type'] == 'PipeWire:Interface:Node' and \
@@ -235,6 +264,7 @@ class Pipewire():
         
         return None
 
+    @staticmethod
     def destroy_node(node: PwLowLatencyNode):
         Pipewire._run(['pw-cli', 'destroy', node.name])
 

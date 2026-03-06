@@ -23,13 +23,17 @@ class PwConnectionBox(Adw.PreferencesGroup):
             # Hardcoded, there as some issues with bluetooth mics for now
             is_bluetooth = False 
             if (v.alsa.startswith('alsa:') or is_bluetooth):
-                if is_bluetooth or (('capture' in v.alsa) and (v.name != 'Midi Through')):
-                    output_names.append(v.name)
+                if is_bluetooth or (('capture' in v.alsa) and ('midi' not in k.lower())):
+                    name = f'{v.name} ({len(v.channels)} ch.)'
+                    if v.description:
+                        name = v.description
+
+                    output_names.append(name)
 
                     if self.settings.get_boolean('show-connection-ids'):
-                        self.output_select.add(v.name, k, v.alsa)
+                        self.output_select.add(name, k, v.alsa)
                     else:
-                        self.output_select.add(v.name, k)
+                        self.output_select.add(name, k)
 
         self.input_select = ExpanderRowRadio(title=_(' -- Select a speaker --'))
         self.input_select.connect('change', self.on_input_select_change)
@@ -37,8 +41,12 @@ class PwConnectionBox(Adw.PreferencesGroup):
         for k, v in Pipewire.list_inputs().items():
             is_bluetooth = v.resource_name.startswith('bluez_output')
             if (v.alsa.startswith('alsa:') or is_bluetooth):
-                if is_bluetooth or (v.name != 'Midi Through'):
+                if is_bluetooth or ('midi' not in k.lower()):
                     name = v.name if (v.name not in output_names) else (v.name + ' - Output')
+                    name += f' ({len(v.channels)} ch.)'
+
+                    if v.description:
+                        name = v.description + ' - Output'
 
                     if self.settings.get_boolean('show-connection-ids'):
                         self.input_select.add(name, k, v.alsa)

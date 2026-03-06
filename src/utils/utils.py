@@ -34,23 +34,18 @@ def link_output_input(output_id: str, input_id: str):
     if (len(pw_output.channels) == 1) and ('_MONO' in pw_output.channels[list(pw_output.channels.keys())[0]]):
         # handle MONO mics
         for ch_id, ch_name in Pipewire.list_inputs()[input_id].channels.items():
-            if ('_FL' in ch_name) or ('_FR' in ch_name):
-                Pipewire.link(list(pw_output.channels.keys())[0], ch_id)
+            Pipewire.link(list(pw_output.channels.keys())[0], ch_id)
     else:
         pw_input = Pipewire.list_inputs()[input_id]
         fl_fr = [None, None]
+        input_channels = pw_input.channels.keys()
 
-        for c, channel in pw_input.channels.items():
-            if (channel.endswith('_FL')):
-                fl_fr[0] = c
-            elif (channel.endswith('_FR')):
-                fl_fr[1] = c
+
+
 
         for c, channel in pw_output.channels.items():
-            if (channel.endswith('_FL')) and fl_fr[0]:
-                Pipewire.link(c, fl_fr[0])
-            elif (channel.endswith('_FR')) and fl_fr[1]:
-                Pipewire.link(c, fl_fr[1])
+            for ic in input_channels:
+                Pipewire.link(c, ic)
 
 def link_low_latency(output_id: str, input_id: str) -> PwLowLatencyNode:
     lln = Pipewire.create_low_latency_node()
