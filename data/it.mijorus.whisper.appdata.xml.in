@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <component type="desktop">
-    <id>it.mijorus.whisper.desktop</id>
+    <id>it.mijorus.whisper</id>
     <name>Whisper</name>
     <url type="homepage">https://mijorus.it/projects/whisper</url>
     <url type="contribute">https://github.com/mijorus/whisper</url>
