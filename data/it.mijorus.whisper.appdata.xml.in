@@ -2,9 +2,10 @@
 <component type="desktop">
     <id>it.mijorus.whisper</id>
     <name>Whisper</name>
-    <url type="homepage">https://mijorus.it/projects/whisper</url>
+    <url type="homepage">https://whisper.mijorus.it</url>
     <url type="contribute">https://github.com/mijorus/whisper</url>
     <url type="donation">https://ko-fi.com/mijorus</url>
+    <url type="vcs-browser">https://github.com/mijorus/whisper</url>
     <launchable type="desktop-id">it.mijorus.whisper.desktop</launchable>
     <summary>Listen to your mic</summary>
     <developer_name>Lorenzo Paderi</developer_name>
